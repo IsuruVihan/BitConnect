@@ -2,7 +2,7 @@ import './App.css';
 
 const App = () => {
   return (
-    <div className="App">
+    <div className="bg-red-400">
       BitConnect!
     </div>
   );
