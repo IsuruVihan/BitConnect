@@ -1,5 +1,16 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
+import { Route, Routes, useNavigate } from 'react-router-dom';
+
+import Attendance from './pages/Attendance';
+import Leave from './pages/Leave';
+import CommonWall from './pages/CommonWall';
+import ChatBox from './pages/ChatBox';
+import SpecialNotices from './pages/SpecialNotices';
+import KT from './pages/KT';
+import Calendar from './pages/Calendar';
+import EmpView from './pages/EmpView';
+
 import {
   CheckIcon,
   EnvelopeIcon,
@@ -16,14 +27,14 @@ import {
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
-  { name: 'Attendance', href: '#', icon: CheckIcon, current: true },
-  { name: 'Leave', href: '#', icon: EnvelopeIcon, current: false },
-  { name: 'Common Wall', href: '#', icon:ArrowUpTrayIcon , current: false },
-  { name: 'ChatBox', href: '#', icon:ChatBubbleLeftRightIcon , current: false },
-  { name: 'Special Notices', href: '#', icon:ClipboardDocumentListIcon , current: false },
-  { name: 'KT Courses', href: '#', icon:AcademicCapIcon , current: false },
-  { name: 'Calendar', href: '#', icon:CalendarIcon, current: false },
-  { name: 'Employees View', href: '#', icon:IdentificationIcon, current: false },
+  { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
+  { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
+  { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
+  { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
+  { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
+  { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
+  { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
+  { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
 ]
 
 const userNavigation = [
@@ -36,18 +47,38 @@ function classNames(...classes) {
 }
 
 const Header = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const [navigation, setNavigation] = useState([
+    { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
+    { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
+    { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
+    { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
+    { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
+    { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
+    { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
+    { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
+  ])
+  
+  const getCurrentNavigationName = () => {
+    const currentNavigationItem = navigation.find(item => item.current);
+    return currentNavigationItem ? currentNavigationItem.name : '';
+  };
+  
+  const redirect = (path) => {
+    navigate(path)
+    const updatedNavigation = navigation.map(item => {
+      if (item.path === path) {
+        return { ...item, current: true };
+      } else {
+        return { ...item, current: false };
+      }
+    });
+    setNavigation(updatedNavigation);    
+  }
+  
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
@@ -106,7 +137,7 @@ const Header = () => {
                             {navigation.map((item) => (
                               <li key={item.name}>
                                 <a
-                                  href={item.href}
+                                  onClick={() => redirect(item.path)}
                                   className={classNames(
                                     item.current
                                       ? 'bg-gray-800 text-white'
@@ -147,8 +178,8 @@ const Header = () => {
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
-                        <a
-                          href={item.href}
+                        <p
+                          onClick={() => redirect(item.path)}
                           className={classNames(
                             item.current
                               ? 'bg-gray-800 text-white'
@@ -158,7 +189,7 @@ const Header = () => {
                         >
                           <item.icon className="w-6 h-6 shrink-0" aria-hidden="true" />
                           {item.name}
-                        </a>
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -175,7 +206,9 @@ const Header = () => {
               <Bars3Icon className="w-6 h-6" aria-hidden="true" />
             </button>
 
-            <div>Page Name</div>
+            <div>
+              {getCurrentNavigationName()}
+            </div>
             {/* Separator */}
             <div className="w-px h-6 bg-gray-900/10 lg:hidden" aria-hidden="true" />
 
@@ -218,7 +251,7 @@ const Header = () => {
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
-                            <a
+                            <a 
                               href={item.href}
                               className={classNames(
                                 active ? 'bg-gray-50' : '',
@@ -239,7 +272,16 @@ const Header = () => {
 
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8">
-            
+              <Routes>
+                <Route path="/attendance" element={<Attendance/>}/>
+                <Route path="/leave" element={<Leave/>}/>
+                <Route path="/common-wall" element={<CommonWall/>}/>
+                <Route path="/chat-box" element={<ChatBox/>}/>
+                <Route path="/special-notices" element={<SpecialNotices/>}/>
+                <Route path="/kt-courses" element={<KT/>}/>
+                <Route path="/calendar" element={<Calendar/>}/>
+                <Route path="/employees-view" element={<EmpView/>}/>
+              </Routes>
             </div>
           </main>
         </div>
