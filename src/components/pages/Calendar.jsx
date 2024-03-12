@@ -14,10 +14,8 @@ const meetings = [
     date: 'January 10th, 2022',
     time: '5:00 PM',
     datetime: '2022-01-10T17:00',
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    location: 'Starbucks',
+    name: 'Client 032 Meeting',
+    location: 'Barista, Kiribathgoda',
   },
   // More meetings...
 ]
@@ -73,7 +71,7 @@ function classNames(...classes) {
 const Calendar = () => {
     return (
         <div>
-          <h2 className="text-base font-semibold leading-6 text-gray-900">Upcoming meetings</h2>
+          <h2 className="text-base font-semibold leading-6 text-gray-900">Upcoming Events</h2>
           <div className="lg:grid lg:grid-cols-12 lg:gap-x-16">
             <div className="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
               <div className="flex items-center text-gray-900">
@@ -144,7 +142,6 @@ const Calendar = () => {
             <ol className="mt-4 text-sm leading-6 divide-y divide-gray-100 lg:col-span-7 xl:col-span-8">
               {meetings.map((meeting) => (
                 <li key={meeting.id} className="relative flex py-6 space-x-6 xl:static">
-                  <img src={meeting.imageUrl} alt="" className="flex-none rounded-full h-14 w-14" />
                   <div className="flex-auto">
                     <h3 className="pr-10 font-semibold text-gray-900 xl:pr-0">{meeting.name}</h3>
                     <dl className="flex flex-col mt-2 text-gray-500 xl:flex-row">

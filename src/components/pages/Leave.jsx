@@ -1,5 +1,5 @@
 const people = [
-    { name: '2020/09/01', title: '2020/09/01', email: 'lindsay.walton@example.com', role: 'Member' },
+    { startDate: '2020/09/01', endDate: '2020/09/01', reason: 'Sick', type: 'Full-Day' },
     // More people...
   ]
 
@@ -48,13 +48,13 @@ const Leave = () => {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {people.map((person) => (
-                      <tr key={person.email} className="divide-x divide-gray-200">
+                      <tr key={person.reason} className="divide-x divide-gray-200">
                         <td className="py-4 pl-4 pr-4 text-sm font-medium text-gray-500 whitespace-nowrap sm:pl-0">
-                          {person.name}
+                          {person.startDate}
                         </td>
-                        <td className="p-4 text-sm text-gray-500 whitespace-nowrap">{person.title}</td>
-                        <td className="p-4 text-sm text-gray-500 whitespace-nowrap">{person.email}</td>
-                        <td className="py-4 pl-4 pr-4 text-sm text-gray-500 whitespace-nowrap sm:pr-0">{person.role}</td>
+                        <td className="p-4 text-sm text-gray-500 whitespace-nowrap">{person.endDate}</td>
+                        <td className="p-4 text-sm text-gray-500 whitespace-nowrap">{person.reason}</td>
+                        <td className="py-4 pl-4 pr-4 text-sm text-gray-500 whitespace-nowrap sm:pr-0">{person.type}</td>
                       </tr>
                     ))}
                   </tbody>

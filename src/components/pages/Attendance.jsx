@@ -1,7 +1,7 @@
 const Attendance = () => {
     return(
         <div>
-            Attendance
+            Attendance UI
         </div>
     );
 }

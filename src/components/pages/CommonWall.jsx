@@ -1,7 +1,7 @@
 const CommonWall = () => {
     return(
         <div>
-            CommonWall
+            CommonWall UI
         </div>
     );
 }

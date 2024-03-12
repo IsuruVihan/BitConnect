@@ -2,7 +2,7 @@
 const KT = () => {
     return(
         <div>
-            KT
+            KT UI
         </div>
     );
 }

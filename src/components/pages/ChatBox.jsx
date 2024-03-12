@@ -16,8 +16,7 @@ const ChatBox = () => {
                 <div className="xl:pl-96">
                     <div className="px-4 py-10 sm:px-6 lg:px-8 lg:py-6">
                         {/* Main area */}
-                        <div className="border-2 border-red-500 h-1/3">
-                        </div>
+
 
                         
                     </div>
