@@ -1,5 +1,16 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
+import { Route, Routes, useNavigate } from 'react-router-dom';
+
+import Attendance from './pages/Attendance';
+import Leave from './pages/Leave';
+import CommonWall from './pages/CommonWall';
+import ChatBox from './pages/ChatBox';
+import SpecialNotices from './pages/SpecialNotices';
+import KT from './pages/KT';
+import Calendar from './pages/Calendar';
+import EmpView from './pages/EmpView';
+
 import {
   CheckIcon,
   EnvelopeIcon,
@@ -16,14 +27,14 @@ import {
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 const navigation = [
-  { name: 'Attendance', href: '#', icon: CheckIcon, current: true },
-  { name: 'Leave', href: '#', icon: EnvelopeIcon, current: false },
-  { name: 'Common Wall', href: '#', icon:ArrowUpTrayIcon , current: false },
-  { name: 'ChatBox', href: '#', icon:ChatBubbleLeftRightIcon , current: false },
-  { name: 'Special Notices', href: '#', icon:ClipboardDocumentListIcon , current: false },
-  { name: 'KT Courses', href: '#', icon:AcademicCapIcon , current: false },
-  { name: 'Calendar', href: '#', icon:CalendarIcon, current: false },
-  { name: 'Employees View', href: '#', icon:IdentificationIcon, current: false },
+  { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
+  { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
+  { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
+  { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
+  { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
+  { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
+  { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
+  { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
 ]
 
 const userNavigation = [
@@ -36,18 +47,38 @@ function classNames(...classes) {
 }
 
 const Header = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  const [navigation, setNavigation] = useState([
+    { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
+    { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
+    { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
+    { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
+    { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
+    { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
+    { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
+    { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
+  ])
+  
+  const getCurrentNavigationName = () => {
+    const currentNavigationItem = navigation.find(item => item.current);
+    return currentNavigationItem ? currentNavigationItem.name : '';
+  };
+  
+  const redirect = (path) => {
+    navigate(path)
+    const updatedNavigation = navigation.map(item => {
+      if (item.path === path) {
+        return { ...item, current: true };
+      } else {
+        return { ...item, current: false };
+      }
+    });
+    setNavigation(updatedNavigation);    
+  }
+  
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as="div" className="relative z-50 lg:hidden" onClose={setSidebarOpen}>
@@ -93,11 +124,11 @@ const Header = () => {
                   {/* Sidebar component, swap this element with another sidebar if you like */}
                   <div className="flex flex-col px-6 pb-4 overflow-y-auto bg-gray-900 grow gap-y-5 ring-1 ring-white/10">
                     <div className="flex items-center h-16 shrink-0">
-                      {/* <img
+                      <img
                         className="w-auto h-8"
-                        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                        alt="Your Company"
-                      /> */}
+                        src="https://www.bitzquad.com/logo.webp"
+                        alt="Company"
+                      />
                     </div>
                     <nav className="flex flex-col flex-1">
                       <ul role="list" className="flex flex-col flex-1 gap-y-7">
@@ -106,7 +137,7 @@ const Header = () => {
                             {navigation.map((item) => (
                               <li key={item.name}>
                                 <a
-                                  href={item.href}
+                                  onClick={() => redirect(item.path)}
                                   className={classNames(
                                     item.current
                                       ? 'bg-gray-800 text-white'
@@ -135,11 +166,11 @@ const Header = () => {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex flex-col px-6 pb-4 overflow-y-auto bg-gray-900 grow gap-y-5">
             <div className="flex items-center h-16 shrink-0">
-              {/* <img
+              <img
                 className="w-auto h-8"
-                src={Logo}
-                alt="Your Company"
-              /> */}
+                src="https://www.bitzquad.com/logo.webp"
+                alt="Company"
+              />
             </div>
             <nav className="flex flex-col flex-1">
               <ul role="list" className="flex flex-col flex-1 gap-y-7">
@@ -147,8 +178,8 @@ const Header = () => {
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
-                        <a
-                          href={item.href}
+                        <p
+                          onClick={() => redirect(item.path)}
                           className={classNames(
                             item.current
                               ? 'bg-gray-800 text-white'
@@ -158,7 +189,7 @@ const Header = () => {
                         >
                           <item.icon className="w-6 h-6 shrink-0" aria-hidden="true" />
                           {item.name}
-                        </a>
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -169,66 +200,71 @@ const Header = () => {
         </div>
 
         <div className="lg:pl-72">
-          <div className="sticky top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
+          <div
+              className="sticky top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
             <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
               <span className="sr-only">Open sidebar</span>
-              <Bars3Icon className="w-6 h-6" aria-hidden="true" />
+              <Bars3Icon className="w-6 h-6" aria-hidden="true"/>
             </button>
 
-            <div>Page Name</div>
+            <div className="text-3xl font-bold">
+              {getCurrentNavigationName()}
+            </div>
+
             {/* Separator */}
-            <div className="w-px h-6 bg-gray-900/10 lg:hidden" aria-hidden="true" />
+            <div className="w-px h-6 bg-gray-900/10 lg:hidden" aria-hidden="true"/>
 
             <div className="flex self-stretch flex-1 gap-x-4 lg:gap-x-6">
               <div className="flex items-center justify-end flex-1 gap-x-4 lg:gap-x-6">
                 <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
                   <span className="sr-only">View notifications</span>
-                  <BellIcon className="w-6 h-6" aria-hidden="true" />
+                  <BellIcon className="w-6 h-6" aria-hidden="true"/>
                 </button>
 
                 {/* Separator */}
-                <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true" />
-            
+                <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10" aria-hidden="true"/>
+
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative">
                   <Menu.Button className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
                     <img
-                      className="w-8 h-8 rounded-full bg-gray-50"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
+                        className="w-8 h-8 rounded-full bg-gray-50"
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
                     />
                     <span className="hidden lg:flex lg:items-center">
                       <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
                         Tom Cook
                       </span>
-                      <ChevronDownIcon className="w-5 h-5 ml-2 text-gray-400" aria-hidden="true" />
+                      <ChevronDownIcon className="w-5 h-5 ml-2 text-gray-400" aria-hidden="true"/>
                     </span>
                   </Menu.Button>
                   <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                    <Menu.Items
+                        className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
                       {userNavigation.map((item) => (
-                        <Menu.Item key={item.name}>
-                          {({ active }) => (
-                            <a
-                              href={item.href}
-                              className={classNames(
-                                active ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-gray-900'
-                              )}
-                            >
-                              {item.name}
-                            </a>
-                          )}
-                        </Menu.Item>
+                          <Menu.Item key={item.name}>
+                            {({active}) => (
+                                <a
+                                    href={item.href}
+                                    className={classNames(
+                                        active ? 'bg-gray-50' : '',
+                                        'block px-3 py-1 text-sm leading-6 text-gray-900'
+                                    )}
+                                >
+                                  {item.name}
+                                </a>
+                            )}
+                          </Menu.Item>
                       ))}
                     </Menu.Items>
                   </Transition>
@@ -239,7 +275,16 @@ const Header = () => {
 
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8">
-            
+              <Routes>
+                <Route path="/attendance" element={<Attendance/>}/>
+                <Route path="/leave" element={<Leave/>}/>
+                <Route path="/common-wall" element={<CommonWall/>}/>
+                <Route path="/chat-box" element={<ChatBox/>}/>
+                <Route path="/special-notices" element={<SpecialNotices/>}/>
+                <Route path="/kt-courses" element={<KT/>}/>
+                <Route path="/calendar" element={<Calendar/>}/>
+                <Route path="/employees-view" element={<EmpView/>}/>
+              </Routes>
             </div>
           </main>
         </div>
