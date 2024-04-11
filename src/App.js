@@ -2,16 +2,16 @@ import './App.css';
 import Login from './components/pages/Login';
 import Header from './components/Header';
 import { BrowserRouter } from 'react-router-dom';
-import React, { useState } from 'react';
-
+import React from 'react';
+import { useAuth } from './context/AuthContext';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  
+  const { token } = useAuth();
+
   return (
-    <div>
-     {isLoggedIn ? <BrowserRouter><Header/></BrowserRouter> : <Login/>}
-    </div> 
+      <div>
+        {token ? <BrowserRouter><Header/></BrowserRouter> : <Login/>}
+      </div>
   );
 }
 
