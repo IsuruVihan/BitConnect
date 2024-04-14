@@ -1,7 +1,7 @@
 import {useState} from "react";
 import { TrashIcon, UserGroupIcon, PaperAirplaneIcon } from '@heroicons/react/20/solid';
 
-import ChatListModal from "../ChatListModal";
+import ChatListModal from "../components/modals/ChatListModal";
 
 const ChatBox = () => {
     const [contactList, setContactList] = useState([

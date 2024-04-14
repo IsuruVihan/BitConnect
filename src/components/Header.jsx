@@ -2,14 +2,14 @@ import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import Attendance from './pages/Attendance';
-import Leave from './pages/Leave';
-import CommonWall from './pages/CommonWall';
-import ChatBox from './pages/ChatBox';
-import SpecialNotices from './pages/SpecialNotices';
-import KT from './pages/KT';
-import Calendar from './pages/Calendar';
-import EmpView from './pages/EmpView';
+import Attendance from '../pages/Attendance';
+import Leave from '../pages/Leave';
+import CommonWall from '../pages/CommonWall';
+import ChatBox from '../pages/ChatBox';
+import SpecialNotices from '../pages/SpecialNotices';
+import KT from '../pages/KT';
+import Calendar from '../pages/Calendar';
+import EmpView from '../pages/EmpView';
 
 import {
   CheckIcon,
