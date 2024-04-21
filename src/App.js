@@ -10,7 +10,8 @@ const App = () => {
 
   return (
       <div>
-        {token ? <BrowserRouter><Header/></BrowserRouter> : <Login/>}
+        {/*{token ? <BrowserRouter><Header/></BrowserRouter> : <Login/>}*/}
+        <BrowserRouter><Header/></BrowserRouter>
       </div>
   );
 }
