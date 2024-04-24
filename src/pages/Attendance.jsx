@@ -1,65 +1,72 @@
 import React, { useState } from 'react';
+
 const Attendance = () => {
-    const [checkInTime, setCheckInTime] = useState('');
-    const [checkOutTime, setCheckOutTime] = useState('');
+  const [checkInTime, setCheckInTime] = useState('');
+  const [checkOutTime, setCheckOutTime] = useState('');
 
-    const handleCheckIn = () => {
-      const currentTime = new Date().toLocaleString();
-      setCheckInTime(currentTime);
-    };
+  const handleCheckIn = () => {
+    const currentTime = new Date().toLocaleString();
+    setCheckInTime(currentTime);
+  };
 
-    const handleCheckOut = () => {
-      const currentTime = new Date().toLocaleString();
-      setCheckOutTime(currentTime);
-    };
+  const handleCheckOut = () => {
+    const currentTime = new Date().toLocaleString();
+    setCheckOutTime(currentTime);
+  };
 
-    const generateReport = () => {
-      // Implement report generation logic
-      console.log('Report generated');
-    };
+  const generateReport = () => {
+    // Implement report generation logic
+    console.log('Report generated');
+  };
 
-    return(
-      <div>
-				<div className="flex flex-col items-center mt-8">
-					<div className="flex flex-col space-y-4 mb-4">
-						<input
-							type="text"
-							className="rounded-md border border-gray-300 px-3 py-2"
-							placeholder="Date"
-							value={checkInTime || ''}
-							disabled
-						/>
-						<input
-							type="text"
-							className="rounded-md border border-gray-300 px-3 py-2"
-							placeholder="Time"
-							value={checkInTime || ''}
-							disabled
-						/>
-					</div>
-					<div className="flex space-x-4 mb-4">
-						<button
-							className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full"
-							onClick={handleCheckIn}
-						>
-							Check In
-						</button>
-						<button
-							className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-full"
-							onClick={handleCheckOut}
-						>
-							Check Out
-						</button>
-					</div>
-					<button
-						className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded-full"
-						onClick={generateReport}
-					>
-						Generate Report
-					</button>
-				</div>
-			</div>
-		);
+  return(
+    <div>
+      <div className="flex flex-col items-center mt-8">
+        <div className="flex flex-col space-y-4 mb-4">
+          <input
+            type="text"
+            className="rounded-md border border-gray-300 px-3 py-2 w-96 text-center" // Added text-center class
+            placeholder="Date"
+            value={checkInTime || ''}
+            disabled
+          />
+          <input
+            type="text"
+            className="rounded-md border border-gray-300 px-3 py-2 w-96 text-center" // Added text-center class
+            placeholder="Time"
+            value={checkInTime || ''}
+            disabled
+          />
+        </div>
+
+        {/* Check in and Check out buttons */}
+        <div className="flex space-x-4 mb-4">
+          <button
+            className="block w-48 px-5 py-3 text-sm font-semibold text-center text-white bg-green-600 rounded-md shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+            onClick={handleCheckIn}
+          >
+            Check In
+          </button>
+          <button
+            className="block w-48 px-5 py-3 text-sm font-semibold text-center text-white bg-red-600 rounded-md shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+            onClick={handleCheckOut}
+          >
+            Check Out
+          </button>
+        </div>
+
+        {/* Generate Report Button */}
+        <div className="mb-4 ">
+          <button
+            className="block w-96 px-5 py-3 text-sm font-semibold text-center text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={generateReport}
+          >
+            Generate Report
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default Attendance;
