@@ -3,6 +3,55 @@ import { Dialog, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 
+const products = [
+    {
+        id: 1,
+        name: 'Zip Tote Basket',
+        color: 'White and black',
+        href: '#',
+        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
+        price: '$140',
+    },
+    {
+        id: 1,
+        name: 'Zip Tote Basket',
+        color: 'White and black',
+        href: '#',
+        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
+        price: '$140',
+    },
+    {
+        id: 1,
+        name: 'Zip Tote Basket',
+        color: 'White and black',
+        href: '#',
+        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
+        price: '$140',
+    },
+    {
+        id: 1,
+        name: 'Zip Tote Basket',
+        color: 'White and black',
+        href: '#',
+        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
+        price: '$140',
+    },
+    {
+        id: 1,
+        name: 'Zip Tote Basket',
+        color: 'White and black',
+        href: '#',
+        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
+        price: '$140',
+    },
+    // More products...
+]
+
 const tabs = [
     { name: 'All', href: '#', current: true },
     { name: 'Online', href: '#', current: false },
@@ -53,14 +102,59 @@ function classNames(...classes) {
 const KT = () => {
     const [open, setOpen] = useState(true)
     return (
-        <Transition.Root show={open} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                <div className="fixed inset-0" />
+      <>
+        {/*Courses*/}
+        <div className="bg-white">
+            <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                <h2 className="text-xl font-bold text-gray-900">Customers also bought</h2>
 
-                <div className="fixed inset-0 overflow-hidden">
-                    <div className="absolute inset-0 overflow-hidden">
-                        <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                            <Transition.Child
+                <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+                    {products.map((product) => (
+                      <div key={product.id}>
+                          <div className="relative">
+                              <div className="relative h-72 w-full overflow-hidden rounded-lg">
+                                  <img
+                                    src={product.imageSrc}
+                                    alt={product.imageAlt}
+                                    className="h-full w-full object-cover object-center"
+                                  />
+                              </div>
+                              <div className="relative mt-4">
+                                  <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
+                                  <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                              </div>
+                              <div
+                                className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
+                                  <div
+                                    aria-hidden="true"
+                                    className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
+                                  />
+                                  <p className="relative text-lg font-semibold text-white">{product.price}</p>
+                              </div>
+                          </div>
+                          <div className="mt-6">
+                              <a
+                                href={product.href}
+                                className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
+                              >
+                                  Add to bag<span className="sr-only">, {product.name}</span>
+                              </a>
+                          </div>
+                      </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+
+          {/*Leader Board*/}
+          <Transition.Root show={open} as={Fragment}>
+              <Dialog as="div" className="relative z-10" onClose={setOpen}>
+                  <div className="fixed inset-0"/>
+
+                  <div className="fixed inset-0 overflow-hidden">
+                      <div className="absolute inset-0 overflow-hidden">
+                          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                              <Transition.Child
                                 as={Fragment}
                                 enter="transform transition ease-in-out duration-500 sm:duration-700"
                                 enterFrom="translate-x-full"
@@ -68,132 +162,140 @@ const KT = () => {
                                 leave="transform transition ease-in-out duration-500 sm:duration-700"
                                 leaveFrom="translate-x-0"
                                 leaveTo="translate-x-full"
-                            >
-                                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                    <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                                        <div className="p-6">
-                                            <div className="flex items-start justify-between">
-                                                <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">Team</Dialog.Title>
-                                                <div className="ml-3 flex h-7 items-center">
-                                                    <button
+                              >
+                                  <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                                      <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                                          <div className="p-6">
+                                              <div className="flex items-start justify-between">
+                                                  <Dialog.Title
+                                                    className="text-base font-semibold leading-6 text-gray-900">Team</Dialog.Title>
+                                                  <div className="ml-3 flex h-7 items-center">
+                                                      <button
                                                         type="button"
                                                         className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
                                                         onClick={() => setOpen(false)}
-                                                    >
-                                                        <span className="absolute -inset-2.5" />
-                                                        <span className="sr-only">Close panel</span>
-                                                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="border-b border-gray-200">
-                                            <div className="px-6">
-                                                <nav className="-mb-px flex space-x-6">
-                                                    {tabs.map((tab) => (
+                                                      >
+                                                          <span className="absolute -inset-2.5"/>
+                                                          <span className="sr-only">Close panel</span>
+                                                          <XMarkIcon className="h-6 w-6" aria-hidden="true"/>
+                                                      </button>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div className="border-b border-gray-200">
+                                              <div className="px-6">
+                                                  <nav className="-mb-px flex space-x-6">
+                                                      {tabs.map((tab) => (
                                                         <a
-                                                            key={tab.name}
-                                                            href={tab.href}
-                                                            className={classNames(
-                                                                tab.current
-                                                                    ? 'border-indigo-500 text-indigo-600'
-                                                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                                                                'whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium'
-                                                            )}
+                                                          key={tab.name}
+                                                          href={tab.href}
+                                                          className={classNames(
+                                                            tab.current
+                                                              ? 'border-indigo-500 text-indigo-600'
+                                                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                                                            'whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium'
+                                                          )}
                                                         >
                                                             {tab.name}
                                                         </a>
-                                                    ))}
-                                                </nav>
-                                            </div>
-                                        </div>
-                                        <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
-                                            {team.map((person) => (
+                                                      ))}
+                                                  </nav>
+                                              </div>
+                                          </div>
+                                          <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
+                                              {team.map((person) => (
                                                 <li key={person.handle}>
                                                     <div className="group relative flex items-center px-5 py-6">
                                                         <a href={person.href} className="-m-1 block flex-1 p-1">
-                                                            <div className="absolute inset-0 group-hover:bg-gray-50" aria-hidden="true" />
+                                                            <div className="absolute inset-0 group-hover:bg-gray-50"
+                                                                 aria-hidden="true"/>
                                                             <div className="relative flex min-w-0 flex-1 items-center">
-                                <span className="relative inline-block flex-shrink-0">
-                                  <img className="h-10 w-10 rounded-full" src={person.imageUrl} alt="" />
-                                  <span
-                                      className={classNames(
+                                    <span className="relative inline-block flex-shrink-0">
+                                      <img className="h-10 w-10 rounded-full" src={person.imageUrl} alt=""/>
+                                      <span
+                                        className={classNames(
                                           person.status === 'online' ? 'bg-green-400' : 'bg-gray-300',
                                           'absolute top-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white'
-                                      )}
-                                      aria-hidden="true"
-                                  />
-                                </span>
+                                        )}
+                                        aria-hidden="true"
+                                      />
+                                    </span>
                                                                 <div className="ml-4 truncate">
-                                                                    <p className="truncate text-sm font-medium text-gray-900">{person.name}</p>
-                                                                    <p className="truncate text-sm text-gray-500">{'@' + person.handle}</p>
+                                                                    <p
+                                                                      className="truncate text-sm font-medium text-gray-900">{person.name}</p>
+                                                                    <p
+                                                                      className="truncate text-sm text-gray-500">{'@' + person.handle}</p>
                                                                 </div>
                                                             </div>
                                                         </a>
-                                                        <Menu as="div" className="relative ml-2 inline-block flex-shrink-0 text-left">
-                                                            <Menu.Button className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                                                <span className="absolute -inset-1.5" />
+                                                        <Menu as="div"
+                                                              className="relative ml-2 inline-block flex-shrink-0 text-left">
+                                                            <Menu.Button
+                                                              className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                                                <span className="absolute -inset-1.5"/>
                                                                 <span className="sr-only">Open options menu</span>
-                                                                <span className="flex h-full w-full items-center justify-center rounded-full">
-                                  <EllipsisVerticalIcon
-                                      className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                      aria-hidden="true"
-                                  />
-                                </span>
-                                    </Menu.Button>
-                                        <Transition
-                                            as={Fragment}
-                                            enter="transition ease-out duration-100"
-                                            enterFrom="transform opacity-0 scale-95"
-                                            enterTo="transform opacity-100 scale-100"
-                                            leave="transition ease-in duration-75"
-                                            leaveFrom="transform opacity-100 scale-100"
-                                            leaveTo="transform opacity-0 scale-95"
-                                        >
-                                            <Menu.Items className="absolute right-9 top-0 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                <div className="py-1">
-                                                    <Menu.Item>
-                                                        {({ active }) => (
-                                                            <a
-                                                                href="#"
-                                                                className={classNames(
-                                                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                    'block px-4 py-2 text-sm'
-                                                                )}
+                                                                <span
+                                                                  className="flex h-full w-full items-center justify-center rounded-full">
+                                      <EllipsisVerticalIcon
+                                        className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                        aria-hidden="true"
+                                      />
+                                    </span>
+                                                            </Menu.Button>
+                                                            <Transition
+                                                              as={Fragment}
+                                                              enter="transition ease-out duration-100"
+                                                              enterFrom="transform opacity-0 scale-95"
+                                                              enterTo="transform opacity-100 scale-100"
+                                                              leave="transition ease-in duration-75"
+                                                              leaveFrom="transform opacity-100 scale-100"
+                                                              leaveTo="transform opacity-0 scale-95"
                                                             >
-                                                                View profile
-                                                            </a>
-                                                        )}
-                                                    </Menu.Item>
-                                                <Menu.Item>
-                                                    {({ active }) => (
-                                                        <a
-                                                            href="#"
-                                                            className={classNames(
-                                                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                'block px-4 py-2 text-sm'
-                                                            )}
-                                                        >
-                                                            Send message
-                                                        </a>
-                                                    )}
-                                                    </Menu.Item>
-                                                </div>
-                                            </Menu.Items>
-                                        </Transition>
+                                                                <Menu.Items
+                                                                  className="absolute right-9 top-0 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                                    <div className="py-1">
+                                                                        <Menu.Item>
+                                                                            {({active}) => (
+                                                                              <a
+                                                                                href="#"
+                                                                                className={classNames(
+                                                                                  active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                                                  'block px-4 py-2 text-sm'
+                                                                                )}
+                                                                              >
+                                                                                  View profile
+                                                                              </a>
+                                                                            )}
+                                                                        </Menu.Item>
+                                                                        <Menu.Item>
+                                                                            {({active}) => (
+                                                                              <a
+                                                                                href="#"
+                                                                                className={classNames(
+                                                                                  active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                                                                  'block px-4 py-2 text-sm'
+                                                                                )}
+                                                                              >
+                                                                                  Send message
+                                                                              </a>
+                                                                            )}
+                                                                        </Menu.Item>
+                                                                    </div>
+                                                                </Menu.Items>
+                                                            </Transition>
                                                         </Menu>
                                                     </div>
                                                 </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
-                    </div>
-                </div>
-            </Dialog>
-        </Transition.Root>
-    );
+                                              ))}
+                                          </ul>
+                                      </div>
+                                  </Dialog.Panel>
+                              </Transition.Child>
+                          </div>
+                      </div>
+                  </div>
+              </Dialog>
+          </Transition.Root>
+    </>);
 }
 export default KT;
