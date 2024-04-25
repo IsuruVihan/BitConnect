@@ -1,15 +1,16 @@
 import React, {useState} from "react";
-import {PaperAirplaneIcon, TrashIcon, UserGroupIcon} from "@heroicons/react/20/solid";
+import { HeartIcon} from "@heroicons/react/20/solid";
+import CreatePostModal from "../components/modals/CreatePostModal";
 
 function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
+	return classes.filter(Boolean).join(' ')
 }
 
 const CommonWall = () => {
-    const [tabs, setTabs] = useState([
-        { name: 'Notices', current: true },
-        { name: 'Events', current: false },
-    ]);
+	const [tabs, setTabs] = useState([
+		{name: 'Notices', current: true},
+		{name: 'Events', current: false},
+	]);
 
 	const posts = [
 		{
@@ -22,7 +23,7 @@ const CommonWall = () => {
 				'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
 			date: 'Mar 16, 2020',
 			datetime: '2020-03-16',
-			category: { title: 'Marketing', href: '#' },
+			category: {title: 'Marketing', href: '#'},
 			author: {
 				name: 'Michael Foster',
 				role: 'Co-Founder / CTO',
@@ -41,7 +42,7 @@ const CommonWall = () => {
 				'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
 			date: 'Mar 16, 2020',
 			datetime: '2020-03-16',
-			category: { title: 'Marketing', href: '#' },
+			category: {title: 'Marketing', href: '#'},
 			author: {
 				name: 'Michael Foster',
 				role: 'Co-Founder / CTO',
@@ -60,7 +61,7 @@ const CommonWall = () => {
 				'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
 			date: 'Mar 16, 2020',
 			datetime: '2020-03-16',
-			category: { title: 'Marketing', href: '#' },
+			category: {title: 'Marketing', href: '#'},
 			author: {
 				name: 'Michael Foster',
 				role: 'Co-Founder / CTO',
@@ -72,12 +73,30 @@ const CommonWall = () => {
 		// More posts...
 	]
 
+	const [notices, setNotices] = useState([
+		{title: "This is Notice 1", date: "Mar 16, 2020"},
+		{title: "This is Notice 2", date: "Mar 17, 2020"},
+		{title: "This is Notice 3", date: "Mar 18, 2020"},
+		{title: "This is Notice 4", date: "Mar 19, 2020"},
+		{title: "This is Notice 5", date: "Mar 20, 2020"},
+	]);
+
+	const [events, setEvents] = useState([
+		{title: "This is Event 1", date: "Mar 11, 2020"},
+		{title: "This is Event 2", date: "Mar 12, 2020"},
+		{title: "This is Event 3", date: "Mar 13, 2020"},
+		{title: "This is Event 4", date: "Mar 14, 2020"},
+		{title: "This is Event 5", date: "Mar 15, 2020"},
+	]);
+
+	const [createPostModalOpen, setCreatePostModalOpen] = useState(false);
+
 	const handleOnClickTab = (name) => {
 		const updatedTabs = tabs.map(tab => {
 			if (tab.name === name) {
-				return { ...tab, current: true };
+				return {...tab, current: true};
 			} else {
-				return { ...tab, current: false };
+				return {...tab, current: false};
 			}
 		});
 
@@ -86,179 +105,128 @@ const CommonWall = () => {
 
 
 	return (
-      <div className="w-full grid grid-cols-4 min-h-[79vh]">
-				<div className="xl:col-span-3 col-span-4">
-					<div className="bg-white">
-						<div className="mx-auto max-w-7xl px-4 lg:px-6">
-							{/*<div className="mx-auto max-w-2xl text-center">*/}
-							{/*	<h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">From the blog</h2>*/}
-							{/*	<p className="mt-2 text-lg leading-8 text-gray-600">*/}
-							{/*		Learn how to grow your business with our expert advice.*/}
-							{/*	</p>*/}
-							{/*</div>*/}
-							<div
-								className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-1">
-								{posts.map((post) => (
-									<article key={post.id} className="flex flex-col items-start justify-between">
-										<div className="relative w-full">
-											<img
-												src={post.imageUrl}
-												alt=""
-												className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
-											/>
-											<div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"/>
-										</div>
-										<div className="w-full">
-											<div className="mt-8 flex items-center gap-x-4 text-xs">
-												<time dateTime={post.datetime} className="text-gray-500">
-													{post.date}
-												</time>
-												<a
-													href={post.category.href}
-													className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
-												>
-													{post.category.title}
+		<div className="w-full grid grid-cols-4 min-h-[79vh]">
+			<CreatePostModal open={createPostModalOpen} setOpen={setCreatePostModalOpen}/>
+			<div className="xl:col-span-3 col-span-4">
+				<div className="bg-white">
+					<div className="mx-auto max-w-7xl px-4 lg:px-6">
+						<div className="w-full rounded-xl p-2 text-center mb-4 text-lg font-bold text-white bg-indigo-600
+						hover:bg-indigo-500 cursor-pointer" onClick={() => setCreatePostModalOpen(true)}>
+							Create post
+						</div>
+						<div
+							className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-1">
+							{posts.map((post) => (
+								<article key={post.id} className="flex flex-col items-start justify-between">
+									<div className="relative mt-6 flex items-center gap-x-4 mb-2">
+										<img src={post.author.imageUrl} alt="" className="h-10 w-10 rounded-full bg-gray-100"/>
+										<div className="text-sm leading-6">
+											<p className="font-semibold text-gray-900">
+												<a href={post.author.href}>
+													<span className="absolute inset-0"/>
+													{post.author.name}
 												</a>
-											</div>
-											<div className="group relative">
-												<h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-													<a href={post.href}>
-														<span className="absolute inset-0"/>
-														{post.title}
-													</a>
-												</h3>
-												<p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{post.description}</p>
-											</div>
-											<div className="relative mt-8 flex items-center gap-x-4">
-												<img src={post.author.imageUrl} alt="" className="h-10 w-10 rounded-full bg-gray-100"/>
-												<div className="text-sm leading-6">
-													<p className="font-semibold text-gray-900">
-														<a href={post.author.href}>
-															<span className="absolute inset-0"/>
-															{post.author.name}
-														</a>
-													</p>
-													<p className="text-gray-600">{post.author.role}</p>
-												</div>
-											</div>
+											</p>
+											<p className="text-gray-600">{post.date}</p>
 										</div>
-									</article>
-								))}
-							</div>
-						</div>
-					</div>
-
-					{/*  <div>*/}
-					{/*      <div className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6">*/}
-					{/*          <div className="-ml-4 -mt-4 flex flex-wrap items-center justify-between">*/}
-					{/*              <div className="ml-4 mt-4">*/}
-					{/*                  <div className="flex items-center">*/}
-					{/*                      <div className="flex-shrink-0">*/}
-					{/*                          <img*/}
-					{/*                            className="h-12 w-12 rounded-full"*/}
-					{/*                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"*/}
-					{/*                            alt=""*/}
-					{/*                          />*/}
-					{/*                      </div>*/}
-					{/*                      <div className="ml-4">*/}
-					{/*                          <h3 className="text-base font-semibold leading-6 text-gray-900">Tom Cook</h3>*/}
-					{/*                          <p className="text-sm text-gray-500">*/}
-					{/*                              <a href="#">@tom_cook</a>*/}
-					{/*                          </p>*/}
-					{/*                      </div>*/}
-					{/*                  </div>*/}
-					{/*              </div>*/}
-					{/*              <div className="flex">*/}
-					{/*                  <div className="mt-4 flex flex-shrink-0 xl:hidden">*/}
-					{/*                      <button*/}
-					{/*                        type="button"*/}
-					{/*                        className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm*/}
-					{/*					font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"*/}
-					{/*                        // onClick={() => setOpenContactListModal((prevState) => !prevState)}*/}
-					{/*                      >*/}
-					{/*                          <UserGroupIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400"*/}
-					{/*                                         aria-hidden="true"/>*/}
-					{/*                          <span>Chat list</span>*/}
-					{/*                      </button>*/}
-					{/*                  </div>*/}
-					{/*                  <div className="mt-4 flex flex-shrink-0">*/}
-					{/*                      <button*/}
-					{/*                        type="button"*/}
-					{/*                        className="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"*/}
-					{/*                      >*/}
-					{/*                          <TrashIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true"/>*/}
-					{/*                          <span>Delete</span>*/}
-					{/*                      </button>*/}
-					{/*                  </div>*/}
-					{/*              </div>*/}
-					{/*          </div>*/}
-					{/*      </div>*/}
-					{/*  </div>*/}
-					{/*  <div className="h-[58vh] overflow-y-auto pt-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">*/}
-
-					{/*  </div>*/}
-					{/*  <div className="flex flex-row pt-2">*/}
-					{/*      <input*/}
-					{/*        type="text"*/}
-					{/*        className="w-11/12 outline-none focus:outline-none border border-gray-300 rounded-lg px-4 py-2*/}
-					{/*	focus:bg-white mr-2"*/}
-					{/*      />*/}
-					{/*      <div className="w-1/12 flex justify-center items-center outline-none focus:outline-none border*/}
-					{/*border-gray-300 rounded-lg px-4 py-2 focus:bg-white text-green-600 hover:bg-green-600 hover:text-white*/}
-					{/*hover:cursor-pointer">*/}
-					{/*          <PaperAirplaneIcon className="h-5 w-5"/>*/}
-					{/*      </div>*/}
-					{/*  </div>*/}
-				</div>
-
-
-				<div className="hidden xl:block mr-2">
-					<div>
-						<div className="sm:hidden">
-							<label htmlFor="tabs" className="sr-only">
-								Select a tab
-							</label>
-							{/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-							<select
-								id="tabs"
-								name="tabs"
-								className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-								defaultValue={tabs.find((tab) => tab.current).name}
-							>
-								{tabs.map((tab) => (
-									<option key={tab.name}>{tab.name}</option>
-								))}
-							</select>
-						</div>
-						<div className="hidden sm:block">
-							<nav className="isolate flex divide-x divide-gray-200 rounded-lg shadow" aria-label="Tabs">
-								{tabs.map((tab, tabIdx) => (
-									<div
-										key={tab.name}
-										className={classNames(
-											tab.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
-											tabIdx === 0 ? 'rounded-l-lg' : '',
-											tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
-											'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium hover:bg-gray-50 focus:z-10'
-										)}
-										aria-current={tab.current ? 'page' : undefined}
-										onClick={() => handleOnClickTab(tab.name)}
-									>
-										<span>{tab.name}</span>
-										<span
-											aria-hidden="true"
-											className={classNames(
-												tab.current ? 'bg-indigo-500' : 'bg-transparent',
-												'absolute inset-x-0 bottom-0 h-0.5'
-											)}
-										/>
 									</div>
-								))}
-							</nav>
+									<div className="relative w-full">
+										<img
+											src={post.imageUrl}
+											alt=""
+											className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
+										/>
+										<div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"/>
+									</div>
+									<div className="w-full">
+										<div className="group relative">
+											<h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
+												<a href={post.href}>
+													<span className="absolute inset-0"/>
+													{post.title}
+												</a>
+											</h3>
+											<p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{post.description}</p>
+										</div>
+									</div>
+									<div className="group relative pt-2">
+										<div
+											className="flex space-x-1 justify-center items-center w-fit rounded-3xl text-gray-400 cursor-pointer">
+											<HeartIcon height={20} width={20}/> <span>12</span>
+										</div>
+									</div>
+								</article>
+							))}
 						</div>
 					</div>
 				</div>
 			</div>
+
+
+			<div className="hidden xl:block mr-2">
+				<div>
+					<div className="sm:hidden">
+						<label htmlFor="tabs" className="sr-only">
+							Select a tab
+						</label>
+						{/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
+						<select
+							id="tabs"
+							name="tabs"
+							className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+							defaultValue={tabs.find((tab) => tab.current).name}
+						>
+							{tabs.map((tab) => (
+								<option key={tab.name}>{tab.name}</option>
+							))}
+						</select>
+					</div>
+					<div className="hidden sm:block">
+						<nav className="isolate flex divide-x divide-gray-200 rounded-lg shadow" aria-label="Tabs">
+							{tabs.map((tab, tabIdx) => (
+								<div
+									key={tab.name}
+									className={classNames(
+										tab.current ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700',
+										tabIdx === 0 ? 'rounded-l-lg' : '',
+										tabIdx === tabs.length - 1 ? 'rounded-r-lg' : '',
+										'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-center text-sm font-medium ' +
+										'hover:bg-gray-50 focus:z-10 cursor-pointer'
+									)}
+									aria-current={tab.current ? 'page' : undefined}
+									onClick={() => handleOnClickTab(tab.name)}
+								>
+									<span>{tab.name}</span>
+									<span
+										aria-hidden="true"
+										className={classNames(
+											tab.current ? 'bg-indigo-500' : 'bg-transparent',
+											'absolute inset-x-0 bottom-0 h-0.5'
+										)}
+									/>
+								</div>
+							))}
+						</nav>
+					</div>
+				</div>
+				<div className="flex flex-col gap-2 pt-2">
+					{tabs[0].current ? notices.map((notice, idx) =>
+						<div key={idx} className="rounded-lg space-y-1 px-4 py-2 shadow hover:bg-blue-700 hover:transition-colors
+						hover:text-white hover:cursor-pointer">
+							<p className="text-md font-semibold">{notice.title}</p>
+							<p className="text-xs">{notice.date}</p>
+						</div>
+					) : events.map((event, idx) =>
+						<div key={idx} className="rounded-lg space-y-1 px-4 py-2 shadow hover:bg-blue-700 hover:transition-colors
+						hover:text-white hover:cursor-pointer">
+							<p className="text-md font-semibold">{event.title}</p>
+							<p className="text-xs">{event.date}</p>
+						</div>
+					)}
+				</div>
+			</div>
+
+		</div>
 	);
 }
 
