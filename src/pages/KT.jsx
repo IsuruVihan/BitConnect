@@ -6,56 +6,54 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 const products = [
     {
         id: 1,
-        name: 'Zip Tote Basket',
-        color: 'White and black',
+        name: 'Introduction to Organization',
+        author: 'Author Name',
         href: '#',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
         imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: '$140',
+        points: '⭐10',
     },
     {
-        id: 1,
-        name: 'Zip Tote Basket',
-        color: 'White and black',
+        id: 2,
+        name: 'Introduction to Project z91',
+        author: 'Author Name',
         href: '#',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
         imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: '$140',
+        points: '⭐40',
     },
     {
-        id: 1,
-        name: 'Zip Tote Basket',
-        color: 'White and black',
+        id: 3,
+        name: 'Introduction to Project MAS',
+        author: 'Author Name',
         href: '#',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
         imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: '$140',
+        points: '⭐14',
     },
     {
-        id: 1,
-        name: 'Zip Tote Basket',
-        color: 'White and black',
+        id: 4,
+        name: 'Introduction to Project 001',
+        author: 'Author Name',
         href: '#',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
         imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: '$140',
+        points: '⭐10',
     },
     {
-        id: 1,
-        name: 'Zip Tote Basket',
-        color: 'White and black',
+        id: 5,
+        name: 'Introduction to Project Nutela',
+        author: 'Author Name',
         href: '#',
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-03-related-product-01.jpg',
+        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
         imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        price: '$140',
+        points: '⭐10',
     },
     // More products...
 ]
 
 const tabs = [
-    { name: 'All', href: '#', current: true },
-    { name: 'Online', href: '#', current: false },
-    { name: 'Offline', href: '#', current: false },
+    { name: 'LeaderBoard', href: '#', current: true },
 ]
 const team = [
     {
@@ -100,15 +98,18 @@ function classNames(...classes) {
 // export default function KT() {
 //     const [open, setOpen] = useState(true)
 const KT = () => {
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
     return (
       <>
+        <div className="w-full flex justify-center items-center">
+            <div className="px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer" onClick={() => setOpen(true)}>
+                Leaderboard
+            </div>
+        </div>
         {/*Courses*/}
         <div className="bg-white">
-            <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                <h2 className="text-xl font-bold text-gray-900">Customers also bought</h2>
-
-                <div className="mt-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+            <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+                <div className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
                     {products.map((product) => (
                       <div key={product.id}>
                           <div className="relative">
@@ -121,7 +122,7 @@ const KT = () => {
                               </div>
                               <div className="relative mt-4">
                                   <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
-                                  <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                                  <p className="mt-1 text-sm text-gray-500">{product.author}</p>
                               </div>
                               <div
                                 className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
@@ -129,7 +130,7 @@ const KT = () => {
                                     aria-hidden="true"
                                     className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
                                   />
-                                  <p className="relative text-lg font-semibold text-white">{product.price}</p>
+                                  <p className="relative text-lg font-semibold text-white">{product.points}</p>
                               </div>
                           </div>
                           <div className="mt-6">
@@ -137,7 +138,7 @@ const KT = () => {
                                 href={product.href}
                                 className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
                               >
-                                  Add to bag<span className="sr-only">, {product.name}</span>
+                                  View Course<span className="sr-only">, {product.name}</span>
                               </a>
                           </div>
                       </div>
