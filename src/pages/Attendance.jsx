@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import CreateAttendanceReportModal from "../components/modals/CreateAttendanceReportModal";
 
 const Attendance = () => {
   const [checkInTime, setCheckInTime] = useState('');
   const [checkOutTime, setCheckOutTime] = useState('');
+  const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
 
   const handleCheckIn = () => {
     const currentTime = new Date().toLocaleString();
@@ -21,6 +23,7 @@ const Attendance = () => {
 
   return(
     <div>
+      <CreateAttendanceReportModal open={openCreateAttendanceReportModal} setOpen={setOpenCreateAttendanceReportModal}/>
       <div className="flex flex-col items-center mt-8">
         <div className="flex flex-col space-y-4 mb-4">
           <input
@@ -59,7 +62,7 @@ const Attendance = () => {
         <div className="mb-4 ">
           <button
             className="block w-96 px-3 py-2 text-sm font-semibold text-center text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={generateReport}
+            onClick={() => setOpenCreateAttendanceReportModal(true)}
           >
             Generate Report
           </button>
