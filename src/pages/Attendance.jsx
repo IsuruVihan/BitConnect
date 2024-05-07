@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CreateAttendanceReportModal from "../components/modals/CreateAttendanceReportModal";
+import Button from "../components/Button";
 
 const Attendance = () => {
   const [checkInTime, setCheckInTime] = useState('');
@@ -24,7 +25,7 @@ const Attendance = () => {
   return(
     <div>
       <CreateAttendanceReportModal open={openCreateAttendanceReportModal} setOpen={setOpenCreateAttendanceReportModal}/>
-      <div className="flex flex-col items-center mt-8">
+      <div className="flex flex-col items-center">
         <div className="flex flex-col space-y-4 mb-4">
           <input
             type="text"
@@ -43,29 +44,19 @@ const Attendance = () => {
         </div>
 
         {/* Check in and Check out buttons */}
-        <div className="flex space-x-4 mb-4">
-          <button
-            className="block w-48 px-3 py-2 text-sm font-semibold text-center text-white bg-green-600 rounded-md shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-            onClick={handleCheckIn}
-          >
-            Check In
-          </button>
-          <button
-            className="block w-48 px-3 py-2 text-sm font-semibold text-center text-white bg-red-600 rounded-md shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-            onClick={handleCheckOut}
-          >
-            Check Out
-          </button>
+        <div className="flex space-x-4 mb-4 w-96">
+          <Button onClick={handleCheckIn} width={'48'} color={'green'} label={'Check In'}/>
+          <Button onClick={handleCheckOut} width={'48'} color={'red'} label={'Check Out'}/>
         </div>
 
         {/* Generate Report Button */}
-        <div className="mb-4 ">
-          <button
-            className="block w-96 px-3 py-2 text-sm font-semibold text-center text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        <div className="w-96">
+          <Button
             onClick={() => setOpenCreateAttendanceReportModal(true)}
-          >
-            Generate Report
-          </button>
+            width={'full'}
+            color={'indigo'}
+            label={'Generate Report'}
+          />
         </div>
       </div>
     </div>
