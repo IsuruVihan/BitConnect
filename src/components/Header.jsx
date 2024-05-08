@@ -37,8 +37,9 @@ const navigation = [
   { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
 ]
 
+// TODO : add onclicks for these
 const userNavigation = [
-  { name: 'Your profile', href: '#' },
+  { name: 'My Account', href: '#' },
   { name: 'Sign out', href: '#' },
 ]
 
