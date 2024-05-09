@@ -1,7 +1,8 @@
-import { Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
+import Button from "../components/Button";
 
 const products = [
     {
@@ -102,9 +103,11 @@ const KT = () => {
     return (
       <>
         <div className="w-full flex justify-center items-center">
-            <div className="px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer" onClick={() => setOpen(true)}>
-                Leaderboard
-            </div>
+        {/*    <div className="px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer" onClick={() => setOpen(true)}>*/}
+        {/*        Leaderboard*/}
+        {/*    </div>*/}
+
+        <Button onClick={() => setOpen(true)} label={"Leaderboard"} color={"indigo"} width={"96"}/>
         </div>
         {/*Courses*/}
         <div className="bg-white">

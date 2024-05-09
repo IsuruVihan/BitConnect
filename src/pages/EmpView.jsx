@@ -1,4 +1,5 @@
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
+import Button from "../components/Button";
 
 const people = [
   {
@@ -82,17 +83,11 @@ const createAccount = () => {
 };
 
 const EmpView = () => {
-    return (
+  return (
     <>
       <div className="flex justify-center mb-4">
-        <button
-          className="block w-96 px-3 py-2 text-sm font-semibold text-center text-white bg-indigo-600 rounded-md shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={createAccount}
-        >
-          Create Account
-        </button>
+        <Button onClick={() => {}} width={'96'} label={'Create Account'} color={'indigo'}/>
       </div>
-
       <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {people.map((person) => (
           <li
@@ -101,45 +96,45 @@ const EmpView = () => {
           >
             <div className="flex flex-col flex-1 p-8">
               <img className="flex-shrink-0 w-32 h-32 mx-auto rounded-full" src={person.imageUrl} alt="" />
-                  <h3 className="mt-6 text-sm font-medium text-gray-900">{person.name}</h3>
-                  <dl className="flex flex-col justify-between flex-grow mt-1">
-                    <dt className="sr-only">Title</dt>
-                    <dd className="text-sm text-gray-500">{person.title}</dd>
-                    <dt className="sr-only">Department</dt>
-                    <dd className="mt-3">
+              <h3 className="mt-6 text-sm font-medium text-gray-900">{person.name}</h3>
+              <dl className="flex flex-col justify-between flex-grow mt-1">
+                <dt className="sr-only">Title</dt>
+                <dd className="text-sm text-gray-500">{person.title}</dd>
+                <dt className="sr-only">Department</dt>
+                <dd className="mt-3">
                       <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 rounded-full bg-green-50 ring-1 ring-inset ring-green-600/20">
                         {person.dep}
                       </span>
-                    </dd>
-                  </dl>
+                </dd>
+              </dl>
+            </div>
+            <div>
+              <div className="flex -mt-px divide-x divide-gray-200">
+                <div className="flex flex-1 w-0">
+                  <a
+                    href={`mailto:${person.email}`}
+                    className="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-semibold text-gray-900 border border-transparent rounded-bl-lg gap-x-3"
+                  >
+                    <EnvelopeIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                    Email
+                  </a>
                 </div>
-                <div>
-                  <div className="flex -mt-px divide-x divide-gray-200">
-                    <div className="flex flex-1 w-0">
-                      <a
-                        href={`mailto:${person.email}`}
-                        className="relative inline-flex items-center justify-center flex-1 w-0 py-4 -mr-px text-sm font-semibold text-gray-900 border border-transparent rounded-bl-lg gap-x-3"
-                      >
-                        <EnvelopeIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-                        Email
-                      </a>
-                    </div>
-                    <div className="flex flex-1 w-0 -ml-px">
-                      <a
-                        href={`tel:${person.telephone}`}
-                        className="relative inline-flex items-center justify-center flex-1 w-0 py-4 text-sm font-semibold text-gray-900 border border-transparent rounded-br-lg gap-x-3"
-                      >
-                        <PhoneIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-                        Call
-                      </a>
-                    </div>
-                  </div>
+                <div className="flex flex-1 w-0 -ml-px">
+                  <a
+                    href={`tel:${person.telephone}`}
+                    className="relative inline-flex items-center justify-center flex-1 w-0 py-4 text-sm font-semibold text-gray-900 border border-transparent rounded-br-lg gap-x-3"
+                  >
+                    <PhoneIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
+                    Call
+                  </a>
                 </div>
-              </li>
-            ))}
-          </ul>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </>
-    )
-    }
+  )
+}
 
 export default EmpView;
