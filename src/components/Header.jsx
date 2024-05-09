@@ -25,6 +25,7 @@ import {
   BellIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import MyAccount from "../pages/MyAccount";
 
 const navigation = [
   { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
@@ -39,7 +40,7 @@ const navigation = [
 
 // TODO : add onclicks for these
 const userNavigation = [
-  { name: 'My Account', href: '#' },
+  { name: 'My Account', href: '/my-account' },
   { name: 'Sign out', href: '#' },
 ]
 
@@ -285,6 +286,7 @@ const Header = () => {
                 <Route path="/kt-courses" element={<KT/>}/>
                 <Route path="/calendar" element={<Calendar/>}/>
                 <Route path="/employees-view" element={<EmpView/>}/>
+                <Route path="/my-account" element={<MyAccount/>}/>
               </Routes>
             </div>
           </main>
