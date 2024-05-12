@@ -51,7 +51,33 @@ const Header = () => {
     { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
     { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
     { name: 'My Account', path: '/my-account', icon:UserIcon, current: false },
-  ])
+  ]);
+  const [loggedInUser, setLoggedInUser] = useState('');
+
+  useEffect(() => {
+    const getLoggedInUser = async (token) => {
+      try {
+        return await fetch('http://localhost:4000/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + token
+          },
+        });
+      } catch (error) {
+        console.error('Logged in user error:', error);
+      }
+    }
+
+    const token = localStorage.getItem("token")
+    getLoggedInUser(token)
+      .then(response => response.json())
+      .then(data => {
+        setLoggedInUser(data);
+      })
+      .catch(error => {
+        console.error("Error fetching data from API:", error);
+      });
+  }, []);
 
   const getCurrentNavigationName = () => {
     const capitalizeEachWord = (str) => {
@@ -239,7 +265,7 @@ const Header = () => {
                     />
                     <span className="hidden lg:flex lg:items-center">
                       <span className="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">
-                        Tom Cook
+                        {loggedInUser}
                       </span>
                       <ChevronDownIcon className="w-5 h-5 ml-2 text-gray-400" aria-hidden="true"/>
                     </span>
