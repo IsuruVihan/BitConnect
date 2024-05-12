@@ -1,26 +1,52 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {EnvelopeIcon} from '@heroicons/react/20/solid'
 
-const profile = {
-	name: 'Ricardo Cooper',
-	imageUrl:
-		'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
-	coverImageUrl:
-		'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-	fields: {
-		Phone: '(555) 123-4567',
-		Email: 'ricardocooper@example.com',
-		Title: 'Senior Front-End Developer',
-		Team: 'Product Development',
-		Birthday: 'June 8, 1990',
-	},
-}
-
-function classNames(...classes) {
-	return classes.filter(Boolean).join(' ')
-}
-
 const MyAccount = () => {
+	const [profile, setProfile] = useState(null);
+
+	useEffect(() => {
+		const getMyAccountData = async (token) => {
+			try {
+				const response = await fetch('http://localhost:4000/my-account', {
+					method: 'GET',
+					headers: {
+						'Authorization': 'Bearer ' + token
+					},
+				});
+				return response.json();
+			} catch (error) {
+				console.error('Error fetching data from API:', error);
+				throw error; // Rethrow the error to handle it in the catch block below
+			}
+		};
+
+		const token = localStorage.getItem("token");
+
+		getMyAccountData(token)
+			.then(data => {
+				setProfile({
+					name: data[0].Name,
+					imageUrl:
+						'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+					coverImageUrl:
+						'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+					fields: {
+						Phone: data[0].ContactNumber,
+						Email: data[0].Email,
+						Title: data[0].Role,
+						Team: data[0].Team,
+						Birthday: `${data[0].BirthMonth}/${data[0].BirthDay}`,
+					},
+				});
+			})
+			.catch(error => {
+				console.error("Error fetching data from API:", error);
+			});
+	}, []);
+
+	if (profile === null)
+		return <div>Loading...</div>;
+
 	return (
 		<div className="flex h-full">
 			<div className="flex min-w-0 flex-1 flex-col overflow-hidden">
