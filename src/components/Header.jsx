@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react'
+import {Fragment, useState} from 'react'
 import {Dialog, Menu, Transition} from '@headlessui/react'
 import {Route, Routes, useNavigate} from 'react-router-dom';
 
@@ -23,23 +23,14 @@ import {
   EnvelopeIcon,
   IdentificationIcon,
   XMarkIcon,
+  UserIcon,
 } from '@heroicons/react/24/outline'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
-
-const navigation = [
-  { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
-  { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
-  { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
-  { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
-  { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
-  { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
-  { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
-  { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
-]
+import MyAccount from "../pages/MyAccount";
 
 // TODO : add onclicks for these
 const userNavigation = [
-  { name: 'My Account', href: '#' },
+  { name: 'My Account', href: '/my-account' },
   { name: 'Sign out', href: '#' },
 ]
 
@@ -59,6 +50,7 @@ const Header = () => {
     { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
     { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
     { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
+    { name: 'My Account', path: '/my-account', icon:UserIcon, current: false },
   ]);
   const [loggedInUser, setLoggedInUser] = useState('');
 
@@ -88,8 +80,15 @@ const Header = () => {
   }, []);
 
   const getCurrentNavigationName = () => {
-    const currentNavigationItem = navigation.find(item => item.current);
-    return currentNavigationItem ? currentNavigationItem.name : '';
+    const capitalizeEachWord = (str) => {
+      return str.replace(/\b\w/g, function(char) {
+        return char.toUpperCase();
+      });
+    }
+
+    const currentURL = window.location.href;
+    const label = currentURL.split('/').slice(-1)[0];
+    return capitalizeEachWord(label.replace(/-/g, ' '));
   };
 
   const redirect = (path) => {
@@ -227,9 +226,13 @@ const Header = () => {
         </div>
 
         <div className="lg:pl-72">
-          <div
-            className="sticky top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
-            <button type="button" className="-m-2.5 p-2.5 text-gray-700 lg:hidden" onClick={() => setSidebarOpen(true)}>
+          <div className="sticky top-0 z-40 flex items-center h-16 px-4 bg-white border-b border-gray-200 shadow-sm
+          shrink-0 gap-x-4 sm:gap-x-6 sm:px-6 lg:px-8">
+            <button
+              type="button"
+              className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
               <span className="sr-only">Open sidebar</span>
               <Bars3Icon className="w-6 h-6" aria-hidden="true"/>
             </button>
@@ -277,7 +280,9 @@ const Header = () => {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items
-                      className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                      className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg
+                      ring-1 ring-gray-900/5 focus:outline-none"
+                    >
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({active}) => (
@@ -311,6 +316,7 @@ const Header = () => {
                 <Route path="/kt-courses" element={<KT/>}/>
                 <Route path="/calendar" element={<Calendar/>}/>
                 <Route path="/employees-view" element={<EmpView/>}/>
+                <Route path="/my-account" element={<MyAccount/>}/>
               </Routes>
             </div>
           </main>
