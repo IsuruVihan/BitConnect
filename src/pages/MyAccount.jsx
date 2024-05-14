@@ -31,7 +31,8 @@ const MyAccount = () => {
 		getMyAccountData(token)
 			.then(data => {
 				setProfile({
-					name: data[0].Name,
+					firstName: data[0].FirstName,
+					lastName: data[0].LastName,
 					imageUrl:
 						'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
 					coverImageUrl:
@@ -74,8 +75,10 @@ const MyAccount = () => {
 										</div>
 										<div
 											className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
-											<div className="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
-												<h1 className="truncate text-2xl font-bold text-gray-900">{profile.name}</h1>
+											<div className="mt-6 min-w-0 flex-1 2xl:block">
+												<h1 className="truncate text-2xl font-bold text-gray-900">
+													{profile.firstName + " " + profile.lastName}
+												</h1>
 											</div>
 											<div
 												className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
