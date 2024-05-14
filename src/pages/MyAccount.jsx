@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {EnvelopeIcon} from '@heroicons/react/20/solid'
 
+const returnDigit = (digit) => {
+	if (digit < 10)
+		return '0' + digit;
+	return digit;
+}
+
 const MyAccount = () => {
 	const [profile, setProfile] = useState(null);
 
@@ -35,7 +41,7 @@ const MyAccount = () => {
 						Email: data[0].Email,
 						Title: data[0].Role,
 						Team: data[0].Team,
-						Birthday: `${data[0].BirthMonth}/${data[0].BirthDay}`,
+						Birthday: `${returnDigit(data[0].BirthMonth)}/${returnDigit(data[0].BirthDay)}`,
 					},
 				});
 			})
