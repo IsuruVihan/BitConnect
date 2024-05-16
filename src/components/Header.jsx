@@ -28,10 +28,16 @@ import {
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import MyAccount from "../pages/MyAccount";
 
-// TODO : add onclicks for these
 const userNavigation = [
   { name: 'My Account', href: '/my-account' },
-  { name: 'Sign out', href: '#' },
+  {
+    name: 'Sign out',
+    href: '#',
+    onClick: () => {
+      window.localStorage.removeItem('token');
+      window.location.reload();
+    }
+  },
 ]
 
 function classNames(...classes) {
@@ -288,6 +294,7 @@ const Header = () => {
                           {({active}) => (
                             <a
                               href={item.href}
+                              onClick={item.onClick && item.onClick}
                               className={classNames(
                                 active ? 'bg-gray-50' : '',
                                 'block px-3 py-1 text-sm leading-6 text-gray-900'
