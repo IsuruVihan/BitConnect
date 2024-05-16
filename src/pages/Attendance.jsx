@@ -3,18 +3,56 @@ import CreateAttendanceReportModal from "../components/modals/CreateAttendanceRe
 import Button from "../components/Button";
 
 const Attendance = () => {
+  const [checkInDate, setCheckInDate] = useState('');
   const [checkInTime, setCheckInTime] = useState('');
+
+  const [checkOutDate, setCheckOutDate] = useState('');
   const [checkOutTime, setCheckOutTime] = useState('');
+
   const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
 
-  const handleCheckIn = () => {
-    const currentTime = new Date().toLocaleString();
+  const handleCheckIn = async () => {
+    const currentDateAndTime = new Date();
+    const currentDate = currentDateAndTime.toISOString().slice(0, 10);
+    setCheckInDate(currentDate);
+    const currentTime = currentDateAndTime.toTimeString().slice(0, 8);
     setCheckInTime(currentTime);
+
+    try {
+      const response = await fetch('http://localhost:4000/attendance/check-in', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ date: currentDate, time: currentTime }),
+      });
+      console.log(response.message);
+    } catch (error) {
+      console.error('Check-In failed :', error);
+    }
   };
 
-  const handleCheckOut = () => {
-    const currentTime = new Date().toLocaleString();
+  const handleCheckOut = async () => {
+    const currentDateAndTime = new Date();
+    const currentDate = currentDateAndTime.toISOString().slice(0, 10);
+    setCheckOutDate(currentDate);
+    const currentTime = currentDateAndTime.toTimeString().slice(0, 8);
     setCheckOutTime(currentTime);
+
+    try {
+      const response = await fetch('http://localhost:4000/attendance/check-out', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ date: currentDate, time: currentTime }),
+      });
+      console.log(response.message);
+    } catch (error) {
+      console.error('Check-Out failed :', error);
+    }
   };
 
   const generateReport = () => {
@@ -30,15 +68,15 @@ const Attendance = () => {
           <input
             type="text"
             className="rounded-md border border-gray-300 px-2 py-1 w-96 text-center" // Added text-center class
-            placeholder="Date"
-            value={checkInTime || ''}
+            placeholder="Check-In"
+            value={checkInDate + " " + checkInTime}
             disabled
           />
           <input
             type="text"
             className="rounded-md border border-gray-300 px-2 py-1 w-96 text-center" // Added text-center class
-            placeholder="Time"
-            value={checkInTime || ''}
+            placeholder="Check-Out"
+            value={checkOutDate + " " + checkOutTime}
             disabled
           />
         </div>

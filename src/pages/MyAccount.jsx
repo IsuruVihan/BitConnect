@@ -52,7 +52,12 @@ const MyAccount = () => {
 	}, []);
 
 	if (profile === null)
-		return <div>Loading...</div>;
+		// return <div>Loading...</div>;
+		return (
+			<div className="flex justify-center items-center h-screen">
+				<img src="https://i.gifer.com/JVX7.gif" alt="Loading..." />
+			</div>
+		);
 
 	return (
 		<div className="flex h-full">
