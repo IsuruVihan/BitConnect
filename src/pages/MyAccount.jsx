@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {EnvelopeIcon} from '@heroicons/react/20/solid'
+import Button from "../components/Button";
 
 const returnDigit = (digit) => {
 	if (digit < 10)
@@ -9,6 +10,16 @@ const returnDigit = (digit) => {
 
 const MyAccount = () => {
 	const [profile, setProfile] = useState(null);
+	const [updateMode, setUpdateMode] = useState(false);
+
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [phone, setPhone] = useState("");
+	const [email, setEmail] = useState("");
+	const [title, setTitle] = useState("");
+	const [team, setTeam] = useState("");
+	const [birthday, setBirthday] = useState("");
+
 
 	useEffect(() => {
 		const getMyAccountData = async (token) => {
@@ -30,6 +41,14 @@ const MyAccount = () => {
 
 		getMyAccountData(token)
 			.then(data => {
+				setFirstName(data[0].FirstName);
+				setLastName(data[0].LastName);
+				setPhone(data[0].ContactNumber);
+				setEmail(data[0].Email);
+				setTitle(data[0].Role);
+				setTeam(data[0].Team);
+				setBirthday(`${returnDigit(data[0].BirthMonth)}/${returnDigit(data[0].BirthDay)}`);
+
 				setProfile({
 					firstName: data[0].FirstName,
 					lastName: data[0].LastName,
@@ -87,14 +106,22 @@ const MyAccount = () => {
 											</div>
 											<div
 												className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
-												<button
-													type="button"
-													className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm
-													font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-												>
-													<EnvelopeIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>
-													Message
-												</button>
+												{/*<button*/}
+												{/*	type="button"*/}
+												{/*	className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm*/}
+												{/*	font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"*/}
+												{/*>*/}
+												{/*	<EnvelopeIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>*/}
+												{/*	Message*/}
+												{/*</button>*/}
+
+												{!updateMode ?
+													<Button onClick={() => setUpdateMode(true)} width={'32'} label={'Edit Details'}/> :
+													<div className="flex flex-row gap-2">
+														<Button onClick={() => setUpdateMode(false)} width={'32'} label={'Save'}/>
+														<Button onClick={() => setUpdateMode(false)} width={'32'} label={'Cancel'}/>
+													</div>
+												}
 											</div>
 										</div>
 									</div>
@@ -104,12 +131,38 @@ const MyAccount = () => {
 								</div>
 							</div>
 							{/* Description list */}
-							<div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8">
+							<div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8 border-2 border-red-600">
 								<dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-									{Object.keys(profile.fields).map((field) => (
-										<div key={field} className="sm:col-span-1">
-											<dt className="text-sm font-medium text-gray-500">{field}</dt>
-											<dd className="mt-1 text-sm text-gray-900">{profile.fields[field]}</dd>
+									{[
+										{label: "First Name", type: "text", value: firstName, onChange: (e) => setFirstName(e.target.value)},
+										{label: "Last Name", type: "text", value: lastName, onChange: (e) => setLastName(e.target.value)},
+										{label: "Phone", type: "text", value: phone, onChange: (e) => setPhone(e.target.value)},
+										{label: "Email", type: "email", value: email},
+										{label: "Title", type: "text", value: title},
+										{label: "Team", type: "text", value: team},
+										{label: "Birthday", type: "date", value: birthday, onChange: (e) => setBirthday(e.target.value)}
+									].map((field) => (
+										<div key={field.label} className="sm:col-span-1">
+											<dt className="text-sm font-medium text-gray-500">{field.label}</dt>
+											{!updateMode ? (field.label === "Birthday" ?
+														<dd className="mt-1 text-sm text-gray-900">
+															{field.value.split("-")[1] + "/" + field.value.split("-")[2]}
+														</dd> :
+														<dd className="mt-1 text-sm text-gray-900">{field.value}</dd>
+												) :
+												<div className="sm:col-span-3">
+													<div className="mt-2">
+														<input
+															value={field.value}
+															type={field.type}
+															className="block w-11/12 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1
+															ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
+															focus:ring-indigo-600 sm:text-sm sm:leading-6"
+															onChange={field.onChange}
+															disabled={!field.onChange}
+														/>
+													</div>
+												</div>}
 										</div>
 									))}
 								</dl>
