@@ -20,6 +20,23 @@ const MyAccount = () => {
 	const [team, setTeam] = useState("");
 	const [birthday, setBirthday] = useState("");
 
+	const handleOnClickSave = async () => {
+		try {
+			const response = await fetch('http://localhost:4000/my-account', {
+				method: 'POST',
+				headers: {
+					'Authorization': 'Bearer ' + localStorage.getItem("token")
+				},
+				body: {
+
+				}
+			});
+			return response.json();
+		} catch (error) {
+			console.error('Error fetching data from API:', error);
+			throw error; // Rethrow the error to handle it in the catch block below
+		}
+	}
 
 	useEffect(() => {
 		const getMyAccountData = async (token) => {
@@ -47,22 +64,14 @@ const MyAccount = () => {
 				setEmail(data[0].Email);
 				setTitle(data[0].Role);
 				setTeam(data[0].Team);
-				setBirthday(`${returnDigit(data[0].BirthMonth)}/${returnDigit(data[0].BirthDay)}`);
+				//setBirthday(`${returnDigit(data[0].BirthMonth)}/${returnDigit(data[0].BirthDay)}`);
+				setBirthday(data[0].Birthdate);
 
 				setProfile({
-					firstName: data[0].FirstName,
-					lastName: data[0].LastName,
 					imageUrl:
 						'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
 					coverImageUrl:
 						'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-					fields: {
-						Phone: data[0].ContactNumber,
-						Email: data[0].Email,
-						Title: data[0].Role,
-						Team: data[0].Team,
-						Birthday: `${returnDigit(data[0].BirthMonth)}/${returnDigit(data[0].BirthDay)}`,
-					},
 				});
 			})
 			.catch(error => {
@@ -71,7 +80,6 @@ const MyAccount = () => {
 	}, []);
 
 	if (profile === null)
-		// return <div>Loading...</div>;
 		return (
 			<div className="flex justify-center items-center h-screen">
 				<img src="https://i.gifer.com/JVX7.gif" alt="Loading..." />
