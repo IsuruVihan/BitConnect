@@ -20,21 +20,34 @@ const MyAccount = () => {
 	const [team, setTeam] = useState("");
 	const [birthday, setBirthday] = useState("");
 
+	const [initFirstName, setInitFirstName] = useState("");
+	const [initLastName, setInitLastName] = useState("");
+	const [initPhone, setInitPhone] = useState("");
+	const [initBirthday, setInitBirthday] = useState("");
+
 	const handleOnClickSave = async () => {
 		try {
+			const formData = new FormData();
+
+			if (firstName !== initFirstName)
+				formData.append("FirstName", firstName);
+			if (lastName !== initLastName)
+				formData.append("LastName", lastName);
+			if (phone !== initPhone)
+				formData.append("ContactNumber", phone);
+			if (birthday !== initBirthday)
+				formData.append("Birthdate", birthday);
+
 			const response = await fetch('http://localhost:4000/my-account', {
 				method: 'POST',
 				headers: {
-					'Authorization': 'Bearer ' + localStorage.getItem("token")
+					'Authorization': 'Bearer ' + localStorage.getItem("token"),
 				},
-				body: {
-
-				}
+				body: formData,
 			});
-			return response.json();
+			console.log(response);
 		} catch (error) {
 			console.error('Error fetching data from API:', error);
-			throw error; // Rethrow the error to handle it in the catch block below
 		}
 	}
 
@@ -59,13 +72,20 @@ const MyAccount = () => {
 		getMyAccountData(token)
 			.then(data => {
 				setFirstName(data[0].FirstName);
+				setInitFirstName(data[0].FirstName);
+
 				setLastName(data[0].LastName);
+				setInitLastName(data[0].LastName);
+
 				setPhone(data[0].ContactNumber);
+				setInitPhone(data[0].ContactNumber);
+
 				setEmail(data[0].Email);
 				setTitle(data[0].Role);
 				setTeam(data[0].Team);
-				//setBirthday(`${returnDigit(data[0].BirthMonth)}/${returnDigit(data[0].BirthDay)}`);
-				setBirthday(data[0].Birthdate);
+
+				setBirthday(data[0].Birthdate.split("T")[0]);
+				setInitBirthday(data[0].Birthdate.split("T")[0]);
 
 				setProfile({
 					imageUrl:
@@ -109,7 +129,7 @@ const MyAccount = () => {
 											className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
 											<div className="mt-6 min-w-0 flex-1 2xl:block">
 												<h1 className="truncate text-2xl font-bold text-gray-900">
-													{profile.firstName + " " + profile.lastName}
+													{firstName + " " + lastName}
 												</h1>
 											</div>
 											<div
@@ -126,7 +146,14 @@ const MyAccount = () => {
 												{!updateMode ?
 													<Button onClick={() => setUpdateMode(true)} width={'32'} label={'Edit Details'}/> :
 													<div className="flex flex-row gap-2">
-														<Button onClick={() => setUpdateMode(false)} width={'32'} label={'Save'}/>
+														<Button
+															onClick={() => {
+																setUpdateMode(false);
+																handleOnClickSave();
+															}}
+															width={'32'}
+															label={'Save'}
+														/>
 														<Button onClick={() => setUpdateMode(false)} width={'32'} label={'Cancel'}/>
 													</div>
 												}
@@ -139,7 +166,7 @@ const MyAccount = () => {
 								</div>
 							</div>
 							{/* Description list */}
-							<div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8 border-2 border-red-600">
+							<div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8">
 								<dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
 									{[
 										{label: "First Name", type: "text", value: firstName, onChange: (e) => setFirstName(e.target.value)},
