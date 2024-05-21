@@ -38,6 +38,9 @@ const MyAccount = () => {
 			if (birthday !== initBirthday)
 				formData.append("Birthdate", birthday);
 
+			if (formData.entries()) {
+
+			}
 			const response = await fetch('http://localhost:4000/my-account', {
 				method: 'POST',
 				headers: {
