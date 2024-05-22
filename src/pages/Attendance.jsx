@@ -90,7 +90,7 @@ const Attendance = () => {
     <div className="p-8 border-1 rounded-md shadow-md">
       <div className="sm:flex sm:items-center mb-4">
         <div className="sm:flex-auto">
-          <h1 className="text-base font-semibold leading-6 text-gray-900">Attendance history</h1>
+          <h1 className="text-base font-semibold leading-6 text-gray-900">Attendance History</h1>
           <p className="mt-2 text-sm text-gray-700">
             Your past attendance records.
           </p>
