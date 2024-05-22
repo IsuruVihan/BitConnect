@@ -7,7 +7,7 @@ import {
   MapPinIcon,
 } from '@heroicons/react/20/solid'
 import { Menu, Transition } from '@headlessui/react'
-import Button from "../components/Button";
+import {PrimaryButton} from "../components/Button";
 
 const meetings = [
   {
@@ -133,7 +133,7 @@ const Calendar = () => {
               </button>
             ))}
           </div>
-          <Button onClick={() => {}} width={'full'} color={'indigo'} label={'Add Event'}/>
+          <PrimaryButton onClick={() => {}} width={'full'} color={'indigo'} label={'Add Event'}/>
         </div>
         <ol className="mt-4 text-sm leading-6 divide-y divide-gray-100 lg:col-span-7 xl:col-span-8">
           {meetings.map((meeting) => (

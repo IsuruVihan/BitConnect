@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { HeartIcon} from "@heroicons/react/20/solid";
 import CreatePostModal from "../components/modals/CreatePostModal";
-import Button from "../components/Button";
+import {PrimaryButton} from "../components/Button";
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -111,7 +111,12 @@ const CommonWall = () => {
 			<div className="xl:col-span-3 col-span-4">
 				<div className="bg-white">
 					<div className="mx-auto max-w-7xl px-4 lg:px-6">
-						<Button onClick={() => setCreatePostModalOpen(true)} label={"Create Post"} color={"indigo"} width={"full"}/>
+						<PrimaryButton
+							onClick={() => setCreatePostModalOpen(true)}
+							label={"Create Post"}
+							color={"indigo"}
+							width={"full"}
+						/>
 						<div
 							className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-1">
 							{posts.map((post) => (

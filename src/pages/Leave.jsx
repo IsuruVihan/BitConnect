@@ -1,4 +1,4 @@
-import Button from "../components/Button";
+import {PrimaryButton, SuccessButton} from "../components/Button";
 
 const people = [
   {startDate: '2020/09/01', endDate: '2020/09/01', reason: 'Sick', type: 'Full-Day'},
@@ -11,10 +11,10 @@ const Leave = () => {
       <div className="flex justify-center">
         <div className="flex flex-col sm:flex-row sm:items-center">
           <div className="mt-4 sm:mt-0 sm:ml-4">
-            <Button onClick={() => {}} width={'full'} label={'Submit a Leave Request'} color={'indigo'}/>
+            <SuccessButton onClick={() => {}} width={'full'} label={'Submit a Leave Request'}/>
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-4">
-            <Button onClick={() => {}} width={'full'} label={'Generate Report'} color={'indigo'}/>
+            <PrimaryButton onClick={() => {}} width={'full'} label={'Generate Report'}/>
           </div>
         </div>
       </div>
