@@ -1,5 +1,5 @@
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
-import Button from "../components/Button";
+import {PrimaryButton} from "../components/Button";
 
 const people = [
   {
@@ -86,7 +86,7 @@ const EmpView = () => {
   return (
     <>
       <div className="flex justify-center mb-4">
-        <Button onClick={() => {}} width={'96'} label={'Create Account'} color={'indigo'}/>
+        <PrimaryButton onClick={() => {}} width={'96'} label={'Create Account'} color={'indigo'}/>
       </div>
       <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {people.map((person) => (

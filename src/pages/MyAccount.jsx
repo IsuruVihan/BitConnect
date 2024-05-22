@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {EnvelopeIcon} from '@heroicons/react/20/solid'
-import Button from "../components/Button";
+import {DangerButton, SecondaryButton, SuccessButton} from "../components/Button";
 
 const returnDigit = (digit) => {
 	if (digit < 10)
@@ -147,9 +146,13 @@ const MyAccount = () => {
 												{/*</button>*/}
 
 												{!updateMode ?
-													<Button onClick={() => setUpdateMode(true)} width={'32'} label={'Edit Details'}/> :
+													<SecondaryButton
+														onClick={() => setUpdateMode(true)}
+														width={'32'}
+														label={'Edit Details'}
+													/> :
 													<div className="flex flex-row gap-2">
-														<Button
+														<SuccessButton
 															onClick={() => {
 																setUpdateMode(false);
 																handleOnClickSave();
@@ -157,7 +160,7 @@ const MyAccount = () => {
 															width={'32'}
 															label={'Save'}
 														/>
-														<Button onClick={() => setUpdateMode(false)} width={'32'} label={'Cancel'}/>
+														<DangerButton onClick={() => setUpdateMode(false)} width={'32'} label={'Cancel'}/>
 													</div>
 												}
 											</div>

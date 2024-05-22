@@ -1,9 +1,9 @@
-import React, { useState, Fragment } from 'react';
-import { Dialog, Transition } from "@headlessui/react";
-import Button from "../Button";
+import React, {useState, Fragment} from 'react';
+import {Dialog, Transition} from "@headlessui/react";
+import {PrimaryButton, SecondaryButton} from "../Button";
 
 const CreateAttendanceReportModal = (props) => {
-  const { open, setOpen } = props;
+  const {open, setOpen} = props;
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -36,7 +36,7 @@ const CreateAttendanceReportModal = (props) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"/>
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -109,8 +109,9 @@ const CreateAttendanceReportModal = (props) => {
                   </div>
                   {/*Buttons*/}
                   <div className="flex space-x-20 items-center">
-                    <Button onClick={cancelGeneration} width={'48'} color={'white'} fontColor={'black'} label={'Cancel'}/>
-                    <Button onClick={proceedGeneration} width={'48'} color={'indigo'} label={'Generate'}/>
+                    <SecondaryButton onClick={cancelGeneration} width={'48'} color={'white'} fontColor={'black'}
+                                     label={'Cancel'}/>
+                    <PrimaryButton onClick={proceedGeneration} width={'48'} color={'indigo'} label={'Generate'}/>
                   </div>
 
                 </div>
