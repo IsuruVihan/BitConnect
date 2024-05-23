@@ -312,7 +312,7 @@ const Header = () => {
             </div>
           </div>
 
-          <main className="py-10">
+          <main className="py-4">
             <div className="px-4 sm:px-6 lg:px-8">
               <Routes>
                 <Route path="/attendance" element={<Attendance/>}/>
