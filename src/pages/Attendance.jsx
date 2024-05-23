@@ -11,6 +11,9 @@ const Attendance = () => {
   const [checkOutDate, setCheckOutDate] = useState('');
   const [checkOutTime, setCheckOutTime] = useState('');
 
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+
   const [currentPage, setCurrentPage] = useState(1);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
 
@@ -19,7 +22,7 @@ const Attendance = () => {
   const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
 
   // Pagination
-  const recordsPerPage = 2;
+  const recordsPerPage = 6;
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentRecords = attendanceRecords.slice(startIndex, endIndex);
@@ -189,11 +192,6 @@ const Attendance = () => {
       });
   }, []);
 
-
-
-
-
-
   // sub-components
   const SystemClockGrid = () => (
     <div className="p-8 border-1 rounded-md shadow-md flex flex-col">
@@ -212,6 +210,15 @@ const Attendance = () => {
   const TableGrid = () => {
     return (
       <div className="p-8 border-1 rounded-md shadow-md">
+        <CreateAttendanceReportModal
+          open={openCreateAttendanceReportModal}
+          setOpen={setOpenCreateAttendanceReportModal}
+          fromDate={fromDate}
+          toDate={toDate}
+          setFromDate={setFromDate}
+          setToDate={setToDate}
+        />
+
         <div className="sm:flex sm:items-center mb-4">
           <div className="sm:flex-auto">
             <h1 className="text-base font-semibold leading-6 text-gray-900">Attendance History</h1>
@@ -294,10 +301,6 @@ const Attendance = () => {
           message={"An error occurred while retrieving check-out data. Please try again."}
           open={getCheckOutDataErrorModalOpen}
           setOpen={setGetCheckOutDataErrorModalOpen}
-        />
-        <CreateAttendanceReportModal
-          open={openCreateAttendanceReportModal}
-          setOpen={setOpenCreateAttendanceReportModal}
         />
 
         <div className="block">
