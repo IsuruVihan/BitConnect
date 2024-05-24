@@ -4,8 +4,11 @@ import {SecondaryButton, SuccessButton} from "../components/Button";
 import SystemClock from "../components/SystemClock";
 import Pagination from "../components/Pagination";
 import ErrorModal from "../components/modals/ErrorModal";
+import AttendanceReportGenerator from "../components/reports/AttendanceReportGenerator";
 
 const Attendance = () => {
+  // const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
+
   const [checkInDate, setCheckInDate] = useState('');
   const [checkInTime, setCheckInTime] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
@@ -14,12 +17,17 @@ const Attendance = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
 
+  const [reportData, setReportData] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
 
+  const [pdfModalOpen, setPDFModalOpen] = useState(false);
   const [getCheckInDataErrorModalOpen, setGetCheckInDataErrorModalOpen] = useState(false);
   const [getCheckOutDataErrorModalOpen, setGetCheckOutDataErrorModalOpen] = useState(false);
   const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
+  const [generateAttendanceReportErrorModalOpen, setGenerateAttendanceReportErrorModalOpen]
+    = useState(false);
 
   // Pagination
   const recordsPerPage = 6;
@@ -46,25 +54,6 @@ const Attendance = () => {
       return {error: true};
     }
   }
-  const handleOnClickCheckIn = async () => {
-    const currentDateAndTime = new Date();
-    const currentDate = currentDateAndTime.toISOString().slice(0, 10);
-    const currentTime = currentDateAndTime.toTimeString().slice(0, 8);
-
-    try {
-      const response = await fetch('http://localhost:4000/attendance/check-in', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem("token"),
-        },
-        body: JSON.stringify({date: currentDate, time: currentTime}),
-      });
-      console.log(response.message);
-    } catch (error) {
-      console.error('Check-In failed :', error);
-    }
-  };
   const getCheckOutData = async () => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
@@ -100,6 +89,25 @@ const Attendance = () => {
     }
   }
 
+  const handleOnClickCheckIn = async () => {
+    const currentDateAndTime = new Date();
+    const currentDate = currentDateAndTime.toISOString().slice(0, 10);
+    const currentTime = currentDateAndTime.toTimeString().slice(0, 8);
+
+    try {
+      const response = await fetch('http://localhost:4000/attendance/check-in', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem("token"),
+        },
+        body: JSON.stringify({date: currentDate, time: currentTime}),
+      });
+      console.log(response.message);
+    } catch (error) {
+      console.error('Check-In failed :', error);
+    }
+  };
   const handleCheckOut = async () => {
     const currentDateAndTime = new Date();
     const currentDate = currentDateAndTime.toISOString().slice(0, 10);
@@ -121,6 +129,41 @@ const Attendance = () => {
       console.error('Check-Out failed :', error);
     }
   };
+  const handleGenerateReport = async () => {
+    if (fromDate !== '' && toDate !== '') {
+      const fromD = new Date(fromDate);
+      const toD = new Date(toDate);
+      if (fromD <= toD) {
+        try {
+          await fetch(`http://localhost:4000/attendance?from=${fromDate}&to=${toDate}`, {
+            method: 'GET',
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            }
+          })
+            .then(r => r.json())
+            .then((data) => {
+              const reportD = {
+                from: fromDate,
+                to: toDate,
+                employeeEmail: data.userEmail,
+                data: data.data.map(item => ({
+                  date: item.CheckInDate ? new Date(item.CheckInDate).toISOString().substr(0, 10) : null,
+                  CheckInTime: item.CheckInTime ? new Date(item.CheckInTime).toISOString().substr(11, 5) :
+                    '',
+                  CheckOutTime: item.CheckOutTime ? new Date(item.CheckOutTime).toISOString().substr(11, 5) :
+                    ''
+                })),
+              };
+              setReportData(reportD);
+              setPDFModalOpen(true);
+            });
+        } catch (error) {
+          setGenerateAttendanceReportErrorModalOpen(true);
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     getCheckInData()
@@ -217,8 +260,8 @@ const Attendance = () => {
           toDate={toDate}
           setFromDate={setFromDate}
           setToDate={setToDate}
+          generateReport={handleGenerateReport}
         />
-
         <div className="sm:flex sm:items-center mb-4">
           <div className="sm:flex-auto">
             <h1 className="text-base font-semibold leading-6 text-gray-900">Attendance History</h1>
@@ -302,6 +345,12 @@ const Attendance = () => {
           open={getCheckOutDataErrorModalOpen}
           setOpen={setGetCheckOutDataErrorModalOpen}
         />
+        <ErrorModal
+          title={"Generate Attendance Report"}
+          message={"An error occurred while generating the attendance report. Please try again."}
+          open={generateAttendanceReportErrorModalOpen}
+          setOpen={setGenerateAttendanceReportErrorModalOpen}
+        />
 
         <div className="block">
           <div className="mb-4">
@@ -350,6 +399,7 @@ const Attendance = () => {
 
   return (
     <>
+      <AttendanceReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>
       <div className="xl:grid hidden grid-cols-5 gap-5">
         <div className="col-span-2">
           {SystemClockGrid()}
@@ -361,7 +411,6 @@ const Attendance = () => {
           {FormGrid()}
         </div>
       </div>
-
       <div className="xl:hidden lg:grid hidden grid-cols-2 gap-5">
         <div>
           {SystemClockGrid()}
@@ -373,7 +422,6 @@ const Attendance = () => {
           {TableGrid()}
         </div>
       </div>
-
       <div className="lg:hidden sm:grid grid-cols-1 gap-5">
         <div>
           {SystemClockGrid()}
