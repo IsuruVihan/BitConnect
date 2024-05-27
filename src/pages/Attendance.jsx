@@ -5,10 +5,9 @@ import SystemClock from "../components/SystemClock";
 import Pagination from "../components/Pagination";
 import ErrorModal from "../components/modals/ErrorModal";
 import AttendanceReportGenerator from "../components/reports/AttendanceReportGenerator";
+import SuccessModal from "../components/modals/SuccessModal";
 
 const Attendance = () => {
-  // const { toPDF, targetRef } = usePDF({filename: 'page.pdf'});
-
   const [checkInDate, setCheckInDate] = useState('');
   const [checkInTime, setCheckInTime] = useState('');
   const [checkOutDate, setCheckOutDate] = useState('');
@@ -28,6 +27,10 @@ const Attendance = () => {
   const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
   const [generateAttendanceReportErrorModalOpen, setGenerateAttendanceReportErrorModalOpen]
     = useState(false);
+  const [checkInSuccessModalOpen, setCheckInSuccessModalOpen] = useState(false);
+  const [checkInErrorModalOpen, setCheckInErrorModalOpen] = useState(false);
+  const [checkOutSuccessModalOpen, setCheckOutSuccessModalOpen] = useState(false);
+  const [checkOutErrorModalOpen, setCheckOutErrorModalOpen] = useState(false);
 
   // Pagination
   const recordsPerPage = 6;
@@ -103,8 +106,10 @@ const Attendance = () => {
         },
         body: JSON.stringify({date: currentDate, time: currentTime}),
       });
+      setCheckInSuccessModalOpen(true);
       console.log(response.message);
     } catch (error) {
+      setCheckInErrorModalOpen(true);
       console.error('Check-In failed :', error);
     }
   };
@@ -124,8 +129,10 @@ const Attendance = () => {
         },
         body: JSON.stringify({date: currentDate, time: currentTime}),
       });
+      setCheckOutSuccessModalOpen(true);
       console.log(response.message);
     } catch (error) {
+      setCheckOutErrorModalOpen(true);
       console.error('Check-Out failed :', error);
     }
   };
@@ -262,6 +269,31 @@ const Attendance = () => {
           setToDate={setToDate}
           generateReport={handleGenerateReport}
         />
+        <SuccessModal
+          title={"Check-in"}
+          message={"You have checked-in successfully."}
+          open={checkInSuccessModalOpen}
+          setOpen={setCheckInSuccessModalOpen}
+        />
+        <ErrorModal
+          title={"Check-in"}
+          message={"An error occurred while checking-in. Please try again."}
+          open={checkInErrorModalOpen}
+          setOpen={setCheckInErrorModalOpen}
+        />
+        <SuccessModal
+          title={"Check-out"}
+          message={"You have checked-out successfully."}
+          open={checkOutSuccessModalOpen}
+          setOpen={setCheckOutSuccessModalOpen}
+        />
+        <ErrorModal
+          title={"Check-out"}
+          message={"An error occurred while checking-out. Please try again."}
+          open={checkOutErrorModalOpen}
+          setOpen={setCheckOutErrorModalOpen}
+        />
+
         <div className="sm:flex sm:items-center mb-4">
           <div className="sm:flex-auto">
             <h1 className="text-base font-semibold leading-6 text-gray-900">Attendance History</h1>
@@ -402,35 +434,35 @@ const Attendance = () => {
       <AttendanceReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>
       <div className="xl:grid hidden grid-cols-5 gap-5">
         <div className="col-span-2">
-          {SystemClockGrid()}
+          <SystemClockGrid/>
         </div>
         <div className="col-span-3 row-span-2">
-          {TableGrid()}
+          <TableGrid/>
         </div>
         <div className="col-span-2">
-          {FormGrid()}
+          <FormGrid/>
         </div>
       </div>
       <div className="xl:hidden lg:grid hidden grid-cols-2 gap-5">
         <div>
-          {SystemClockGrid()}
+          <SystemClockGrid/>
         </div>
         <div>
-          {FormGrid()}
+          <FormGrid/>
         </div>
         <div className="col-span-2">
-          {TableGrid()}
+          <TableGrid/>
         </div>
       </div>
       <div className="lg:hidden sm:grid grid-cols-1 gap-5">
         <div>
-          {SystemClockGrid()}
+          <SystemClockGrid/>
         </div>
         <div>
-          {FormGrid()}
+          <FormGrid/>
         </div>
         <div>
-          {TableGrid()}
+          <TableGrid/>
         </div>
       </div>
     </>
