@@ -144,9 +144,13 @@ const Attendance = () => {
             .then(r => r.json())
             .then((data) => {
               const reportD = {
+                currentDate: '',
+                currentTime: '',
                 from: fromDate,
                 to: toDate,
+                employeeName: 'Isuru Harischandra',
                 employeeEmail: data.userEmail,
+                employeeRole: 'Software Engineer',
                 data: data.data.map(item => ({
                   date: item.CheckInDate ? new Date(item.CheckInDate).toISOString().substr(0, 10) : null,
                   CheckInTime: item.CheckInTime ? new Date(item.CheckInTime).toISOString().substr(11, 5) :
@@ -399,7 +403,7 @@ const Attendance = () => {
 
   return (
     <>
-      <AttendanceReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>
+      {reportData && <AttendanceReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>}
       <div className="xl:grid hidden grid-cols-5 gap-5">
         <div className="col-span-2">
           {SystemClockGrid()}
