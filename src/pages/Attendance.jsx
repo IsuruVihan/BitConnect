@@ -431,7 +431,7 @@ const Attendance = () => {
 
   return (
     <>
-      <AttendanceReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>
+      {reportData && <AttendanceReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>}
       <div className="xl:grid hidden grid-cols-5 gap-5">
         <div className="col-span-2">
           <SystemClockGrid/>
