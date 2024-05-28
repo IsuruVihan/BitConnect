@@ -27,6 +27,7 @@ import {
 } from '@heroicons/react/24/outline'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import MyAccount from "../pages/MyAccount";
+import LeaveRequests from "../pages/LeaveRequests";
 
 const userNavigation = [
   { name: 'My Account', href: '/my-account' },
@@ -50,6 +51,7 @@ const Header = () => {
   const [navigation, setNavigation] = useState([
     { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
     { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
+    { name: 'Leave Requests', path: '/leave-requests', icon: EnvelopeIcon, current: false },
     { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
     { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
     { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
@@ -324,6 +326,7 @@ const Header = () => {
                 <Route path="/calendar" element={<Calendar/>}/>
                 <Route path="/employees-view" element={<EmpView/>}/>
                 <Route path="/my-account" element={<MyAccount/>}/>
+                <Route path="/leave-requests" element={<LeaveRequests/>}/>
               </Routes>
             </div>
           </main>
