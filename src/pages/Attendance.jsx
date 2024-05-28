@@ -151,9 +151,13 @@ const Attendance = () => {
             .then(r => r.json())
             .then((data) => {
               const reportD = {
+                currentDate: '',
+                currentTime: '',
                 from: fromDate,
                 to: toDate,
+                employeeName: 'Isuru Harischandra',
                 employeeEmail: data.userEmail,
+                employeeRole: 'Software Engineer',
                 data: data.data.map(item => ({
                   date: item.CheckInDate ? new Date(item.CheckInDate).toISOString().substr(0, 10) : null,
                   CheckInTime: item.CheckInTime ? new Date(item.CheckInTime).toISOString().substr(11, 5) :
