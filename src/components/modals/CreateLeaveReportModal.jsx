@@ -1,9 +1,19 @@
-import React, {Fragment} from 'react';
-import {Dialog, Transition} from "@headlessui/react";
+import React, {Fragment, useMemo} from 'react';
+import {Dialog, Listbox, Transition} from "@headlessui/react";
 import {SecondaryButton, SuccessButton} from "../Button";
+import {ChevronUpDownIcon} from "@heroicons/react/16/solid";
+import {CheckIcon} from "@heroicons/react/24/outline";
+
+function classNames(...classes) {
+	return classes.filter(Boolean).join(' ');
+}
 
 const CreateLeaveReportModal = (props) => {
-	const {open, setOpen, fromDate, toDate, setFromDate, setToDate, generateReport} = props;
+	const {open, setOpen, fromDate, toDate, leaveType, setFromDate, setToDate, setLeaveType, generateReport} = props;
+	const leaveTypes = useMemo(() => [
+		{id: 1, label: 'Casual Leave', value: 'Casual'},
+		{id: 2, label: 'Medical Leave', value: 'Medical'},
+	], []);
 	let noErrors = false;
 
 	const displayErrors = () => {
@@ -20,6 +30,7 @@ const CreateLeaveReportModal = (props) => {
 			}
 		}
 	}
+
 	return(
 		<Transition.Root show={open} as={Fragment}>
 			<Dialog as="div" className="relative z-10" onClose={() => {
@@ -98,6 +109,74 @@ const CreateLeaveReportModal = (props) => {
 											/>
 										</div>
 									</div>
+								</div>
+								<div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
+									<Listbox value={leaveType} onChange={setLeaveType}>
+										{({open}) => (
+											<>
+												<Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
+													Assigned to
+												</Listbox.Label>
+												<div className="relative mt-2">
+													<Listbox.Button
+														className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left
+												text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2
+												focus:ring-indigo-600 sm:text-sm sm:leading-6"
+													>
+														<span className="block truncate">{leaveType.label}</span>
+														<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                					<ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
+              					</span>
+													</Listbox.Button>
+													<Transition
+														show={open}
+														leave="transition ease-in duration-100"
+														leaveFrom="opacity-100"
+														leaveTo="opacity-0"
+													>
+														<Listbox.Options
+															className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base
+													shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+														>
+															{leaveTypes.map((leaveType, idx) => (
+																<Listbox.Option
+																	key={idx}
+																	className={({focus}) =>
+																		classNames(
+																			focus ? 'bg-indigo-600 text-white' : '',
+																			!focus ? 'text-gray-900' : '',
+																			'relative cursor-default select-none py-2 pl-8 pr-4'
+																		)
+																	}
+																	value={leaveType}
+																>
+																	{({selected, focus}) => (
+																		<>
+                        					<span
+																		className={classNames(
+																			selected ? 'font-semibold' : 'font-normal', 'block truncate'
+																		)}
+																	>{leaveType.label}</span>
+																			{selected ? (
+																				<span
+																					className={classNames(
+																						focus ? 'text-white' : 'text-indigo-600',
+																						'absolute inset-y-0 left-0 flex items-center pl-1.5'
+																					)}
+																				>
+                            					<CheckIcon className="h-5 w-5" aria-hidden="true"/>
+                          					</span>
+																			) : null}
+																		</>
+																	)}
+																</Listbox.Option>
+															))}
+														</Listbox.Options>
+													</Transition>
+												</div>
+											</>
+										)}
+									</Listbox>
 								</div>
 								<div>
 									{displayErrors()}

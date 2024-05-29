@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
 	},
 });
 
-function AttendanceReportGenerator({open, setOpen, data}) {
+function LeaveReportGenerator({open, setOpen, data}) {
 	const [currentDate, setCurrentDate] = useState("");
 
 	useEffect(() => {
@@ -96,59 +96,59 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 									<Document>
 										{/*render a single page*/}
 										<Page size="A4" style={styles.page}>
-											<View style={{display: "flex",
-												flexDirection: "row",
-												alignItems: "center",
-												justifyContent: "space-between",
-											}}>
-												<View style={{width: '30%',}}>
-													<Image src={Logo} style={{width: 25, height: 25,}}/>
-												</View>
-												<View style={{width: '30%', textAlign: "center",}}>
-													<View style={{fontSize: 16}}>
-														<Text>Bitzquad (Pvt) Ltd.</Text>
-													</View>
-												</View>
-												<View style={{width: '30%', textAlign: "right",}}>
-													<Text>{currentDate}</Text>
-												</View>
-											</View>
-											<View style={{marginTop: 30, textAlign: "center", fontSize: 24,}}>
-												<Text>Attendance Report</Text>
-											</View>
-											<View style={{borderTop: '1px solid gray', marginTop: 10,}}>
-												<View style={{display: "flex",
-													flexDirection: "row",
-													alignItems: "center",
-													justifyContent: "space-between",}}>
-													<View>
-														<Text>Employee Name</Text>
-														<Text>Role</Text>
-													</View>
-													<View>
-														<Text style={{ textAlign: 'right'} }>From: {data.from}</Text>
-													</View>
-													<View>
-														<Text style={{ textAlign: 'right'} }>To: {data.to}</Text>
-													</View>
-												</View>
-											</View>
-											<View style={styles.section}>
-												<View style={styles.table}>
-													<View style={styles.tableRow}>
-														<View style={styles.tableCellHeader}><Text>Date</Text></View>
-														<View style={styles.tableCellHeader}><Text>Checked In</Text></View>
-														<View style={styles.tableCellHeader}><Text>Checked Out</Text></View>
-													</View>
-													{data.data.map((row, index) => (
-														<View style={styles.tableRow} key={index}>
-																	<View style={styles.tableCell}><Text>{row.date}</Text></View>
-																	<View style={styles.tableCell}><Text>{row.CheckInTime}</Text></View>
-																	<View style={styles.tableCell}><Text>{row.CheckOutTime}</Text></View>
-														</View>
-													))}
- 												</View>
- 											</View>
+											{/*<View style={{display: "flex",*/}
+											{/*	flexDirection: "row",*/}
+											{/*	alignItems: "center",*/}
+											{/*	justifyContent: "space-between",*/}
+											{/*}}>*/}
+											{/*	<View style={{width: '30%',}}>*/}
+											{/*		<Image src={Logo} style={{width: 25, height: 25,}}/>*/}
+											{/*	</View>*/}
+											{/*	<View style={{width: '30%', textAlign: "center",}}>*/}
+											{/*		<View style={{fontSize: 16}}>*/}
+											{/*			<Text>Bitzquad (Pvt) Ltd.</Text>*/}
+											{/*		</View>*/}
+											{/*	</View>*/}
+											{/*	<View style={{width: '30%', textAlign: "right",}}>*/}
+											{/*		<Text>{currentDate}</Text>*/}
+											{/*	</View>*/}
+											{/*</View>*/}
+											{/*<View style={{marginTop: 30, textAlign: "center", fontSize: 24,}}>*/}
+											{/*	<Text>Attendance Report</Text>*/}
+											{/*</View>*/}
+											{/*<View style={{borderTop: '1px solid gray', marginTop: 10,}}>*/}
+											{/*	<View style={{display: "flex",*/}
+											{/*		flexDirection: "row",*/}
+											{/*		alignItems: "center",*/}
+											{/*		justifyContent: "space-between",}}>*/}
+											{/*		<View>*/}
+											{/*			<Text>Employee Name</Text>*/}
+											{/*			<Text>Role</Text>*/}
+											{/*		</View>*/}
+											{/*		<View>*/}
+											{/*			<Text style={{ textAlign: 'right'} }>From: {data.from}</Text>*/}
+											{/*		</View>*/}
+											{/*		<View>*/}
+											{/*			<Text style={{ textAlign: 'right'} }>To: {data.to}</Text>*/}
+											{/*		</View>*/}
+											{/*	</View>*/}
+											{/*</View>*/}
+											{/*<View style={styles.section}>*/}
+											{/*	<View style={styles.table}>*/}
+											{/*		<View style={styles.tableRow}>*/}
+											{/*			<View style={styles.tableCellHeader}><Text>Date</Text></View>*/}
+											{/*			<View style={styles.tableCellHeader}><Text>Checked In</Text></View>*/}
+											{/*			<View style={styles.tableCellHeader}><Text>Checked Out</Text></View>*/}
+											{/*		</View>*/}
+											{/*		{data.data.map((row, index) => (*/}
+											{/*			<View style={styles.tableRow} key={index}>*/}
+											{/*				<View style={styles.tableCell}><Text>{row.date}</Text></View>*/}
+											{/*				<View style={styles.tableCell}><Text>{row.CheckInTime}</Text></View>*/}
+											{/*				<View style={styles.tableCell}><Text>{row.CheckOutTime}</Text></View>*/}
+											{/*			</View>*/}
+											{/*		))}*/}
+											{/*	</View>*/}
+											{/*</View>*/}
 										</Page>
 									</Document>
 								</PDFViewer>
@@ -165,4 +165,5 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 	);
 }
 
-export default AttendanceReportGenerator;
+export default LeaveReportGenerator;
+
