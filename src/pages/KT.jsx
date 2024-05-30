@@ -1,305 +1,309 @@
-import React, { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import {PrimaryButton} from "../components/Button";
+import React, {useEffect, useState} from 'react';
+import ErrorModal from "../components/modals/ErrorModal";
+import SuccessModal from "../components/modals/SuccessModal";
+import CoursesHeader from "../components/KT/CourseHeader";
+import LeaderboardHeader from "../components/KT/LeaderboardHeader";
+import CoursesBody from "../components/KT/CoursesBody";
+import LeaderboardBody from "../components/KT/LeaderboardBody";
+import Tabs from "../components/KT/Tabs";
+import SelectedCourseHeader from "../components/KT/SelectedCourseHeader";
+import SelectedCourseBody from "../components/KT/SelectedCourseBody";
 
-const products = [
-    {
-        id: 1,
-        name: 'Introduction to Organization',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐10',
-    },
-    {
-        id: 2,
-        name: 'Introduction to Project z91',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐40',
-    },
-    {
-        id: 3,
-        name: 'Introduction to Project MAS',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐14',
-    },
-    {
-        id: 4,
-        name: 'Introduction to Project 001',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐10',
-    },
-    {
-        id: 5,
-        name: 'Introduction to Project Nutela',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐10',
-    },
-    // More products...
-]
-
-const tabs = [
-    { name: 'LeaderBoard', href: '#', current: true },
-]
-const team = [
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    // More people...
-]
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
-// export default function KT() {
-//     const [open, setOpen] = useState(true)
 const KT = () => {
-    const [open, setOpen] = useState(false)
+    const [tabs, setTabs] = useState([
+        {name: 'Courses', current: true},
+        {name: 'Leaderboard', current: false},
+    ]);
+
+    const [courses, setCourses] = useState([
+        {
+            title: "Workplace Conduct",
+            description: "Guidelines on appropriate workplace behavior and conduct.",
+            type: "Company Rules & Regulations",
+            points: 70,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: false,
+        },
+        {
+            title: "Effective Communication",
+            description: "Training on improving communication skills in a professional setting.",
+            type: "Soft Skills",
+            points: 150,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: true,
+        },
+        {
+            title: "JavaScript Fundamentals",
+            description: "A course covering the basics of JavaScript programming.",
+            type: "Technical Skills",
+            points: 50,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: false,
+        },
+        {
+            title: "Time Management",
+            description: "Strategies and techniques for managing time effectively.",
+            type: "Soft Skills",
+            points: 80,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: false,
+        },
+        {
+            title: "Security Policies",
+            description: "Overview of the company's security policies and procedures.",
+            type: "Company Rules & Regulations",
+            points: 90,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: true,
+        },
+        {
+            title: "Advanced CSS",
+            description: "In-depth training on advanced CSS techniques and best practices.",
+            type: "Technical Skills",
+            points: 100,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: true,
+        },
+        {
+            title: "Conflict Resolution",
+            description: "Methods and strategies for resolving conflicts in the workplace.",
+            type: "Soft Skills",
+            points: 40,
+            createdBy: {
+                name: "Isuru Harischandra",
+                email: "isuru@bitzquad.com"
+            },
+            completed: false,
+        }
+    ]);
+    const [people, setPeople] = useState([
+        {
+            id: '1',
+            name: 'Leslie Alexander',
+            email: 'leslie.alexander@example.com',
+            points: 100,
+        },
+        {
+            id: '2',
+            name: 'Michael Foster',
+            email: 'michael.foster@example.com',
+            points: 100,
+        },
+        {
+            id: '3',
+            name: 'Dries Vincent',
+            email: 'dries.vincent@example.com',
+            points: 100,
+        },
+        {
+            id: '4',
+            name: 'Lindsay Walton',
+            email: 'lindsay.walton@example.com',
+            points: 100,
+        },
+        {
+            id: '5',
+            name: 'Courtney Henry',
+            email: 'courtney.henry@example.com',
+            points: 100,
+        },
+        {
+            id: '6',
+            name: 'Tom Cook',
+            email: 'tom.cook@example.com',
+            points: 100,
+        },
+    ]);
+
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [quiz, setQuiz] = useState([
+        {
+            id: '1',
+            question: "What is the capital of France?",
+            answers: [
+                {id: '1', text: "Paris", checked: true},
+                {id: '2', text: "London", checked: false},
+                {id: '3', text: "Rome", checked: false},
+                {id: '4', text: "Berlin", checked: false},
+            ],
+        },
+        {
+            id: '2',
+            question: "Which planet is known as the Red Planet?",
+            answers: [
+                {id: '1', text: "Mars", checked: true},
+                {id: '2', text: "Earth", checked: false},
+                {id: '3', text: "Jupiter", checked: false},
+                {id: '4', text: "Saturn", checked: false},
+            ],
+        },
+        {
+            id: '3',
+            question: "What is the largest ocean on Earth?",
+            answers: [
+                {id: '1', text: "Pacific Ocean", checked: true},
+                {id: '2', text: "Atlantic Ocean", checked: false},
+                {id: '3', text: "Indian Ocean", checked: false},
+                {id: '4', text: "Arctic Ocean", checked: false},
+            ],
+        },
+        {
+            id: '4',
+            question: "Who wrote 'Romeo and Juliet'?",
+            answers: [
+                {id: '1', text: "William Shakespeare", checked: true},
+                {id: '2', text: "Charles Dickens", checked: false},
+                {id: '3', text: "Jane Austen", checked: false},
+                {id: '4', text: "Mark Twain", checked: false},
+            ],
+        },
+        {
+            id: '5',
+            question: "What is the chemical symbol for water?",
+            answers: [
+                {id: '1', text: "H2O", checked: true},
+                {id: '2', text: "CO2", checked: false},
+                {id: '3', text: "O2", checked: false},
+                {id: '4', text: "H2", checked: false},
+            ],
+        },
+    ]);
+
+    const [retrieveCourseModulesErrorModalOpen, setRetrieveCourseModulesErrorModalOpen]
+      = useState(false);
+    const [retrieveLeaderboardErrorModalOpen, setRetrieveLeaderboardErrorModalOpen] = useState(false);
+    const [retrieveCourseContentErrorModalOpen, setRetrieveCourseContentErrorModalOpen]
+      = useState(false);
+    const [courseCompletionErrorModalOpen, setCourseCompletionErrorModalOpen] = useState(false);
+    const [courseCompletionSuccessModalOpen, setCourseCompletionSuccessModalOpen] = useState(false);
+    const [createCourseModuleErrorModalOpen, setCreateCourseModuleErrorModalOpen] = useState(false);
+    const [createCourseModuleSuccessModalOpen, setCreateCourseModuleSuccessModalOpen] = useState(false);
+
+    const [courseFilterQuery, setCourseFilterQuery] = useState("");
+
+    const [leaderboardFilterQuery, setLeaderboardFilterQuery] = useState("");
+
+
+
+    useEffect(() => {
+        // TODO: setCourses()
+        // TODO: setPeople()
+    }, []);
+
     return (
-      <>
-          <div className="w-full flex justify-center items-center">
-              {/*    <div className="px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer" onClick={() => setOpen(true)}>*/}
-              {/*        Leaderboard*/}
-              {/*    </div>*/}
+      <div>
+          {/*Modals*/}
+          <>
+              <ErrorModal
+                title={"Course Modules"}
+                message={"An error occurred while retrieving course modules. Please try again."}
+                open={retrieveCourseModulesErrorModalOpen}
+                setOpen={setRetrieveCourseModulesErrorModalOpen}
+              />
+              <ErrorModal
+                title={"Leaderboard"}
+                message={"An error occurred while retrieving the leaderboard. Please try again."}
+                open={retrieveLeaderboardErrorModalOpen}
+                setOpen={setRetrieveLeaderboardErrorModalOpen}
+              />
+              <ErrorModal
+                title={"Course Content"}
+                message={"An error occurred while retrieving course content. Please try again."}
+                open={retrieveCourseContentErrorModalOpen}
+                setOpen={setRetrieveCourseContentErrorModalOpen}
+              />
 
-              <PrimaryButton onClick={() => setOpen(true)} label={"Leaderboard"} color={"indigo"} width={"96"}/>
-          </div>
-          {/*Courses*/}
-          <div className="bg-white">
-              <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                  <div className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-                      {products.map((product) => (
-                        <div key={product.id}>
-                            <div className="relative">
-                                <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                                    <img
-                                      src={product.imageSrc}
-                                      alt={product.imageAlt}
-                                      className="h-full w-full object-cover object-center"
-                                    />
-                                </div>
-                                <div className="relative mt-4">
-                                    <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
-                                    <p className="mt-1 text-sm text-gray-500">{product.author}</p>
-                                </div>
-                                <div
-                                  className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
-                                    <div
-                                      aria-hidden="true"
-                                      className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
-                                    />
-                                    <p className="relative text-lg font-semibold text-white">{product.points}</p>
-                                </div>
-                            </div>
-                            <div className="mt-6">
-                                <a
-                                  href={product.href}
-                                  className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                                >
-                                    View Course<span className="sr-only">, {product.name}</span>
-                                </a>
-                            </div>
-                        </div>
-                      ))}
-                  </div>
-              </div>
-          </div>
+              <ErrorModal
+                title={"Course Completion"}
+                message={"An error occurred while completing the course module. Please try again."}
+                open={courseCompletionErrorModalOpen}
+                setOpen={setCourseCompletionErrorModalOpen}
+              />
+              <SuccessModal
+                title={"Course Completion"}
+                message={"Course module has been completed successfully."}
+                open={courseCompletionSuccessModalOpen}
+                setOpen={setCourseCompletionSuccessModalOpen}
+              />
 
-          {/*Leader Board*/}
-          <Transition.Root show={open} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                  <div className="fixed inset-0"/>
+              <ErrorModal
+                title={"Create Course Module"}
+                message={"An error occurred while creating the course module. Please try again."}
+                open={createCourseModuleErrorModalOpen}
+                setOpen={setCreateCourseModuleErrorModalOpen}
+              />
+              <SuccessModal
+                title={"Create Course Module"}
+                message={"Course module has been created successfully."}
+                open={createCourseModuleSuccessModalOpen}
+                setOpen={setCreateCourseModuleSuccessModalOpen}
+              />
+          </>
 
-                  <div className="fixed inset-0 overflow-hidden">
-                      <div className="absolute inset-0 overflow-hidden">
-                          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                              <Transition.Child
-                                as={Fragment}
-                                enter="transform transition ease-in-out duration-500 sm:duration-700"
-                                enterFrom="translate-x-full"
-                                enterTo="translate-x-0"
-                                leave="transform transition ease-in-out duration-500 sm:duration-700"
-                                leaveFrom="translate-x-0"
-                                leaveTo="translate-x-full"
-                              >
-                                  <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                      <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                                          <div className="p-6">
-                                              <div className="flex items-start justify-between">
-                                                  <Dialog.Title
-                                                    className="text-base font-semibold leading-6 text-gray-900">Team</Dialog.Title>
-                                                  <div className="ml-3 flex h-7 items-center">
-                                                      <button
-                                                        type="button"
-                                                        className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                                                        onClick={() => setOpen(false)}
-                                                      >
-                                                          <span className="absolute -inset-2.5"/>
-                                                          <span className="sr-only">Close panel</span>
-                                                          <XMarkIcon className="h-6 w-6" aria-hidden="true"/>
-                                                      </button>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                          <div className="border-b border-gray-200">
-                                              <div className="px-6">
-                                                  <nav className="-mb-px flex space-x-6">
-                                                      {tabs.map((tab) => (
-                                                        <a
-                                                          key={tab.name}
-                                                          href={tab.href}
-                                                          className={classNames(
-                                                            tab.current
-                                                              ? 'border-indigo-500 text-indigo-600'
-                                                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                                                            'whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium'
-                                                          )}
-                                                        >
-                                                            {tab.name}
-                                                        </a>
-                                                      ))}
-                                                  </nav>
-                                              </div>
-                                          </div>
-                                          <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
-                                              {team.map((person) => (
-                                                <li key={person.handle}>
-                                                    <div className="group relative flex items-center px-5 py-6">
-                                                        <a href={person.href} className="-m-1 block flex-1 p-1">
-                                                            <div className="absolute inset-0 group-hover:bg-gray-50"
-                                                                 aria-hidden="true"/>
-                                                            <div className="relative flex min-w-0 flex-1 items-center">
-                                    <span className="relative inline-block flex-shrink-0">
-                                      <img className="h-10 w-10 rounded-full" src={person.imageUrl} alt=""/>
-                                      <span
-                                        className={classNames(
-                                          person.status === 'online' ? 'bg-green-400' : 'bg-gray-300',
-                                          'absolute top-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white'
-                                        )}
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                                                <div className="ml-4 truncate">
-                                                                    <p
-                                                                      className="truncate text-sm font-medium text-gray-900">{person.name}</p>
-                                                                    <p
-                                                                      className="truncate text-sm text-gray-500">{'@' + person.handle}</p>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                        <Menu as="div"
-                                                              className="relative ml-2 inline-block flex-shrink-0 text-left">
-                                                            <Menu.Button
-                                                              className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                                                <span className="absolute -inset-1.5"/>
-                                                                <span className="sr-only">Open options menu</span>
-                                                                <span
-                                                                  className="flex h-full w-full items-center justify-center rounded-full">
-                                      <EllipsisVerticalIcon
-                                        className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                                            </Menu.Button>
-                                                            <Transition
-                                                              as={Fragment}
-                                                              enter="transition ease-out duration-100"
-                                                              enterFrom="transform opacity-0 scale-95"
-                                                              enterTo="transform opacity-100 scale-100"
-                                                              leave="transition ease-in duration-75"
-                                                              leaveFrom="transform opacity-100 scale-100"
-                                                              leaveTo="transform opacity-0 scale-95"
-                                                            >
-                                                                <Menu.Items
-                                                                  className="absolute right-9 top-0 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                                    <div className="py-1">
-                                                                        <Menu.Item>
-                                                                            {({active}) => (
-                                                                              <a
-                                                                                href="#"
-                                                                                className={classNames(
-                                                                                  active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                                  'block px-4 py-2 text-sm'
-                                                                                )}
-                                                                              >
-                                                                                  View profile
-                                                                              </a>
-                                                                            )}
-                                                                        </Menu.Item>
-                                                                        <Menu.Item>
-                                                                            {({active}) => (
-                                                                              <a
-                                                                                href="#"
-                                                                                className={classNames(
-                                                                                  active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                                  'block px-4 py-2 text-sm'
-                                                                                )}
-                                                                              >
-                                                                                  Send message
-                                                                              </a>
-                                                                            )}
-                                                                        </Menu.Item>
-                                                                    </div>
-                                                                </Menu.Items>
-                                                            </Transition>
-                                                        </Menu>
-                                                    </div>
-                                                </li>
-                                              ))}
-                                          </ul>
-                                      </div>
-                                  </Dialog.Panel>
-                              </Transition.Child>
+          {selectedCourse ?
+            <> {/*Course selected*/}
+                <SelectedCourseHeader selectedCourse={selectedCourse} setSelectedCourse={setSelectedCourse}/>
+                <SelectedCourseBody quiz={quiz} setQuiz={setQuiz} selectedCourse={selectedCourse}/>
+            </> :
+            <> {/*Course not selected*/}
+                {/*md <=*/}
+                <div className="md:grid md:grid-cols-5 gap-y-2 gap-x-8 hidden">
+                    <CoursesHeader courseFilterQuery={courseFilterQuery} setCourseFilterQuery={setCourseFilterQuery}/>
+                    <LeaderboardHeader
+                      leaderboardFilterQuery={leaderboardFilterQuery}
+                      setLeaderboardFilterQuery={setLeaderboardFilterQuery}
+                    />
+                    <div className="md:col-span-3 divide-y divide-gray-200 rounded-lg bg-gray-200 shadow sm:grid sm:grid-cols-2
+						sm:gap-px sm:divide-y-0 xl:max-h-[70vh] md:max-h-[69vh] overflow-y-auto">
+                        <CoursesBody courses={courses} setSelectedCourse={setSelectedCourse}/>
+                    </div>
+                    <div className="md:col-span-2 xl:max-h-[70vh] md:max-h-[69vh] overflow-y-auto">
+                        <LeaderboardBody people={people}/>
+                    </div>
+                </div>
+
+                {/*md >*/}
+                <div className="md:hidden">
+                    <Tabs tabs={tabs} setTabs={setTabs}/>
+                    {tabs.filter(t => t.current)[0].name === "Courses" ?
+                      <>
+                          <CoursesHeader courseFilterQuery={courseFilterQuery} setCourseFilterQuery={setCourseFilterQuery}/>
+                          <div className="max-h-[75vh] overflow-y-auto">
+                              <CoursesBody courses={courses} setSelectedCourse={setSelectedCourse}/>
                           </div>
-                      </div>
-                  </div>
-              </Dialog>
-          </Transition.Root>
-      </>);
+                      </> :
+                      <>
+                          <LeaderboardHeader
+                            leaderboardFilterQuery={leaderboardFilterQuery}
+                            setLeaderboardFilterQuery={setLeaderboardFilterQuery}
+                          />
+                          <div className="max-h-[67vh] overflow-y-auto">
+                              <LeaderboardBody people={people}/>
+                          </div>
+                      </>
+                    }
+                </div>
+            </>
+          }
+      </div>
+    );
 }
 export default KT;
