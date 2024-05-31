@@ -117,14 +117,19 @@ const Leave = () => {
     setErrorCount(tempCount);
   }, [fromDate, toDate, reason, selected, casualLeaves, medicalLeaves]);
 
-
   // report generation
+  const leaveTypesReport = useMemo(() => [
+    {id: 1, label: 'All', value: 'All'},
+    {id: 2, label: 'Casual Leave', value: 'Casual'},
+    {id: 3, label: 'Medical Leave', value: 'Medical'},
+  ], []);
+  const [leaveType, setLeaveType] = useState(leaveTypesReport[0]);
   const [openCreateLeaveReportModal, setOpenCreateLeaveReportModal] = useState(false);
-  const [fromDateReport, setFromDateReport] = useState();
-  const [toDateReport, setToDateReport] = useState();
-  const [leaveType, setLeaveType] = useState(leaveTypes[0]);
+  const [fromDateReport, setFromDateReport] = useState('');
+  const [toDateReport, setToDateReport] = useState('');
   const [pdfModalOpen, setPDFModalOpen] = useState(false);
   const [reportData, setReportData] = useState(null);
+
 
   // Selected leave request
   const [selectedLeaveRequestData, setSelectedLeaveRequestData] = useState({
@@ -132,13 +137,39 @@ const Leave = () => {
   });
 
   // Pagination
-  const recordsPerPage = 6;
+  const recordsPerPage = 5;
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentRecords = leaveRecords.slice(startIndex, endIndex);
 
   const handleGenerateReport = () => {
-    setReportData({});
+    // FromDate
+    // ToDate
+    // Type
+
+    const filteredData = leaveRecords.filter((record) => {
+      const fd = new Date(record.FromDate);
+      const td = new Date(record.ToDate);
+      const fdr = new Date(fromDateReport);
+      const tdr = new Date(toDateReport);
+
+      return fdr <= fd && tdr >= td && (leaveType.value === "All" ? true : leaveType.value === record.Type);
+    });
+
+    setReportData({
+      from: fromDateReport ,
+      to: toDateReport,
+      type: leaveType,
+      rows: filteredData,
+    });
+
+    console.log({
+      from: fromDateReport ,
+      to: toDateReport,
+      type: leaveType,
+      rows: filteredData,
+    });
+
     setPDFModalOpen(true);
   };
 
@@ -228,6 +259,7 @@ const Leave = () => {
         return r.result.json();
       })
       .then((data) => {
+        console.log(data.LeaveRequests);
         setCasualLeaves(data.CasualLeaves);
         setMedicalLeaves(data.MedicalLeaves);
         setLeaveRecords(data.LeaveRequests);
@@ -583,7 +615,7 @@ const Leave = () => {
 
   return (
     <>
-      {reportData && <LeaveReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} data={reportData}/>}
+      {reportData && <LeaveReportGenerator open={pdfModalOpen} setOpen={setPDFModalOpen} reportData={reportData}/>}
       <CreateLeaveReportModal
         open={openCreateLeaveReportModal}
         setOpen={setOpenCreateLeaveReportModal}

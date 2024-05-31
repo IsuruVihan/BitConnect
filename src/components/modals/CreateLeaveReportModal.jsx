@@ -10,9 +10,10 @@ function classNames(...classes) {
 
 const CreateLeaveReportModal = (props) => {
 	const {open, setOpen, fromDate, toDate, leaveType, setFromDate, setToDate, setLeaveType, generateReport} = props;
-	const leaveTypes = useMemo(() => [
-		{id: 1, label: 'Casual Leave', value: 'Casual'},
-		{id: 2, label: 'Medical Leave', value: 'Medical'},
+	const leaveTypesReport = useMemo(() => [
+		{id: 1, label: 'All', value: 'All'},
+		{id: 2, label: 'Casual Leave', value: 'Casual'},
+		{id: 3, label: 'Medical Leave', value: 'Medical'},
 	], []);
 	let noErrors = false;
 
@@ -138,7 +139,7 @@ const CreateLeaveReportModal = (props) => {
 															className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base
 													shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
 														>
-															{leaveTypes.map((leaveType, idx) => (
+															{leaveTypesReport.map((leaveType, idx) => (
 																<Listbox.Option
 																	key={idx}
 																	className={({focus}) =>

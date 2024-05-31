@@ -50,13 +50,18 @@ const styles = StyleSheet.create({
 
 function AttendanceReportGenerator({open, setOpen, data}) {
 	const [currentDate, setCurrentDate] = useState("");
+	const [currentTime, setCurrentTime] = useState("");
 
 	useEffect(() => {
 		const d = new Date();
 		const year = d.getFullYear();
 		const month = d.getMonth() + 1;
 		const date = d.getDate();
+		const hours = d.getHours();
+		const mins = d.getMinutes();
+		const secs = d.getSeconds();
 		setCurrentDate(`${year}-${month < 10 ? '0' + month : month}-${date < 10 ? '0' + date : date}`);
+		setCurrentTime(`${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`);
 	}, []);
 
 	return (
@@ -111,6 +116,7 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 												</View>
 												<View style={{width: '30%', textAlign: "right",}}>
 													<Text>{currentDate}</Text>
+													<Text>{currentTime}</Text>
 												</View>
 											</View>
 											<View style={{marginTop: 30, textAlign: "center", fontSize: 24,}}>
