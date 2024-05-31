@@ -8,7 +8,7 @@ const SelectedCourseBody = ({quiz, setQuiz, selectedCourse}) => {
 					Course content
 				</div>
 				<iframe
-					src={'https://www.just.edu.jo/~mqais/CIS99/PDF/Ch.01_Introduction_%20to_computers.pdf'}
+					src={selectedCourse.pdfUrl}
 					title="PDF Viewer"
 					className="w-full xl:h-[65vh] lg:h-[58vh] md:h-[53vh] sm:h-[52vh] mt-4"
 				/>
@@ -20,7 +20,7 @@ const SelectedCourseBody = ({quiz, setQuiz, selectedCourse}) => {
 				<div className="xl:h-[65vh] lg:h-[58vh] md:h-[53vh] sm:h-[52vh] overflow-y-auto">
 					{quiz.map((q, idx) => {
 						return (
-							<fieldset className="mb-8 mr-4">
+							<fieldset className="mb-8 mr-4" key={idx}>
 								<legend className="font-semibold text-gray-900">{idx + 1}. {q.question}</legend>
 								<div className="mt-2 border-t border-gray-200">
 									{q.answers.map((answer, idx) => (

@@ -8,6 +8,8 @@ import LeaderboardBody from "../components/KT/LeaderboardBody";
 import Tabs from "../components/KT/Tabs";
 import SelectedCourseHeader from "../components/KT/SelectedCourseHeader";
 import SelectedCourseBody from "../components/KT/SelectedCourseBody";
+import CreateCourseModal from "../components/modals/CreateCourseModal";
+import ConfirmCompleteKTCourseModal from "../components/modals/ConfirmCompleteKTCourseModal";
 
 const KT = () => {
     const [tabs, setTabs] = useState([
@@ -15,198 +17,242 @@ const KT = () => {
         {name: 'Leaderboard', current: false},
     ]);
 
-    const [courses, setCourses] = useState([
-        {
-            title: "Workplace Conduct",
-            description: "Guidelines on appropriate workplace behavior and conduct.",
-            type: "Company Rules & Regulations",
-            points: 70,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: false,
-        },
-        {
-            title: "Effective Communication",
-            description: "Training on improving communication skills in a professional setting.",
-            type: "Soft Skills",
-            points: 150,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: true,
-        },
-        {
-            title: "JavaScript Fundamentals",
-            description: "A course covering the basics of JavaScript programming.",
-            type: "Technical Skills",
-            points: 50,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: false,
-        },
-        {
-            title: "Time Management",
-            description: "Strategies and techniques for managing time effectively.",
-            type: "Soft Skills",
-            points: 80,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: false,
-        },
-        {
-            title: "Security Policies",
-            description: "Overview of the company's security policies and procedures.",
-            type: "Company Rules & Regulations",
-            points: 90,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: true,
-        },
-        {
-            title: "Advanced CSS",
-            description: "In-depth training on advanced CSS techniques and best practices.",
-            type: "Technical Skills",
-            points: 100,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: true,
-        },
-        {
-            title: "Conflict Resolution",
-            description: "Methods and strategies for resolving conflicts in the workplace.",
-            type: "Soft Skills",
-            points: 40,
-            createdBy: {
-                name: "Isuru Harischandra",
-                email: "isuru@bitzquad.com"
-            },
-            completed: false,
-        }
-    ]);
     const [people, setPeople] = useState([
-        {
-            id: '1',
-            name: 'Leslie Alexander',
-            email: 'leslie.alexander@example.com',
-            points: 100,
-        },
-        {
-            id: '2',
-            name: 'Michael Foster',
-            email: 'michael.foster@example.com',
-            points: 100,
-        },
-        {
-            id: '3',
-            name: 'Dries Vincent',
-            email: 'dries.vincent@example.com',
-            points: 100,
-        },
-        {
-            id: '4',
-            name: 'Lindsay Walton',
-            email: 'lindsay.walton@example.com',
-            points: 100,
-        },
-        {
-            id: '5',
-            name: 'Courtney Henry',
-            email: 'courtney.henry@example.com',
-            points: 100,
-        },
-        {
-            id: '6',
-            name: 'Tom Cook',
-            email: 'tom.cook@example.com',
-            points: 100,
-        },
+        // {
+        // 	id: '1',
+        // 	name: 'Leslie Alexander',
+        // 	email: 'leslie.alexander@example.com',
+        // 	points: 100,
+        // },
     ]);
+    const [leaderboardFilterQuery, setLeaderboardFilterQuery] = useState("");
+    const [visiblePeople, setVisiblePeople] = useState([]);
 
-    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [courses, setCourses] = useState([
+        // {
+        // 	id: '1',
+        // 	title: "Workplace Conduct",
+        // 	description: "Guidelines on appropriate workplace behavior and conduct.",
+        // 	type: "Company Rules & Regulations",
+        // 	points: 70,
+        // 	createdBy: {
+        // 		name: "Isuru Harischandra",
+        // 		email: "isuru@bitzquad.com"
+        // 	},
+        // 	completed: false,
+        // },
+    ]);
+    const [visibleCourses, setVisibleCourses] = useState([]);
+    const [courseFilterQuery, setCourseFilterQuery] = useState("");
+    const [courseTypeFilterQuery, setCourseTypeFilterQuery] = useState("All");
+    const [selectedCourse, setSelectedCourse] = useState(null
+      // {
+      // 	id: '1',
+      // 	title: "Workplace Conduct",
+      // 	description: "Guidelines on appropriate workplace behavior and conduct.",
+      // 	type: "Company Rules & Regulations",
+      // 	points: 70,
+      // 	createdBy: {
+      // 		name: "Isuru Harischandra",
+      // 		email: "isuru@bitzquad.com"
+      // 	},
+      // 	completed: true,
+      // 	pdfUrl: "https://firebasestorage.googleapis.com/v0/b/bitconnect-f6fc8.appspot.com/o/kt-courses%2Fdbb780103c94a3dba3e3297cc3cd52678fb9b0e21ebd13b01d8a1ac74225e252.pdf?alt=media&token=65b963c4-3270-47bd-a7d0-dac42835c553",
+      // 	score: 30,
+    );
     const [quiz, setQuiz] = useState([
-        {
-            id: '1',
-            question: "What is the capital of France?",
-            answers: [
-                {id: '1', text: "Paris", checked: true},
-                {id: '2', text: "London", checked: false},
-                {id: '3', text: "Rome", checked: false},
-                {id: '4', text: "Berlin", checked: false},
-            ],
-        },
-        {
-            id: '2',
-            question: "Which planet is known as the Red Planet?",
-            answers: [
-                {id: '1', text: "Mars", checked: true},
-                {id: '2', text: "Earth", checked: false},
-                {id: '3', text: "Jupiter", checked: false},
-                {id: '4', text: "Saturn", checked: false},
-            ],
-        },
-        {
-            id: '3',
-            question: "What is the largest ocean on Earth?",
-            answers: [
-                {id: '1', text: "Pacific Ocean", checked: true},
-                {id: '2', text: "Atlantic Ocean", checked: false},
-                {id: '3', text: "Indian Ocean", checked: false},
-                {id: '4', text: "Arctic Ocean", checked: false},
-            ],
-        },
-        {
-            id: '4',
-            question: "Who wrote 'Romeo and Juliet'?",
-            answers: [
-                {id: '1', text: "William Shakespeare", checked: true},
-                {id: '2', text: "Charles Dickens", checked: false},
-                {id: '3', text: "Jane Austen", checked: false},
-                {id: '4', text: "Mark Twain", checked: false},
-            ],
-        },
-        {
-            id: '5',
-            question: "What is the chemical symbol for water?",
-            answers: [
-                {id: '1', text: "H2O", checked: true},
-                {id: '2', text: "CO2", checked: false},
-                {id: '3', text: "O2", checked: false},
-                {id: '4', text: "H2", checked: false},
-            ],
-        },
+        // {
+        // 	id: '1',
+        // 	question: "What is the capital of France?",
+        // 	answers: [
+        // 		{id: '1', text: "Paris", checked: true},
+        // 		{id: '2', text: "London", checked: false},
+        // 		{id: '3', text: "Rome", checked: false},
+        // 		{id: '4', text: "Berlin", checked: false},
+        // 	],
+        // },
     ]);
 
     const [retrieveCourseModulesErrorModalOpen, setRetrieveCourseModulesErrorModalOpen]
       = useState(false);
+
     const [retrieveLeaderboardErrorModalOpen, setRetrieveLeaderboardErrorModalOpen] = useState(false);
+
     const [retrieveCourseContentErrorModalOpen, setRetrieveCourseContentErrorModalOpen]
       = useState(false);
+
+    const [confirmCourseCompletionModalOpen, setConfirmCourseCompletionModalOpen] = useState(false);
     const [courseCompletionErrorModalOpen, setCourseCompletionErrorModalOpen] = useState(false);
     const [courseCompletionSuccessModalOpen, setCourseCompletionSuccessModalOpen] = useState(false);
+
+    const [createCourseModalOpen, setCreateCourseModalOpen] = useState(false);
     const [createCourseModuleErrorModalOpen, setCreateCourseModuleErrorModalOpen] = useState(false);
     const [createCourseModuleSuccessModalOpen, setCreateCourseModuleSuccessModalOpen] = useState(false);
 
-    const [courseFilterQuery, setCourseFilterQuery] = useState("");
-
-    const [leaderboardFilterQuery, setLeaderboardFilterQuery] = useState("");
-
-
-
+    // filter leaderboard
     useEffect(() => {
-        // TODO: setCourses()
-        // TODO: setPeople()
+        setTimeout(() => {
+            const filteredPeople
+              = people.filter(p => p.name.toLowerCase().includes(leaderboardFilterQuery.trim().toLowerCase()));
+            setVisiblePeople(filteredPeople);
+        }, 2000);
+    }, [people, leaderboardFilterQuery]);
+
+    // filter courses
+    useEffect(() => {
+        setTimeout(() => {
+            const filteredCourses = courses.filter(c =>
+              c.title.toLowerCase().includes(courseFilterQuery.trim().toLowerCase()) &&
+              (courseTypeFilterQuery === "All" ? true : c.type === courseTypeFilterQuery)
+            );
+            setVisibleCourses(filteredCourses);
+        }, 2000);
+    }, [courses, courseFilterQuery, courseTypeFilterQuery]);
+
+    const getCourses = async () => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/courses`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    }
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const getLeaderboard = async () => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/leaderboard`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    }
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    useEffect(() => {
+        // get courses
+        getCourses()
+          .then(r => {
+              if (r.error)
+                  return setRetrieveCourseModulesErrorModalOpen(true);
+              return r.result.json();
+          })
+          .then((data) => {
+              setCourses(data.courses);
+          });
+
+        // get leaderboard
+        getLeaderboard()
+          .then(r => {
+              if (r.error)
+                  return setRetrieveLeaderboardErrorModalOpen(true);
+              return r.result.json();
+          })
+          .then((data) => {
+              setPeople(data.leaderboard);
+          });
     }, []);
+
+    const getCourse = async (courseId) => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/courses/${courseId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    }
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const handleOnClickCourse = (course) => {
+        getCourse(course.id)
+          .then((r) => {
+              if (r.error) {
+                  return setRetrieveCourseContentErrorModalOpen(true);
+              }
+              return r.result.json();
+          })
+          .then((data) => {
+              setSelectedCourse({
+                  ...course,
+                  ...data.courseData,
+                  pdfUrl: data.courseData.pdfUrl,
+                  score: data.courseData.score,
+              });
+
+              setQuiz(data.courseData.quiz.map((q) => {
+                  return {
+                      id: q.QuizId,
+                      question: q.Question,
+                      answers: q.answerOptions.map((a) => {
+                          return {
+                              id: a.AnswerOptionId,
+                              text: a.Text,
+                              checked: !!(a.Answer && a.Answer === 1),
+                          };
+                      }),
+                  };
+              }));
+          });
+    }
+
+    const completeCourse = async () => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/courses/${selectedCourse.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        quiz: quiz.map((q) => {
+                            return {
+                                id: q.id,
+                                answers: q.answers.map((a) => {
+                                    return {
+                                        id: a.id,
+                                        checked: a.checked,
+                                    };
+                                }),
+                            };
+                        }),
+                    }),
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const handleOnCourseComplete = () => {
+        completeCourse()
+          .then((r) => {
+              if (r.error || r.result.status !== 200) {
+                  setCourseCompletionErrorModalOpen(true);
+              } else {
+                  setCourseCompletionSuccessModalOpen(true);
+                  setTimeout(() => window.location.reload(), 2000);
+              }
+          })
+          .catch(() => {
+              setCourseCompletionErrorModalOpen(true);
+          });
+    }
 
     return (
       <div>
@@ -231,6 +277,11 @@ const KT = () => {
                 setOpen={setRetrieveCourseContentErrorModalOpen}
               />
 
+              <ConfirmCompleteKTCourseModal
+                open={confirmCourseCompletionModalOpen}
+                setOpen={setConfirmCourseCompletionModalOpen}
+                onClickComplete={handleOnCourseComplete}
+              />
               <ErrorModal
                 title={"Course Completion"}
                 message={"An error occurred while completing the course module. Please try again."}
@@ -244,6 +295,7 @@ const KT = () => {
                 setOpen={setCourseCompletionSuccessModalOpen}
               />
 
+              <CreateCourseModal open={createCourseModalOpen} setOpen={setCreateCourseModalOpen}/>
               <ErrorModal
                 title={"Create Course Module"}
                 message={"An error occurred while creating the course module. Please try again."}
@@ -260,23 +312,33 @@ const KT = () => {
 
           {selectedCourse ?
             <> {/*Course selected*/}
-                <SelectedCourseHeader selectedCourse={selectedCourse} setSelectedCourse={setSelectedCourse}/>
+                <SelectedCourseHeader
+                  selectedCourse={selectedCourse}
+                  setSelectedCourse={setSelectedCourse}
+                  handleOnClickCompleteCourse={() => setConfirmCourseCompletionModalOpen(true)}
+                />
                 <SelectedCourseBody quiz={quiz} setQuiz={setQuiz} selectedCourse={selectedCourse}/>
             </> :
             <> {/*Course not selected*/}
                 {/*md <=*/}
                 <div className="md:grid md:grid-cols-5 gap-y-2 gap-x-8 hidden">
-                    <CoursesHeader courseFilterQuery={courseFilterQuery} setCourseFilterQuery={setCourseFilterQuery}/>
+                    <CoursesHeader
+                      courseFilterQuery={courseFilterQuery}
+                      setCourseFilterQuery={setCourseFilterQuery}
+                      setCreateCourseModalOpen={setCreateCourseModalOpen}
+                      courseTypeFilterQuery={courseTypeFilterQuery}
+                      setCourseTypeFilterQuery={setCourseTypeFilterQuery}
+                    />
                     <LeaderboardHeader
                       leaderboardFilterQuery={leaderboardFilterQuery}
                       setLeaderboardFilterQuery={setLeaderboardFilterQuery}
                     />
                     <div className="md:col-span-3 divide-y divide-gray-200 rounded-lg bg-gray-200 shadow sm:grid sm:grid-cols-2
 						sm:gap-px sm:divide-y-0 xl:max-h-[70vh] md:max-h-[69vh] overflow-y-auto">
-                        <CoursesBody courses={courses} setSelectedCourse={setSelectedCourse}/>
+                        <CoursesBody courses={visibleCourses} handleOnClickCourse={handleOnClickCourse}/>
                     </div>
                     <div className="md:col-span-2 xl:max-h-[70vh] md:max-h-[69vh] overflow-y-auto">
-                        <LeaderboardBody people={people}/>
+                        <LeaderboardBody people={visiblePeople}/>
                     </div>
                 </div>
 
@@ -285,9 +347,15 @@ const KT = () => {
                     <Tabs tabs={tabs} setTabs={setTabs}/>
                     {tabs.filter(t => t.current)[0].name === "Courses" ?
                       <>
-                          <CoursesHeader courseFilterQuery={courseFilterQuery} setCourseFilterQuery={setCourseFilterQuery}/>
+                          <CoursesHeader
+                            courseFilterQuery={courseFilterQuery}
+                            setCourseFilterQuery={setCourseFilterQuery}
+                            setCreateCourseModalOpen={setCreateCourseModalOpen}
+                            courseTypeFilterQuery={courseTypeFilterQuery}
+                            setCourseTypeFilterQuery={setCourseTypeFilterQuery}
+                          />
                           <div className="max-h-[75vh] overflow-y-auto">
-                              <CoursesBody courses={courses} setSelectedCourse={setSelectedCourse}/>
+                              <CoursesBody courses={visibleCourses} handleOnClickCourse={handleOnClickCourse}/>
                           </div>
                       </> :
                       <>
@@ -296,7 +364,7 @@ const KT = () => {
                             setLeaderboardFilterQuery={setLeaderboardFilterQuery}
                           />
                           <div className="max-h-[67vh] overflow-y-auto">
-                              <LeaderboardBody people={people}/>
+                              <LeaderboardBody people={visiblePeople}/>
                           </div>
                       </>
                     }

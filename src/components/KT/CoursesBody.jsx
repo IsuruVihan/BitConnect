@@ -5,7 +5,7 @@ function classNames(...classes) {
 	return classes.filter(Boolean).join(' ');
 }
 
-const CoursesBody = ({courses, setSelectedCourse}) => {
+const CoursesBody = ({courses, handleOnClickCourse}) => {
 	const courseTypeIcons = useMemo(() => [
 		{
 			type: "Company Rules & Regulations",
@@ -29,24 +29,24 @@ const CoursesBody = ({courses, setSelectedCourse}) => {
 						idx === courses.length - 1 ? 'rounded-bl-lg rounded-br-lg sm:rounded-bl-none' : '',
 						'group relative bg-white p-6 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500'
 					)}
-					onClick={() => setSelectedCourse(course)}
+					onClick={() => handleOnClickCourse(course)}
 				>
 					<div>
-							<span
-								className={classNames(
-									courseTypeIcons.filter(t => t.type === course.type)[0].iconBackground,
-									courseTypeIcons.filter(t => t.type === course.type)[0].iconForeground,
-									'inline-flex rounded-lg p-3 ring-4 ring-white'
-								)}
-							>
-								{
-									courseTypeIcons.filter(t => t.type === course.type)[0].icon === "BuildingOfficeIcon" ?
-										<BuildingOfficeIcon className="h-6 w-6" aria-hidden="true"/> :
-										courseTypeIcons.filter(t => t.type === course.type)[0].icon === "UsersIcon" ?
-											<UsersIcon className="h-6 w-6" aria-hidden="true"/> :
-											<AcademicCapIcon className="h-6 w-6" aria-hidden="true"/>
-								}
-							</span>
+						<div
+							className={classNames(
+								courseTypeIcons.filter(t => t.type === course.type)[0].iconBackground,
+								courseTypeIcons.filter(t => t.type === course.type)[0].iconForeground,
+								'inline-flex rounded-lg p-3 ring-4 ring-white'
+							)}
+						>
+							{
+								courseTypeIcons.filter(t => t.type === course.type)[0].icon === "BuildingOfficeIcon" ?
+									<BuildingOfficeIcon className="h-6 w-6" aria-hidden="true"/> :
+									courseTypeIcons.filter(t => t.type === course.type)[0].icon === "UsersIcon" ?
+										<UsersIcon className="h-6 w-6" aria-hidden="true"/> :
+										<AcademicCapIcon className="h-6 w-6" aria-hidden="true"/>
+							}
+						</div>
 					</div>
 					<div className="mt-8">
 						<h3 className="text-base font-semibold leading-6 text-gray-900">
@@ -57,6 +57,11 @@ const CoursesBody = ({courses, setSelectedCourse}) => {
 						</h3>
 						<p className="mt-2 text-sm font-semibold text-gray-500">
 							{course.points} points
+							<span
+								className={`ml-2 py-1 px-2 font-normal rounded bg-${course.completed ? 'green' : 'red'}-600 text-white`}
+							>
+								{course.completed ? "Completed" : "Incomplete"}
+							</span>
 						</p>
 						<p className="mt-2 text-sm text-gray-500">
 							{course.description}
