@@ -3,7 +3,15 @@ import {Dialog, Transition} from "@headlessui/react";
 import {SecondaryButton, SuccessButton} from "../Button";
 
 const CreateCourseModal = (props) => {
-	const {open, setOpen} = props;
+	const {
+		open, setOpen, newCourseTitle, setNewCourseTitle, newCourseType, setNewCourseType, newCourseDescription,
+		setNewCourseDescription, newCourseContent, setNewCourseContent, newCourseQuiz, setNewCourseQuiz, onPublish
+	} = props;
+
+	const emptyTitle = newCourseTitle.trim() === "";
+	const emptyDescription = newCourseDescription.trim() === "";
+	const emptyCourseContent = newCourseContent === null;
+	const emptyCourseQuiz = newCourseQuiz === null;
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -56,6 +64,8 @@ const CreateCourseModal = (props) => {
 											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
                       ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
                       sm:text-sm sm:leading-6"
+											value={newCourseTitle}
+											onChange={(e) => setNewCourseTitle(e.target.value)}
 										/>
 									</div>
 								</div>
@@ -73,6 +83,8 @@ const CreateCourseModal = (props) => {
 											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
                       ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
                       sm:text-sm sm:leading-6"
+											value={newCourseDescription}
+											onChange={(e) => setNewCourseDescription(e.target.value)}
 										/>
 									</div>
 								</div>
@@ -89,6 +101,8 @@ const CreateCourseModal = (props) => {
 											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
                       ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm
                       sm:leading-6"
+											value={newCourseType}
+											onChange={(e) => setNewCourseType(e.target.value)}
 										>
 											<option value="Company Rules & Regulations">Company Rules & Regulations</option>
 											<option value="Soft Skills">Soft Skills</option>
@@ -99,20 +113,81 @@ const CreateCourseModal = (props) => {
 
 								<div className="mt-2">
 									<label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
-										Course module PDF
+										Course content
 									</label>
 									<div
 										className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-2">
 										<div className="text-center">
 											<div className="flex text-sm leading-6 text-gray-600">
 												<label
-													htmlFor="file-upload"
+													htmlFor="content-upload"
 													className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600
                           focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600
                           focus-within:ring-offset-2 hover:text-indigo-500"
 												>
 													<span>Upload a PDF</span>
-													<input id="file-upload" name="file-upload" type="file" className="sr-only"/>
+													<input
+														id="content-upload"
+														name="content-upload"
+														type="file"
+														className="sr-only"
+														accept=".pdf"
+														onChange={(e) => {
+															// e.preventDefault();
+															// const fileList = e.target.files;
+															// if (fileList) {
+															// 	const blobArray = [];
+															// 	for (let i = 0; i < fileList.length; i++) {
+															// 		const file = fileList[i];
+															// 		const reader = new FileReader();
+															// 		reader.onload = () => {
+															// 			const result = reader.result;
+															// 			if (result) {
+															// 				const blob = new Blob([result]);
+															// 				blobArray.push(blob);
+															// 				if (blobArray.length === fileList.length) {
+															// 					// Ensure that only the specified number of files are stored if multiple is a number
+															// 					console.log("BLOB ARRAY: ", blobArray);
+															// 					setNewCourseContent(blobArray[0]);
+															// 				}
+															// 			}
+															// 		};
+															// 		reader.readAsArrayBuffer(file);
+															// 	}
+															// }
+
+															setNewCourseContent(e.target.files[0])
+														}}
+													/>
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div className="mt-2">
+									<label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
+										Quiz
+									</label>
+									<div
+										className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-2">
+										<div className="text-center">
+											<div className="flex text-sm leading-6 text-gray-600">
+												<label
+													htmlFor="quiz-upload"
+													className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600
+                          focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600
+                          focus-within:ring-offset-2 hover:text-indigo-500"
+												>
+													<span>Upload a CSV</span>
+													<input
+														id="quiz-upload"
+														name="quiz-upload"
+														type="file"
+														className="sr-only"
+														accept=".xls, .xlsx, .xlsm"
+														onChange={(e) => setNewCourseQuiz(e.target.files[0])}
+													/>
 												</label>
 											</div>
 										</div>
@@ -121,7 +196,11 @@ const CreateCourseModal = (props) => {
 
 								<div className="mt-4 flex flex-row justify-end gap-2">
 									<SecondaryButton label="Cancel" onClick={() => setOpen(false)}/>
-									<SuccessButton label="Publish" onClick={() => {}}/>
+									<SuccessButton
+										label="Publish"
+										// disabled={emptyTitle || emptyDescription || emptyCourseContent || emptyCourseQuiz}
+										onClick={onPublish}
+									/>
 								</div>
 							</Dialog.Panel>
 						</Transition.Child>

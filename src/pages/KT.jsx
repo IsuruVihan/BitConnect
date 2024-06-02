@@ -10,6 +10,8 @@ import SelectedCourseHeader from "../components/KT/SelectedCourseHeader";
 import SelectedCourseBody from "../components/KT/SelectedCourseBody";
 import CreateCourseModal from "../components/modals/CreateCourseModal";
 import ConfirmCompleteKTCourseModal from "../components/modals/ConfirmCompleteKTCourseModal";
+import * as XLSX from "xlsx";
+import getFileBlob from "../lib/getFileBlob";
 
 const KT = () => {
     const [tabs, setTabs] = useState([
@@ -87,7 +89,15 @@ const KT = () => {
 
     const [createCourseModalOpen, setCreateCourseModalOpen] = useState(false);
     const [createCourseModuleErrorModalOpen, setCreateCourseModuleErrorModalOpen] = useState(false);
+    const [createCourseModuleQuizErrorModalOpen, setCreateCourseModuleQuizErrorModalOpen]
+      = useState(false);
     const [createCourseModuleSuccessModalOpen, setCreateCourseModuleSuccessModalOpen] = useState(false);
+
+    const [newCourseTitle, setNewCourseTitle] = useState("");
+    const [newCourseType, setNewCourseType] = useState("Company Rules & Regulations");
+    const [newCourseDescription, setNewCourseDescription] = useState("");
+    const [newCourseContent, setNewCourseContent] = useState(null);
+    const [newCourseQuiz, setNewCourseQuiz] = useState(null);
 
     // filter leaderboard
     useEffect(() => {
@@ -254,6 +264,132 @@ const KT = () => {
           });
     }
 
+    const publishCourse = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('Title', newCourseTitle);
+            formData.append('Description', newCourseDescription);
+            formData.append('Type', newCourseType);
+
+            // const contentBlob = await getFileBlob(newCourseContent);
+            // formData.append('Content', contentBlob);
+            formData.append('Content', newCourseContent);
+
+            const quizBlob = await getFileBlob(newCourseQuiz);
+            formData.append('Quiz', quizBlob);
+
+            return {
+                result: await fetch(`http://localhost:4000/courses`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    },
+                    body: formData,
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const validateData = (data) => {
+        // Condition 1: Length of data array >= 4
+        if (data.length < 4) {
+            console.log('Condition 1 failed: Length of data array is less than 4.');
+            return false;
+        }
+
+        for (let index = 0; index < data.length; index++) {
+            const item = data[index];
+
+            // Condition 2: Only one "Question" field
+            if (!item.hasOwnProperty("Question") || Object.keys(item).filter(key => key === "Question").length !== 1) {
+                console.log(`Condition 2 failed at index ${index}: Object does not contain exactly one "Question" field.`);
+                return false;
+            }
+
+            // Condition 3: Question field cannot be empty or whitespace only
+            if (!item.Question.trim()) {
+                console.log(`Condition 3 failed at index ${index}: "Question" field is empty or whitespace only.`);
+                return false;
+            }
+
+            // Condition 4: 4 "Option_" fields
+            const options = Object.keys(item).filter(key => key.startsWith("Option"));
+            if (options.length !== 4) {
+                console.log(`Condition 4 failed at index ${index}: Object does not contain 4 "Option_" fields.`);
+                return false;
+            }
+
+            // Condition 5: Options cannot be empty or whitespace only
+            for (let option of options) {
+                if (!item[option].trim()) {
+                    console.log(`Condition 5 failed at index ${index}: "${option}" field is empty or whitespace only.`);
+                    return false;
+                }
+            }
+
+            // Condition 6: Options should be in order and no missing numbers
+            for (let i = 1; i <= options.length; i++) {
+                if (!item.hasOwnProperty(`Option${i}`)) {
+                    console.log(`Condition 6 failed at index ${index}: Missing "Option${i}".`);
+                    return false;
+                }
+            }
+
+            // Condition 7: Same value cannot be in multiple "Option"s
+            const optionValues = options.map(option => item[option]);
+            const uniqueOptionValues = new Set(optionValues);
+            if (uniqueOptionValues.size !== optionValues.length) {
+                console.log(`Condition 7 failed at index ${index}: Duplicate values in "Option_" fields.`);
+                return false;
+            }
+
+            // Condition 8: Only one "CorrectAnswer" field
+            if (!item.hasOwnProperty("CorrectAnswer") || Object.keys(item).filter(key => key === "CorrectAnswer").length !== 1) {
+                console.log(`Condition 8 failed at index ${index}: Object does not contain exactly one "CorrectAnswer" field.`);
+                return false;
+            }
+
+            // Condition 9: CorrectAnswer field cannot be empty or whitespace only
+            if (!item.CorrectAnswer.trim()) {
+                console.log(`Condition 9 failed at index ${index}: "CorrectAnswer" field is empty or whitespace only.`);
+                return false;
+            }
+
+            // Condition 10: Value of CorrectAnswer must be one of the "Option_" fields
+            if (!item.hasOwnProperty(item.CorrectAnswer)) {
+                console.log(`Condition 10 failed at index ${index}: "CorrectAnswer" value does not match any "Option_" fields.`);
+                return false;
+            }
+        }
+
+        return true;
+    }
+    const handleOnPublishCourse = () => {
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(newCourseQuiz);
+        fileReader.onload = (e) => {
+            const workbook = XLSX.read(e.target.result, {type: "buffer"});
+            const worksheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[worksheetName];
+            const data = XLSX.utils.sheet_to_json(worksheet);
+
+            if (validateData(data)) {
+                publishCourse()
+                  .then((r) => {
+                      if (r.error || r.status !== 200) {
+                          setCreateCourseModuleErrorModalOpen(true);
+                      } else {
+                          setCreateCourseModuleSuccessModalOpen(true);
+                      }
+                  })
+            } else {
+                setCreateCourseModuleQuizErrorModalOpen(true);
+            }
+        };
+    }
+
     return (
       <div>
           {/*Modals*/}
@@ -295,12 +431,32 @@ const KT = () => {
                 setOpen={setCourseCompletionSuccessModalOpen}
               />
 
-              <CreateCourseModal open={createCourseModalOpen} setOpen={setCreateCourseModalOpen}/>
+              <CreateCourseModal
+                open={createCourseModalOpen}
+                setOpen={setCreateCourseModalOpen}
+                newCourseTitle={newCourseTitle}
+                setNewCourseTitle={setNewCourseTitle}
+                newCourseType={newCourseType}
+                setNewCourseType={setNewCourseType}
+                newCourseDescription={newCourseDescription}
+                setNewCourseDescription={setNewCourseDescription}
+                newCourseContent={newCourseContent}
+                setNewCourseContent={setNewCourseContent}
+                newCourseQuiz={newCourseQuiz}
+                setNewCourseQuiz={setNewCourseQuiz}
+                onPublish={handleOnPublishCourse}
+              />
               <ErrorModal
                 title={"Create Course Module"}
                 message={"An error occurred while creating the course module. Please try again."}
                 open={createCourseModuleErrorModalOpen}
                 setOpen={setCreateCourseModuleErrorModalOpen}
+              />
+              <ErrorModal
+                title={"Create Course Module"}
+                message={"Please re-check the quiz CSV file."}
+                open={createCourseModuleQuizErrorModalOpen}
+                setOpen={setCreateCourseModuleQuizErrorModalOpen}
               />
               <SuccessModal
                 title={"Create Course Module"}
