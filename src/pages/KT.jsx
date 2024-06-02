@@ -1,305 +1,533 @@
-import React, { Fragment, useState } from 'react'
-import { Dialog, Menu, Transition } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
-import {PrimaryButton} from "../components/Button";
+import React, {useEffect, useState} from 'react';
+import ErrorModal from "../components/modals/ErrorModal";
+import SuccessModal from "../components/modals/SuccessModal";
+import CoursesHeader from "../components/KT/CourseHeader";
+import LeaderboardHeader from "../components/KT/LeaderboardHeader";
+import CoursesBody from "../components/KT/CoursesBody";
+import LeaderboardBody from "../components/KT/LeaderboardBody";
+import Tabs from "../components/KT/Tabs";
+import SelectedCourseHeader from "../components/KT/SelectedCourseHeader";
+import SelectedCourseBody from "../components/KT/SelectedCourseBody";
+import CreateCourseModal from "../components/modals/CreateCourseModal";
+import ConfirmCompleteKTCourseModal from "../components/modals/ConfirmCompleteKTCourseModal";
+import * as XLSX from "xlsx";
+import getFileBlob from "../lib/getFileBlob";
 
-const products = [
-    {
-        id: 1,
-        name: 'Introduction to Organization',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐10',
-    },
-    {
-        id: 2,
-        name: 'Introduction to Project z91',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐40',
-    },
-    {
-        id: 3,
-        name: 'Introduction to Project MAS',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐14',
-    },
-    {
-        id: 4,
-        name: 'Introduction to Project 001',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐10',
-    },
-    {
-        id: 5,
-        name: 'Introduction to Project Nutela',
-        author: 'Author Name',
-        href: '#',
-        imageSrc: 'https://static.vecteezy.com/system/resources/previews/000/421/699/non_2x/vector-documents-icon.jpg',
-        imageAlt: 'Front of zip tote bag with white canvas, black canvas straps and handle, and black zipper pulls.',
-        points: '⭐10',
-    },
-    // More products...
-]
-
-const tabs = [
-    { name: 'LeaderBoard', href: '#', current: true },
-]
-const team = [
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    {
-        name: 'Leslie Alexander',
-        handle: 'lesliealexander',
-        href: '#',
-        imageUrl:
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        status: 'online',
-    },
-    // More people...
-]
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
-// export default function KT() {
-//     const [open, setOpen] = useState(true)
 const KT = () => {
-    const [open, setOpen] = useState(false)
+    const [tabs, setTabs] = useState([
+        {name: 'Courses', current: true},
+        {name: 'Leaderboard', current: false},
+    ]);
+
+    const [people, setPeople] = useState([
+        // {
+        // 	id: '1',
+        // 	name: 'Leslie Alexander',
+        // 	email: 'leslie.alexander@example.com',
+        // 	points: 100,
+        // },
+    ]);
+    const [leaderboardFilterQuery, setLeaderboardFilterQuery] = useState("");
+    const [visiblePeople, setVisiblePeople] = useState([]);
+
+    const [courses, setCourses] = useState([
+        // {
+        // 	id: '1',
+        // 	title: "Workplace Conduct",
+        // 	description: "Guidelines on appropriate workplace behavior and conduct.",
+        // 	type: "Company Rules & Regulations",
+        // 	points: 70,
+        // 	createdBy: {
+        // 		name: "Isuru Harischandra",
+        // 		email: "isuru@bitzquad.com"
+        // 	},
+        // 	completed: false,
+        // },
+    ]);
+    const [visibleCourses, setVisibleCourses] = useState([]);
+    const [courseFilterQuery, setCourseFilterQuery] = useState("");
+    const [courseTypeFilterQuery, setCourseTypeFilterQuery] = useState("All");
+    const [selectedCourse, setSelectedCourse] = useState(null
+      // {
+      // 	id: '1',
+      // 	title: "Workplace Conduct",
+      // 	description: "Guidelines on appropriate workplace behavior and conduct.",
+      // 	type: "Company Rules & Regulations",
+      // 	points: 70,
+      // 	createdBy: {
+      // 		name: "Isuru Harischandra",
+      // 		email: "isuru@bitzquad.com"
+      // 	},
+      // 	completed: true,
+      // 	pdfUrl: "https://firebasestorage.googleapis.com/v0/b/bitconnect-f6fc8.appspot.com/o/kt-courses%2Fdbb780103c94a3dba3e3297cc3cd52678fb9b0e21ebd13b01d8a1ac74225e252.pdf?alt=media&token=65b963c4-3270-47bd-a7d0-dac42835c553",
+      // 	score: 30,
+    );
+    const [quiz, setQuiz] = useState([
+        // {
+        // 	id: '1',
+        // 	question: "What is the capital of France?",
+        // 	answers: [
+        // 		{id: '1', text: "Paris", checked: true},
+        // 		{id: '2', text: "London", checked: false},
+        // 		{id: '3', text: "Rome", checked: false},
+        // 		{id: '4', text: "Berlin", checked: false},
+        // 	],
+        // },
+    ]);
+
+    const [retrieveCourseModulesErrorModalOpen, setRetrieveCourseModulesErrorModalOpen]
+      = useState(false);
+
+    const [retrieveLeaderboardErrorModalOpen, setRetrieveLeaderboardErrorModalOpen] = useState(false);
+
+    const [retrieveCourseContentErrorModalOpen, setRetrieveCourseContentErrorModalOpen]
+      = useState(false);
+
+    const [confirmCourseCompletionModalOpen, setConfirmCourseCompletionModalOpen] = useState(false);
+    const [courseCompletionErrorModalOpen, setCourseCompletionErrorModalOpen] = useState(false);
+    const [courseCompletionSuccessModalOpen, setCourseCompletionSuccessModalOpen] = useState(false);
+
+    const [createCourseModalOpen, setCreateCourseModalOpen] = useState(false);
+    const [createCourseModuleErrorModalOpen, setCreateCourseModuleErrorModalOpen] = useState(false);
+    const [createCourseModuleQuizErrorModalOpen, setCreateCourseModuleQuizErrorModalOpen]
+      = useState(false);
+    const [createCourseModuleSuccessModalOpen, setCreateCourseModuleSuccessModalOpen] = useState(false);
+
+    const [newCourseTitle, setNewCourseTitle] = useState("");
+    const [newCourseType, setNewCourseType] = useState("Company Rules & Regulations");
+    const [newCourseDescription, setNewCourseDescription] = useState("");
+    const [newCourseContent, setNewCourseContent] = useState(null);
+    const [newCourseQuiz, setNewCourseQuiz] = useState(null);
+
+    // filter leaderboard
+    useEffect(() => {
+        setTimeout(() => {
+            const filteredPeople
+              = people.filter(p => p.name.toLowerCase().includes(leaderboardFilterQuery.trim().toLowerCase()));
+            setVisiblePeople(filteredPeople);
+        }, 2000);
+    }, [people, leaderboardFilterQuery]);
+
+    // filter courses
+    useEffect(() => {
+        setTimeout(() => {
+            const filteredCourses = courses.filter(c =>
+              c.title.toLowerCase().includes(courseFilterQuery.trim().toLowerCase()) &&
+              (courseTypeFilterQuery === "All" ? true : c.type === courseTypeFilterQuery)
+            );
+            setVisibleCourses(filteredCourses);
+        }, 2000);
+    }, [courses, courseFilterQuery, courseTypeFilterQuery]);
+
+    const getCourses = async () => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/courses`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    }
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const getLeaderboard = async () => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/leaderboard`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    }
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    useEffect(() => {
+        // get courses
+        getCourses()
+          .then(r => {
+              if (r.error)
+                  return setRetrieveCourseModulesErrorModalOpen(true);
+              return r.result.json();
+          })
+          .then((data) => {
+              setCourses(data.courses);
+          });
+
+        // get leaderboard
+        getLeaderboard()
+          .then(r => {
+              if (r.error)
+                  return setRetrieveLeaderboardErrorModalOpen(true);
+              return r.result.json();
+          })
+          .then((data) => {
+              setPeople(data.leaderboard);
+          });
+    }, []);
+
+    const getCourse = async (courseId) => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/courses/${courseId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    }
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const handleOnClickCourse = (course) => {
+        getCourse(course.id)
+          .then((r) => {
+              if (r.error) {
+                  return setRetrieveCourseContentErrorModalOpen(true);
+              }
+              return r.result.json();
+          })
+          .then((data) => {
+              setSelectedCourse({
+                  ...course,
+                  ...data.courseData,
+                  pdfUrl: data.courseData.pdfUrl,
+                  score: data.courseData.score,
+              });
+
+              setQuiz(data.courseData.quiz.map((q) => {
+                  return {
+                      id: q.QuizId,
+                      question: q.Question,
+                      answers: q.answerOptions.map((a) => {
+                          return {
+                              id: a.AnswerOptionId,
+                              text: a.Text,
+                              checked: !!(a.Answer && a.Answer === 1),
+                          };
+                      }),
+                  };
+              }));
+          });
+    }
+
+    const completeCourse = async () => {
+        try {
+            return {
+                result: await fetch(`http://localhost:4000/courses/${selectedCourse.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        quiz: quiz.map((q) => {
+                            return {
+                                id: q.id,
+                                answers: q.answers.map((a) => {
+                                    return {
+                                        id: a.id,
+                                        checked: a.checked,
+                                    };
+                                }),
+                            };
+                        }),
+                    }),
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const handleOnCourseComplete = () => {
+        completeCourse()
+          .then((r) => {
+              if (r.error || r.result.status !== 200) {
+                  setCourseCompletionErrorModalOpen(true);
+              } else {
+                  setCourseCompletionSuccessModalOpen(true);
+                  setTimeout(() => window.location.reload(), 2000);
+              }
+          })
+          .catch(() => {
+              setCourseCompletionErrorModalOpen(true);
+          });
+    }
+
+    const publishCourse = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('Title', newCourseTitle);
+            formData.append('Description', newCourseDescription);
+            formData.append('Type', newCourseType);
+
+            // const contentBlob = await getFileBlob(newCourseContent);
+            // formData.append('Content', contentBlob);
+            formData.append('Content', newCourseContent);
+
+            const quizBlob = await getFileBlob(newCourseQuiz);
+            formData.append('Quiz', quizBlob);
+
+            return {
+                result: await fetch(`http://localhost:4000/courses`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    },
+                    body: formData,
+                }),
+                error: false
+            };
+        } catch (error) {
+            return {error: true};
+        }
+    }
+    const validateData = (data) => {
+        // Condition 1: Length of data array >= 4
+        if (data.length < 4) {
+            console.log('Condition 1 failed: Length of data array is less than 4.');
+            return false;
+        }
+
+        for (let index = 0; index < data.length; index++) {
+            const item = data[index];
+
+            // Condition 2: Only one "Question" field
+            if (!item.hasOwnProperty("Question") || Object.keys(item).filter(key => key === "Question").length !== 1) {
+                console.log(`Condition 2 failed at index ${index}: Object does not contain exactly one "Question" field.`);
+                return false;
+            }
+
+            // Condition 3: Question field cannot be empty or whitespace only
+            if (!item.Question.trim()) {
+                console.log(`Condition 3 failed at index ${index}: "Question" field is empty or whitespace only.`);
+                return false;
+            }
+
+            // Condition 4: 4 "Option_" fields
+            const options = Object.keys(item).filter(key => key.startsWith("Option"));
+            if (options.length !== 4) {
+                console.log(`Condition 4 failed at index ${index}: Object does not contain 4 "Option_" fields.`);
+                return false;
+            }
+
+            // Condition 5: Options cannot be empty or whitespace only
+            for (let option of options) {
+                if (!item[option].trim()) {
+                    console.log(`Condition 5 failed at index ${index}: "${option}" field is empty or whitespace only.`);
+                    return false;
+                }
+            }
+
+            // Condition 6: Options should be in order and no missing numbers
+            for (let i = 1; i <= options.length; i++) {
+                if (!item.hasOwnProperty(`Option${i}`)) {
+                    console.log(`Condition 6 failed at index ${index}: Missing "Option${i}".`);
+                    return false;
+                }
+            }
+
+            // Condition 7: Same value cannot be in multiple "Option"s
+            const optionValues = options.map(option => item[option]);
+            const uniqueOptionValues = new Set(optionValues);
+            if (uniqueOptionValues.size !== optionValues.length) {
+                console.log(`Condition 7 failed at index ${index}: Duplicate values in "Option_" fields.`);
+                return false;
+            }
+
+            // Condition 8: Only one "CorrectAnswer" field
+            if (!item.hasOwnProperty("CorrectAnswer") || Object.keys(item).filter(key => key === "CorrectAnswer").length !== 1) {
+                console.log(`Condition 8 failed at index ${index}: Object does not contain exactly one "CorrectAnswer" field.`);
+                return false;
+            }
+
+            // Condition 9: CorrectAnswer field cannot be empty or whitespace only
+            if (!item.CorrectAnswer.trim()) {
+                console.log(`Condition 9 failed at index ${index}: "CorrectAnswer" field is empty or whitespace only.`);
+                return false;
+            }
+
+            // Condition 10: Value of CorrectAnswer must be one of the "Option_" fields
+            if (!item.hasOwnProperty(item.CorrectAnswer)) {
+                console.log(`Condition 10 failed at index ${index}: "CorrectAnswer" value does not match any "Option_" fields.`);
+                return false;
+            }
+        }
+
+        return true;
+    }
+    const handleOnPublishCourse = () => {
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(newCourseQuiz);
+        fileReader.onload = (e) => {
+            const workbook = XLSX.read(e.target.result, {type: "buffer"});
+            const worksheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[worksheetName];
+            const data = XLSX.utils.sheet_to_json(worksheet);
+
+            if (validateData(data)) {
+                publishCourse()
+                  .then((r) => {
+                      if (r.error || r.status !== 200) {
+                          setCreateCourseModuleErrorModalOpen(true);
+                      } else {
+                          setCreateCourseModuleSuccessModalOpen(true);
+                      }
+                  })
+            } else {
+                setCreateCourseModuleQuizErrorModalOpen(true);
+            }
+        };
+    }
+
     return (
-      <>
-          <div className="w-full flex justify-center items-center">
-              {/*    <div className="px-3 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer" onClick={() => setOpen(true)}>*/}
-              {/*        Leaderboard*/}
-              {/*    </div>*/}
+      <div>
+          {/*Modals*/}
+          <>
+              <ErrorModal
+                title={"Course Modules"}
+                message={"An error occurred while retrieving course modules. Please try again."}
+                open={retrieveCourseModulesErrorModalOpen}
+                setOpen={setRetrieveCourseModulesErrorModalOpen}
+              />
+              <ErrorModal
+                title={"Leaderboard"}
+                message={"An error occurred while retrieving the leaderboard. Please try again."}
+                open={retrieveLeaderboardErrorModalOpen}
+                setOpen={setRetrieveLeaderboardErrorModalOpen}
+              />
+              <ErrorModal
+                title={"Course Content"}
+                message={"An error occurred while retrieving course content. Please try again."}
+                open={retrieveCourseContentErrorModalOpen}
+                setOpen={setRetrieveCourseContentErrorModalOpen}
+              />
 
-              <PrimaryButton onClick={() => setOpen(true)} label={"Leaderboard"} color={"indigo"} width={"96"}/>
-          </div>
-          {/*Courses*/}
-          <div className="bg-white">
-              <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                  <div className="grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-                      {products.map((product) => (
-                        <div key={product.id}>
-                            <div className="relative">
-                                <div className="relative h-72 w-full overflow-hidden rounded-lg">
-                                    <img
-                                      src={product.imageSrc}
-                                      alt={product.imageAlt}
-                                      className="h-full w-full object-cover object-center"
-                                    />
-                                </div>
-                                <div className="relative mt-4">
-                                    <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
-                                    <p className="mt-1 text-sm text-gray-500">{product.author}</p>
-                                </div>
-                                <div
-                                  className="absolute inset-x-0 top-0 flex h-72 items-end justify-end overflow-hidden rounded-lg p-4">
-                                    <div
-                                      aria-hidden="true"
-                                      className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
-                                    />
-                                    <p className="relative text-lg font-semibold text-white">{product.points}</p>
-                                </div>
-                            </div>
-                            <div className="mt-6">
-                                <a
-                                  href={product.href}
-                                  className="relative flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
-                                >
-                                    View Course<span className="sr-only">, {product.name}</span>
-                                </a>
-                            </div>
-                        </div>
-                      ))}
-                  </div>
-              </div>
-          </div>
+              <ConfirmCompleteKTCourseModal
+                open={confirmCourseCompletionModalOpen}
+                setOpen={setConfirmCourseCompletionModalOpen}
+                onClickComplete={handleOnCourseComplete}
+              />
+              <ErrorModal
+                title={"Course Completion"}
+                message={"An error occurred while completing the course module. Please try again."}
+                open={courseCompletionErrorModalOpen}
+                setOpen={setCourseCompletionErrorModalOpen}
+              />
+              <SuccessModal
+                title={"Course Completion"}
+                message={"Course module has been completed successfully."}
+                open={courseCompletionSuccessModalOpen}
+                setOpen={setCourseCompletionSuccessModalOpen}
+              />
 
-          {/*Leader Board*/}
-          <Transition.Root show={open} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={setOpen}>
-                  <div className="fixed inset-0"/>
+              <CreateCourseModal
+                open={createCourseModalOpen}
+                setOpen={setCreateCourseModalOpen}
+                newCourseTitle={newCourseTitle}
+                setNewCourseTitle={setNewCourseTitle}
+                newCourseType={newCourseType}
+                setNewCourseType={setNewCourseType}
+                newCourseDescription={newCourseDescription}
+                setNewCourseDescription={setNewCourseDescription}
+                newCourseContent={newCourseContent}
+                setNewCourseContent={setNewCourseContent}
+                newCourseQuiz={newCourseQuiz}
+                setNewCourseQuiz={setNewCourseQuiz}
+                onPublish={handleOnPublishCourse}
+              />
+              <ErrorModal
+                title={"Create Course Module"}
+                message={"An error occurred while creating the course module. Please try again."}
+                open={createCourseModuleErrorModalOpen}
+                setOpen={setCreateCourseModuleErrorModalOpen}
+              />
+              <ErrorModal
+                title={"Create Course Module"}
+                message={"Please re-check the quiz CSV file."}
+                open={createCourseModuleQuizErrorModalOpen}
+                setOpen={setCreateCourseModuleQuizErrorModalOpen}
+              />
+              <SuccessModal
+                title={"Create Course Module"}
+                message={"Course module has been created successfully."}
+                open={createCourseModuleSuccessModalOpen}
+                setOpen={setCreateCourseModuleSuccessModalOpen}
+              />
+          </>
 
-                  <div className="fixed inset-0 overflow-hidden">
-                      <div className="absolute inset-0 overflow-hidden">
-                          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                              <Transition.Child
-                                as={Fragment}
-                                enter="transform transition ease-in-out duration-500 sm:duration-700"
-                                enterFrom="translate-x-full"
-                                enterTo="translate-x-0"
-                                leave="transform transition ease-in-out duration-500 sm:duration-700"
-                                leaveFrom="translate-x-0"
-                                leaveTo="translate-x-full"
-                              >
-                                  <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                                      <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                                          <div className="p-6">
-                                              <div className="flex items-start justify-between">
-                                                  <Dialog.Title
-                                                    className="text-base font-semibold leading-6 text-gray-900">Team</Dialog.Title>
-                                                  <div className="ml-3 flex h-7 items-center">
-                                                      <button
-                                                        type="button"
-                                                        className="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                                                        onClick={() => setOpen(false)}
-                                                      >
-                                                          <span className="absolute -inset-2.5"/>
-                                                          <span className="sr-only">Close panel</span>
-                                                          <XMarkIcon className="h-6 w-6" aria-hidden="true"/>
-                                                      </button>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                          <div className="border-b border-gray-200">
-                                              <div className="px-6">
-                                                  <nav className="-mb-px flex space-x-6">
-                                                      {tabs.map((tab) => (
-                                                        <a
-                                                          key={tab.name}
-                                                          href={tab.href}
-                                                          className={classNames(
-                                                            tab.current
-                                                              ? 'border-indigo-500 text-indigo-600'
-                                                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                                                            'whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium'
-                                                          )}
-                                                        >
-                                                            {tab.name}
-                                                        </a>
-                                                      ))}
-                                                  </nav>
-                                              </div>
-                                          </div>
-                                          <ul role="list" className="flex-1 divide-y divide-gray-200 overflow-y-auto">
-                                              {team.map((person) => (
-                                                <li key={person.handle}>
-                                                    <div className="group relative flex items-center px-5 py-6">
-                                                        <a href={person.href} className="-m-1 block flex-1 p-1">
-                                                            <div className="absolute inset-0 group-hover:bg-gray-50"
-                                                                 aria-hidden="true"/>
-                                                            <div className="relative flex min-w-0 flex-1 items-center">
-                                    <span className="relative inline-block flex-shrink-0">
-                                      <img className="h-10 w-10 rounded-full" src={person.imageUrl} alt=""/>
-                                      <span
-                                        className={classNames(
-                                          person.status === 'online' ? 'bg-green-400' : 'bg-gray-300',
-                                          'absolute top-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white'
-                                        )}
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                                                <div className="ml-4 truncate">
-                                                                    <p
-                                                                      className="truncate text-sm font-medium text-gray-900">{person.name}</p>
-                                                                    <p
-                                                                      className="truncate text-sm text-gray-500">{'@' + person.handle}</p>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                        <Menu as="div"
-                                                              className="relative ml-2 inline-block flex-shrink-0 text-left">
-                                                            <Menu.Button
-                                                              className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                                                <span className="absolute -inset-1.5"/>
-                                                                <span className="sr-only">Open options menu</span>
-                                                                <span
-                                                                  className="flex h-full w-full items-center justify-center rounded-full">
-                                      <EllipsisVerticalIcon
-                                        className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                                            </Menu.Button>
-                                                            <Transition
-                                                              as={Fragment}
-                                                              enter="transition ease-out duration-100"
-                                                              enterFrom="transform opacity-0 scale-95"
-                                                              enterTo="transform opacity-100 scale-100"
-                                                              leave="transition ease-in duration-75"
-                                                              leaveFrom="transform opacity-100 scale-100"
-                                                              leaveTo="transform opacity-0 scale-95"
-                                                            >
-                                                                <Menu.Items
-                                                                  className="absolute right-9 top-0 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                                    <div className="py-1">
-                                                                        <Menu.Item>
-                                                                            {({active}) => (
-                                                                              <a
-                                                                                href="#"
-                                                                                className={classNames(
-                                                                                  active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                                  'block px-4 py-2 text-sm'
-                                                                                )}
-                                                                              >
-                                                                                  View profile
-                                                                              </a>
-                                                                            )}
-                                                                        </Menu.Item>
-                                                                        <Menu.Item>
-                                                                            {({active}) => (
-                                                                              <a
-                                                                                href="#"
-                                                                                className={classNames(
-                                                                                  active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                                                                  'block px-4 py-2 text-sm'
-                                                                                )}
-                                                                              >
-                                                                                  Send message
-                                                                              </a>
-                                                                            )}
-                                                                        </Menu.Item>
-                                                                    </div>
-                                                                </Menu.Items>
-                                                            </Transition>
-                                                        </Menu>
-                                                    </div>
-                                                </li>
-                                              ))}
-                                          </ul>
-                                      </div>
-                                  </Dialog.Panel>
-                              </Transition.Child>
+          {selectedCourse ?
+            <> {/*Course selected*/}
+                <SelectedCourseHeader
+                  selectedCourse={selectedCourse}
+                  setSelectedCourse={setSelectedCourse}
+                  handleOnClickCompleteCourse={() => setConfirmCourseCompletionModalOpen(true)}
+                />
+                <SelectedCourseBody quiz={quiz} setQuiz={setQuiz} selectedCourse={selectedCourse}/>
+            </> :
+            <> {/*Course not selected*/}
+                {/*md <=*/}
+                <div className="md:grid md:grid-cols-5 gap-y-2 gap-x-8 hidden">
+                    <CoursesHeader
+                      courseFilterQuery={courseFilterQuery}
+                      setCourseFilterQuery={setCourseFilterQuery}
+                      setCreateCourseModalOpen={setCreateCourseModalOpen}
+                      courseTypeFilterQuery={courseTypeFilterQuery}
+                      setCourseTypeFilterQuery={setCourseTypeFilterQuery}
+                    />
+                    <LeaderboardHeader
+                      leaderboardFilterQuery={leaderboardFilterQuery}
+                      setLeaderboardFilterQuery={setLeaderboardFilterQuery}
+                    />
+                    <div className="md:col-span-3 divide-y divide-gray-200 rounded-lg bg-gray-200 shadow sm:grid sm:grid-cols-2
+						sm:gap-px sm:divide-y-0 xl:max-h-[70vh] md:max-h-[69vh] overflow-y-auto">
+                        <CoursesBody courses={visibleCourses} handleOnClickCourse={handleOnClickCourse}/>
+                    </div>
+                    <div className="md:col-span-2 xl:max-h-[70vh] md:max-h-[69vh] overflow-y-auto">
+                        <LeaderboardBody people={visiblePeople}/>
+                    </div>
+                </div>
+
+                {/*md >*/}
+                <div className="md:hidden">
+                    <Tabs tabs={tabs} setTabs={setTabs}/>
+                    {tabs.filter(t => t.current)[0].name === "Courses" ?
+                      <>
+                          <CoursesHeader
+                            courseFilterQuery={courseFilterQuery}
+                            setCourseFilterQuery={setCourseFilterQuery}
+                            setCreateCourseModalOpen={setCreateCourseModalOpen}
+                            courseTypeFilterQuery={courseTypeFilterQuery}
+                            setCourseTypeFilterQuery={setCourseTypeFilterQuery}
+                          />
+                          <div className="max-h-[75vh] overflow-y-auto">
+                              <CoursesBody courses={visibleCourses} handleOnClickCourse={handleOnClickCourse}/>
                           </div>
-                      </div>
-                  </div>
-              </Dialog>
-          </Transition.Root>
-      </>);
+                      </> :
+                      <>
+                          <LeaderboardHeader
+                            leaderboardFilterQuery={leaderboardFilterQuery}
+                            setLeaderboardFilterQuery={setLeaderboardFilterQuery}
+                          />
+                          <div className="max-h-[67vh] overflow-y-auto">
+                              <LeaderboardBody people={visiblePeople}/>
+                          </div>
+                      </>
+                    }
+                </div>
+            </>
+          }
+      </div>
+    );
 }
 export default KT;
