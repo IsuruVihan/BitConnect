@@ -1,5 +1,7 @@
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid'
 import {PrimaryButton} from "../components/Button";
+import CreateEmpAccModal from "../components/modals/CreateEmpAccModal";
+import {useState} from "react";
 
 const people = [
   {
@@ -77,16 +79,41 @@ const people = [
 
 ]
 
-const createAccount = () => {
-  // Implement report generation logic
-  console.log('Account created');
-};
-
 const EmpView = () => {
+  const [openCreateEmpAccModal, setOpenCreateEmpAccModal] = useState(false);
+  const [fname, setfName] = useState('');
+  const [lname, setlName] = useState('');
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState('');
+  const [team, setTeam] = useState('');
+  const [joinedDate, setJoinedDate] = useState('');
+
+  const handleCreateAccount = () => {
+    //Add certain actions to perform
+  };
+
   return (
     <>
+      <CreateEmpAccModal
+        open={openCreateEmpAccModal}
+        setOpen={setOpenCreateEmpAccModal}
+        firstName={fname}
+        setFirstName={setfName}
+        lastName={lname}
+        setLastName={setlName}
+        empEmail={email}
+        setEmpEmail={setEmail}
+        empRole={role}
+        setEmpRole={setRole}
+        empTeam={team}
+        setEmpTeam={setTeam}
+        joinedDate={joinedDate}
+        setJoinedDate={setJoinedDate}
+        createAccount={handleCreateAccount}
+      />
+
       <div className="flex justify-center mb-4">
-        <PrimaryButton onClick={() => {}} width={'96'} label={'Create Account'} color={'indigo'}/>
+        <PrimaryButton onClick={() => setOpenCreateEmpAccModal(true)} width={'96'} label={'Create Account'} color={'indigo'}/>
       </div>
       <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {people.map((person) => (

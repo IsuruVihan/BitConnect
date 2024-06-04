@@ -143,10 +143,6 @@ const Leave = () => {
   const currentRecords = leaveRecords.slice(startIndex, endIndex);
 
   const handleGenerateReport = () => {
-    // FromDate
-    // ToDate
-    // Type
-
     const filteredData = leaveRecords.filter((record) => {
       const fd = new Date(record.FromDate);
       const td = new Date(record.ToDate);
