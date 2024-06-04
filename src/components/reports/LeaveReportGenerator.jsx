@@ -48,11 +48,12 @@ const styles = StyleSheet.create({
 	},
 });
 
-function AttendanceReportGenerator({open, setOpen, data}) {
+function LeaveReportGenerator({open, setOpen, reportData}) {
 	const [currentDate, setCurrentDate] = useState("");
 	const [currentTime, setCurrentTime] = useState("");
 
 	useEffect(() => {
+		console.log("hello");
 		const d = new Date();
 		const year = d.getFullYear();
 		const month = d.getMonth() + 1;
@@ -63,6 +64,7 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 		setCurrentDate(`${year}-${month < 10 ? '0' + month : month}-${date < 10 ? '0' + date : date}`);
 		setCurrentTime(`${hours < 10 ? '0' + hours : hours}:${mins < 10 ? '0' + mins : mins}:${secs < 10 ? '0' + secs : secs}`);
 	}, []);
+
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -105,7 +107,7 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 												flexDirection: "row",
 												alignItems: "center",
 												justifyContent: "space-between",
-											}}>
+												}}>
 												<View style={{width: '30%',}}>
 													<Image src={Logo} style={{width: 25, height: 25,}}/>
 												</View>
@@ -120,7 +122,7 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 												</View>
 											</View>
 											<View style={{marginTop: 30, textAlign: "center", fontSize: 24,}}>
-												<Text>Attendance Report</Text>
+												<Text>Leave Report</Text>
 											</View>
 											<View style={{borderTop: '1px solid gray', marginTop: 10,}}>
 												<View style={{display: "flex",
@@ -132,29 +134,36 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 														<Text>Role</Text>
 													</View>
 													<View>
-														<Text style={{ textAlign: 'right'} }>From: {data.from}</Text>
+														<Text style={{ textAlign: 'right'} }>From: {reportData.from}</Text>
 													</View>
 													<View>
-														<Text style={{ textAlign: 'right'} }>To: {data.to}</Text>
+														<Text style={{ textAlign: 'right'} }>To: {reportData.to}</Text>
+													</View>
+													<View>
+														<Text style={{ textAlign: 'right'} }>Type: {reportData.type.label}</Text>
 													</View>
 												</View>
 											</View>
 											<View style={styles.section}>
 												<View style={styles.table}>
 													<View style={styles.tableRow}>
-														<View style={styles.tableCellHeader}><Text>Date</Text></View>
-														<View style={styles.tableCellHeader}><Text>Checked In</Text></View>
-														<View style={styles.tableCellHeader}><Text>Checked Out</Text></View>
+														<View style={styles.tableCellHeader}><Text>From</Text></View>
+														<View style={styles.tableCellHeader}><Text>To</Text></View>
+														<View style={styles.tableCellHeader}><Text>Leave Type</Text></View>
+														<View style={styles.tableCellHeader}><Text>Status</Text></View>
+														<View style={styles.tableCellHeader}><Text>Reason</Text></View>
 													</View>
-													{data.data.map((row, index) => (
+													{reportData.rows.map((row, index) => (
 														<View style={styles.tableRow} key={index}>
-																	<View style={styles.tableCell}><Text>{row.date}</Text></View>
-																	<View style={styles.tableCell}><Text>{row.CheckInTime}</Text></View>
-																	<View style={styles.tableCell}><Text>{row.CheckOutTime}</Text></View>
+															<View style={styles.tableCell}><Text>{row.FromDate.split("T")[0]}</Text></View>
+															<View style={styles.tableCell}><Text>{row.ToDate.split("T")[0]}</Text></View>
+															<View style={styles.tableCell}><Text>{row.Type}</Text></View>
+															<View style={styles.tableCell}><Text>{row.Status}</Text></View>
+															<View style={styles.tableCell}><Text>{row.Reason}</Text></View>
 														</View>
 													))}
- 												</View>
- 											</View>
+												</View>
+											</View>
 										</Page>
 									</Document>
 								</PDFViewer>
@@ -171,4 +180,5 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 	);
 }
 
-export default AttendanceReportGenerator;
+export default LeaveReportGenerator;
+

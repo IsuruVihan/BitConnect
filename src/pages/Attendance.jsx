@@ -33,7 +33,7 @@ const Attendance = () => {
   const [checkOutErrorModalOpen, setCheckOutErrorModalOpen] = useState(false);
 
   // Pagination
-  const recordsPerPage = 6;
+  const recordsPerPage = 5;
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentRecords = attendanceRecords.slice(startIndex, endIndex);
