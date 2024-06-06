@@ -198,7 +198,7 @@ const CreateCourseModal = (props) => {
 									<SecondaryButton label="Cancel" onClick={() => setOpen(false)}/>
 									<SuccessButton
 										label="Publish"
-										// disabled={emptyTitle || emptyDescription || emptyCourseContent || emptyCourseQuiz}
+										disabled={emptyTitle || emptyDescription || emptyCourseContent || emptyCourseQuiz}
 										onClick={onPublish}
 									/>
 								</div>
