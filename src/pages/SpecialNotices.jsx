@@ -2,7 +2,7 @@ import {PrimaryButton} from "../components/Button";
 import {Menu, Transition} from "@headlessui/react";
 import {EllipsisVerticalIcon} from "@heroicons/react/20/solid";
 import CreateSpecialNoticeModal from "../components/modals/CreateSpecialNoticeModal";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import ViewNoticeModal from "../components/modals/ViewNoticeModal";
 import ConfirmCreateNoticeModal from "../components/modals/ConfirmCreateNoticeModal";
 import SuccessModal from "../components/modals/SuccessModal";
@@ -14,11 +14,6 @@ const statuses = {
   true: 'text-green-700 bg-green-50 ring-green-600/20',
   false: 'text-gray-600 bg-gray-50 ring-gray-500/10',
 }
-const stats = [
-  {name: 'Total Notices', stat: '13'},
-  {name: 'No. of un-viewed notices', stat: '3'},
-  {name: 'No. of viewed notices', stat: '10'},
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
@@ -36,6 +31,11 @@ const SpecialNotices = () => {
     // }
   ]);
   const [getNoticeDataErrorModalOpen, setGetNoticeDataErrorModalOpen] = useState(false);
+  const stats = useMemo(() => [
+    {name: 'Total Notices', stat: notices.length},
+    {name: 'No. of un-viewed notices', stat: notices.filter(n => !n.viewed).length},
+    {name: 'No. of viewed notices', stat: notices.filter(n => n.viewed).length},
+  ], [notices]);
 
   const [createNoticeModalOpen, setCreateNoticeModalOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -66,20 +66,122 @@ const SpecialNotices = () => {
   const [deleteNoticeSuccessModalOpen, setDeleteNoticeSuccessModalOpen] = useState(false);
   const [deleteNoticeErrorModalOpen, setDeleteNoticeErrorModalOpen] = useState(false);
 
-  const markAsViewed = () => {
+  const markAsViewed = async () => {
+    const result = await fetch(`http://localhost:4000/notices/mark-as-viewed`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem("token"),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        noticeId: viewNoticeData.id,
+      }),
+    });
 
+    if (result.status !== 200)
+      return setViewNoticeErrorModalOpen(true);
+
+    setTimeout(() => window.location.reload(), 2000);
   }
 
+  const postSpecialNotice = async () => {
+    if (newTitle.trim() !== "" && newDescription.trim() !== "")
+      try {
+        return {
+          result: await fetch(`http://localhost:4000/notices`, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem("token"),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: newTitle.trim(),
+              description: newDescription.trim()
+            }),
+          }),
+          error: false
+        };
+      } catch (error) {
+        return {error: true};
+      }
+  }
   const publishSpecialNotice = () => {
-
+    postSpecialNotice()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setCreateNoticeErrorModalOpen(true);
+        return r.result.json();
+      })
+      .then((data) => {
+        setCreateNoticeSuccessModalOpen(true);
+        setTimeout(() => window.location.reload(), 2000);
+      });
   }
 
-  const updateSpecialNotice = () => {
-
+  const updateSpecialNotice = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/notices`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            noticeId: viewNoticeData.id,
+            title: viewNoticeData.title,
+            description: viewNoticeData.description,
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
+  const confirmUpdateSpecialNotice = () => {
+    updateSpecialNotice()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setUpdateNoticeErrorModalOpen(true);
+        return r.result.json();
+      })
+      .then((data) => {
+        setUpdateNoticeSuccessModalOpen(true);
+        setTimeout(() => window.location.reload(), 2000);
+      });
   }
 
-  const deleteSpecialNotice = () => {
-
+  const deleteSpecialNotice = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/notices`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            noticeId: viewNoticeData.id
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
+  const confirmDeleteSpecialNotice = () => {
+    deleteSpecialNotice()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setDeleteNoticeErrorModalOpen(true);
+        return r.result.json();
+      })
+      .then((data) => {
+        setDeleteNoticeSuccessModalOpen(true);
+        setTimeout(() => window.location.reload(), 2000);
+      });
   }
 
   const getSpecialNotices = async () => {
@@ -160,10 +262,12 @@ const SpecialNotices = () => {
           open={viewNoticeModalOpen}
           setOpen={setViewNoticeModalOpen}
           data={viewNoticeData}
+          setData={setViewNoticeData}
           onClickMarkAsViewed={markAsViewed}
           updateMode={updateMode}
           setUpdateMode={setUpdateMode}
-          onClickUpdate={() => setConfirmUpdateNoticeModalOpen(true)}
+          onClickUpdate={() => setUpdateMode(true)}
+          onClickSave={() => setConfirmUpdateNoticeModalOpen(true)}
           onClickDelete={() => setConfirmDeleteNoticeModalOpen(true)}
         />}
         <ErrorModal
@@ -176,7 +280,7 @@ const SpecialNotices = () => {
         <ConfirmUpdateNoticeModal
           open={confirmUpdateNoticeModalOpen}
           setOpen={setConfirmUpdateNoticeModalOpen}
-          onClickAccept={updateSpecialNotice}
+          onClickAccept={confirmUpdateSpecialNotice}
         />
         <SuccessModal
           title={"Update Special Notice"}
@@ -194,7 +298,7 @@ const SpecialNotices = () => {
         <ConfirmDeleteNoticeModal
           open={confirmDeleteNoticeModalOpen}
           setOpen={setConfirmDeleteNoticeModalOpen}
-          onClickAccept={deleteSpecialNotice}
+          onClickAccept={confirmDeleteSpecialNotice}
         />
         <SuccessModal
           title={"Delete Special Notice"}
@@ -256,7 +360,7 @@ const SpecialNotices = () => {
               <div className="flex flex-none items-center gap-x-4">
                 <div
                   className="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm
-									ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block"
+									ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block cursor-pointer"
                   onClick={() => {
                     setViewNoticeData(notice);
                     setViewNoticeModalOpen(true);
@@ -286,8 +390,12 @@ const SpecialNotices = () => {
                           <div
                             className={classNames(
                               focus ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900'
+                              'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
                             )}
+                            onClick={() => {
+                              setViewNoticeData(notice);
+                              setViewNoticeModalOpen(true);
+                            }}
                           >View</div>
                         )}
                       </Menu.Item>
@@ -296,8 +404,9 @@ const SpecialNotices = () => {
                           <div
                             className={classNames(
                               focus ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900'
+                              'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
                             )}
+                            onClick={() => setConfirmUpdateNoticeModalOpen(true)}
                           >Edit</div>
                         )}
                       </Menu.Item>
@@ -306,18 +415,9 @@ const SpecialNotices = () => {
                           <div
                             className={classNames(
                               focus ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900'
+                              'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
                             )}
-                          >Move</div>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({focus}) => (
-                          <div
-                            className={classNames(
-                              focus ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900'
-                            )}
+                            onClick={() => setConfirmDeleteNoticeModalOpen(true)}
                           >Delete</div>
                         )}
                       </Menu.Item>

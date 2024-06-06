@@ -1,9 +1,10 @@
 import React, {Fragment} from 'react';
 import {Dialog, Transition} from "@headlessui/react";
-import {DangerButton, OutlineButton, PrimaryButton, WarningButton} from "../Button";
+import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton} from "../Button";
 
 const ViewNoticeModal = (props) => {
-	const {open, setOpen, data, onClickMarkAsViewed, updateMode, setUpdateMode, onClickUpdate, onClickDelete} = props;
+	const {open, setOpen, data, setData, onClickMarkAsViewed, updateMode, setUpdateMode, onClickUpdate, onClickSave,
+		onClickDelete} = props;
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -39,9 +40,22 @@ const ViewNoticeModal = (props) => {
 								{/*Modal body start*/}
 								<div>
 									<div className="px-4 sm:px-0">
-										<h3 className="text-base font-semibold leading-7 text-gray-900">
-											{data.title}
-										</h3>
+										{!updateMode ?
+											<h3 className="text-base font-semibold leading-7 text-gray-900">
+												{data.title}
+											</h3> :
+											<input
+												type="text"
+												name="title"
+												id="title"
+												className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+												ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
+												sm:text-sm sm:leading-6"
+												placeholder="Title"
+												value={data.title}
+												onChange={(e) => setData({...data, title: e.target.value})}
+											/>
+										}
 										<div className="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
 											<p className="whitespace-nowrap">
 												Published on <time dateTime={data.createdOn}>
@@ -54,12 +68,34 @@ const ViewNoticeModal = (props) => {
 											<p className="truncate">Created by {data.createdBy}</p>
 										</div>
 									</div>
-									<div className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
-										{data.description}
-									</div>
+									{!updateMode ?
+										<div className="mt-1 text-sm leading-6 text-gray-700 sm:mt-2">
+											{data.description}
+										</div> :
+										<textarea
+											name="description"
+											id="description"
+											rows={5}
+											className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
+													ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
+													sm:text-sm sm:leading-6"
+											placeholder="Description"
+											value={data.description}
+											onChange={(e) => setData({...data, description: e.target.value})}
+										/>
+									}
 									<div className="flex flex-row items-center justify-end gap-2 mt-4">
 										<OutlineButton label={"Close"} onClick={() => setOpen(false)}/>
-										<WarningButton label={"Edit"} onClick={onClickUpdate}/>
+										{!updateMode ?
+											<WarningButton label={"Edit"} onClick={onClickUpdate}/> :
+											<SuccessButton
+												label={"Save"}
+												onClick={() => {
+													setUpdateMode(false);
+													onClickSave();
+												}}
+											/>
+										}
 										<DangerButton label={"Delete"} onClick={onClickDelete}/>
 										{!data.viewed && <PrimaryButton label={"Mark as Viewed"} onClick={onClickMarkAsViewed}/>}
 									</div>
