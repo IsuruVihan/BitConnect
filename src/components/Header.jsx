@@ -28,9 +28,10 @@ import {
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
 import MyAccount from "../pages/MyAccount";
 import LeaveRequests from "../pages/LeaveRequests";
+import {useAuth} from "../context/AuthContext";
 
 const userNavigation = [
-  { name: 'My Account', href: '/my-account' },
+  {name: 'My Account', href: '/my-account'},
   {
     name: 'Sign out',
     href: '#',
@@ -46,19 +47,35 @@ function classNames(...classes) {
 }
 
 const Header = () => {
+  const {loading, isAdmin, isTL} = useAuth();
+
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [navigation, setNavigation] = useState([
-    { name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true },
-    { name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false },
-    { name: 'Leave Requests', path: '/leave-requests', icon: EnvelopeIcon, current: false },
-    { name: 'Common Wall', path: '/common-wall', icon:ArrowUpTrayIcon , current: false },
-    { name: 'ChatBox', path: '/chat-box', icon:ChatBubbleLeftRightIcon , current: false },
-    { name: 'Special Notices', path: '/special-notices', icon:ClipboardDocumentListIcon , current: false },
-    { name: 'KT Courses', path: '/kt-courses', icon:AcademicCapIcon , current: false },
-    { name: 'Calendar', path: '/calendar', icon:CalendarIcon, current: false },
-    { name: 'Employees View', path: '/employees-view', icon:IdentificationIcon, current: false },
-    { name: 'My Account', path: '/my-account', icon:UserIcon, current: false },
+    {name: 'Attendance', path: '/attendance', icon: CheckIcon, current: true, tl: false, admin: false},
+    {name: 'Leave', path: '/leave', icon: EnvelopeIcon, current: false, tl: false, admin: false},
+    {name: 'Leave Requests', path: '/leave-requests', icon: EnvelopeIcon, current: false, tl: true, admin: true},
+    {name: 'Common Wall', path: '/common-wall', icon: ArrowUpTrayIcon, current: false, tl: false, admin: false},
+    {name: 'ChatBox', path: '/chat-box', icon: ChatBubbleLeftRightIcon, current: false, tl: false, admin: false},
+    {
+      name: 'Special Notices',
+      path: '/special-notices',
+      icon: ClipboardDocumentListIcon,
+      current: false,
+      tl: false,
+      admin: false
+    },
+    {name: 'KT Courses', path: '/kt-courses', icon: AcademicCapIcon, current: false, tl: false, admin: false},
+    {name: 'Calendar', path: '/calendar', icon: CalendarIcon, current: false, tl: false, admin: false},
+    {
+      name: 'Employees View',
+      path: '/employees-view',
+      icon: IdentificationIcon,
+      current: false,
+      tl: false,
+      admin: false
+    },
+    {name: 'My Account', path: '/my-account', icon: UserIcon, current: false, tl: false, admin: false},
   ]);
   const [loggedInUser, setLoggedInUser] = useState('');
 
@@ -89,7 +106,7 @@ const Header = () => {
 
   const getCurrentNavigationName = () => {
     const capitalizeEachWord = (str) => {
-      return str.replace(/\b\w/g, function(char) {
+      return str.replace(/\b\w/g, function (char) {
         return char.toUpperCase();
       });
     }
@@ -103,9 +120,9 @@ const Header = () => {
     navigate(path)
     const updatedNavigation = navigation.map(item => {
       if (item.path === path) {
-        return { ...item, current: true };
+        return {...item, current: true};
       } else {
-        return { ...item, current: false };
+        return {...item, current: false};
       }
     });
     setNavigation(updatedNavigation);
@@ -125,7 +142,7 @@ const Header = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="fixed inset-0 bg-gray-900/80" />
+              <div className="fixed inset-0 bg-gray-900/80"/>
             </Transition.Child>
 
             <div className="fixed inset-0 flex">
@@ -151,12 +168,13 @@ const Header = () => {
                     <div className="absolute top-0 flex justify-center w-16 pt-5 left-full">
                       <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
                         <span className="sr-only">Close sidebar</span>
-                        <XMarkIcon className="w-6 h-6 text-white" aria-hidden="true" />
+                        <XMarkIcon className="w-6 h-6 text-white" aria-hidden="true"/>
                       </button>
                     </div>
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex flex-col px-6 pb-4 overflow-y-auto bg-gray-900 grow gap-y-5 ring-1 ring-white/10">
+                  <div
+                    className="flex flex-col px-6 pb-4 overflow-y-auto bg-gray-900 grow gap-y-5 ring-1 ring-white/10">
                     <div className="flex items-center h-16 shrink-0">
                       <img
                         className="w-auto h-8"
@@ -168,22 +186,25 @@ const Header = () => {
                       <ul role="list" className="flex flex-col flex-1 gap-y-7">
                         <li>
                           <ul role="list" className="-mx-2 space-y-1">
-                            {navigation.map((item) => (
-                              <li key={item.name}>
-                                <a
-                                  onClick={() => redirect(item.path)}
-                                  className={classNames(
-                                    item.current
-                                      ? 'bg-gray-800 text-white'
-                                      : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                                  )}
-                                >
-                                  <item.icon className="w-6 h-6 shrink-0" aria-hidden="true" />
-                                  {item.name}
-                                </a>
-                              </li>
-                            ))}
+                            {navigation.map((item) => {
+                              if (!(item.path === "/leave-requests" && !loading && !isAdmin && !isTL))
+                                return (
+                                  <li key={item.name}>
+                                    <a
+                                      onClick={() => redirect(item.path)}
+                                      className={classNames(
+                                        item.current
+                                          ? 'bg-gray-800 text-white'
+                                          : 'text-gray-400 hover:text-white hover:bg-gray-800',
+                                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                      )}
+                                    >
+                                      <item.icon className="w-6 h-6 shrink-0" aria-hidden="true"/>
+                                      {item.name}
+                                    </a>
+                                  </li>
+                                );
+                            })}
                           </ul>
                         </li>
                       </ul>
@@ -210,22 +231,25 @@ const Header = () => {
               <ul role="list" className="flex flex-col flex-1 gap-y-7">
                 <li>
                   <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => (
-                      <li key={item.name}>
-                        <p
-                          onClick={() => redirect(item.path)}
-                          className={classNames(
-                            item.current
-                              ? 'bg-gray-800 text-white'
-                              : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                          )}
-                        >
-                          <item.icon className="w-6 h-6 shrink-0" aria-hidden="true" />
-                          {item.name}
-                        </p>
-                      </li>
-                    ))}
+                    {navigation.map((item) => {
+                      if (!(item.path === "/leave-requests" && !loading && !isAdmin && !isTL))
+                        return (
+                          <li key={item.name}>
+                            <p
+                              onClick={() => redirect(item.path)}
+                              className={classNames(
+                                item.current
+                                  ? 'bg-gray-800 text-white'
+                                  : 'text-gray-400 hover:text-white hover:bg-gray-800',
+                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                              )}
+                            >
+                              <item.icon className="w-6 h-6 shrink-0" aria-hidden="true"/>
+                              {item.name}
+                            </p>
+                          </li>
+                        );
+                    })}
                   </ul>
                 </li>
               </ul>

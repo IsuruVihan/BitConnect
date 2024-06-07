@@ -6,6 +6,7 @@ import Pagination from "../components/Pagination";
 import ErrorModal from "../components/modals/ErrorModal";
 import AttendanceReportGenerator from "../components/reports/AttendanceReportGenerator";
 import SuccessModal from "../components/modals/SuccessModal";
+import Loading from "../components/Loading";
 
 const Attendance = () => {
   const [checkInDate, setCheckInDate] = useState('');

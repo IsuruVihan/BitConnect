@@ -2,13 +2,14 @@ import {PrimaryButton} from "../components/Button";
 import {Menu, Transition} from "@headlessui/react";
 import {EllipsisVerticalIcon} from "@heroicons/react/20/solid";
 import CreateSpecialNoticeModal from "../components/modals/CreateSpecialNoticeModal";
-import {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import ViewNoticeModal from "../components/modals/ViewNoticeModal";
 import ConfirmCreateNoticeModal from "../components/modals/ConfirmCreateNoticeModal";
 import SuccessModal from "../components/modals/SuccessModal";
 import ErrorModal from "../components/modals/ErrorModal";
 import ConfirmUpdateNoticeModal from "../components/modals/ConfirmUpdateNoticeModal";
 import ConfirmDeleteNoticeModal from "../components/modals/ConfirmDeleteNoticeModal";
+import {useAuth} from "../context/AuthContext";
 
 const statuses = {
   true: 'text-green-700 bg-green-50 ring-green-600/20',
@@ -20,6 +21,8 @@ function classNames(...classes) {
 }
 
 const SpecialNotices = () => {
+  const {loading, isAdmin} = useAuth();
+
   const [notices, setNotices] = useState([
     // {
     //   id: 1,
@@ -220,6 +223,10 @@ const SpecialNotices = () => {
       });
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       {/*Modals*/}
@@ -231,32 +238,34 @@ const SpecialNotices = () => {
           setOpen={setGetNoticeDataErrorModalOpen}
         />
 
-        <CreateSpecialNoticeModal
-          open={createNoticeModalOpen}
-          setOpen={setCreateNoticeModalOpen}
-          newTitle={newTitle}
-          setNewTitle={setNewTitle}
-          newDescription={newDescription}
-          setNewDescription={setNewDescription}
-          onPublish={() => setConfirmCreateNoticeModalOpen(true)}
-        />
-        <ConfirmCreateNoticeModal
-          open={confirmCreateNoticeModalOpen}
-          setOpen={setConfirmCreateNoticeModalOpen}
-          onClickAccept={publishSpecialNotice}
-        />
-        <SuccessModal
-          title={"Create Special Notice"}
-          message={"The special notice has been created and published successfully."}
-          open={createNoticeSuccessModalOpen}
-          setOpen={setCreateNoticeSuccessModalOpen}
-        />
-        <ErrorModal
-          title={"Create Special Notice"}
-          message={"There was an error while creating and publishing the special notice. Please try again."}
-          open={createNoticeErrorModalOpen}
-          setOpen={setCreateNoticeErrorModalOpen}
-        />
+        {!loading && isAdmin && <>
+          <CreateSpecialNoticeModal
+            open={createNoticeModalOpen}
+            setOpen={setCreateNoticeModalOpen}
+            newTitle={newTitle}
+            setNewTitle={setNewTitle}
+            newDescription={newDescription}
+            setNewDescription={setNewDescription}
+            onPublish={() => setConfirmCreateNoticeModalOpen(true)}
+          />
+          <ConfirmCreateNoticeModal
+            open={confirmCreateNoticeModalOpen}
+            setOpen={setConfirmCreateNoticeModalOpen}
+            onClickAccept={publishSpecialNotice}
+          />
+          <SuccessModal
+            title={"Create Special Notice"}
+            message={"The special notice has been created and published successfully."}
+            open={createNoticeSuccessModalOpen}
+            setOpen={setCreateNoticeSuccessModalOpen}
+          />
+          <ErrorModal
+            title={"Create Special Notice"}
+            message={"There was an error while creating and publishing the special notice. Please try again."}
+            open={createNoticeErrorModalOpen}
+            setOpen={setCreateNoticeErrorModalOpen}
+          />
+        </>}
 
         {viewNoticeData && <ViewNoticeModal
           open={viewNoticeModalOpen}
@@ -266,6 +275,8 @@ const SpecialNotices = () => {
           onClickMarkAsViewed={markAsViewed}
           updateMode={updateMode}
           setUpdateMode={setUpdateMode}
+          loading={loading}
+          isAdmin={isAdmin}
           onClickUpdate={() => setUpdateMode(true)}
           onClickSave={() => setConfirmUpdateNoticeModalOpen(true)}
           onClickDelete={() => setConfirmDeleteNoticeModalOpen(true)}
@@ -277,47 +288,51 @@ const SpecialNotices = () => {
           setOpen={setViewNoticeErrorModalOpen}
         />
 
-        <ConfirmUpdateNoticeModal
-          open={confirmUpdateNoticeModalOpen}
-          setOpen={setConfirmUpdateNoticeModalOpen}
-          onClickAccept={confirmUpdateSpecialNotice}
-        />
-        <SuccessModal
-          title={"Update Special Notice"}
-          message={"The special notice has been updated and re-published successfully."}
-          open={updateNoticeSuccessModalOpen}
-          setOpen={setUpdateNoticeSuccessModalOpen}
-        />
-        <ErrorModal
-          title={"Update Special Notice"}
-          message={"There was an error while updating and re-publishing the special notice. Please try again."}
-          open={updateNoticeErrorModalOpen}
-          setOpen={setUpdateNoticeErrorModalOpen}
-        />
+        {!loading && isAdmin && <>
+          <ConfirmUpdateNoticeModal
+            open={confirmUpdateNoticeModalOpen}
+            setOpen={setConfirmUpdateNoticeModalOpen}
+            onClickAccept={confirmUpdateSpecialNotice}
+          />
+          <SuccessModal
+            title={"Update Special Notice"}
+            message={"The special notice has been updated and re-published successfully."}
+            open={updateNoticeSuccessModalOpen}
+            setOpen={setUpdateNoticeSuccessModalOpen}
+          />
+          <ErrorModal
+            title={"Update Special Notice"}
+            message={"There was an error while updating and re-publishing the special notice. Please try again."}
+            open={updateNoticeErrorModalOpen}
+            setOpen={setUpdateNoticeErrorModalOpen}
+          />
 
-        <ConfirmDeleteNoticeModal
-          open={confirmDeleteNoticeModalOpen}
-          setOpen={setConfirmDeleteNoticeModalOpen}
-          onClickAccept={confirmDeleteSpecialNotice}
-        />
-        <SuccessModal
-          title={"Delete Special Notice"}
-          message={"The special notice has been deleted successfully."}
-          open={deleteNoticeSuccessModalOpen}
-          setOpen={setDeleteNoticeSuccessModalOpen}
-        />
-        <ErrorModal
-          title={"Delete Special Notice"}
-          message={"There was an error while deleting the special notice. Please try again."}
-          open={deleteNoticeErrorModalOpen}
-          setOpen={setDeleteNoticeErrorModalOpen}
-        />
+          <ConfirmDeleteNoticeModal
+            open={confirmDeleteNoticeModalOpen}
+            setOpen={setConfirmDeleteNoticeModalOpen}
+            onClickAccept={confirmDeleteSpecialNotice}
+          />
+          <SuccessModal
+            title={"Delete Special Notice"}
+            message={"The special notice has been deleted successfully."}
+            open={deleteNoticeSuccessModalOpen}
+            setOpen={setDeleteNoticeSuccessModalOpen}
+          />
+          <ErrorModal
+            title={"Delete Special Notice"}
+            message={"There was an error while deleting the special notice. Please try again."}
+            open={deleteNoticeErrorModalOpen}
+            setOpen={setDeleteNoticeErrorModalOpen}
+          />
+        </>}
       </>
 
       <div>
         <div className="flex sm:flex-row flex-col justify-between items-start sm:gap-0 gap-2">
           <h3 className="text-base font-semibold leading-6 text-gray-900">Special notices summary</h3>
-          <PrimaryButton label="Create a Notice" onClick={() => setCreateNoticeModalOpen(true)}/>
+          {!loading && isAdmin &&
+            <PrimaryButton label="Create a Notice" onClick={() => setCreateNoticeModalOpen(true)}/>
+          }
         </div>
         <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {stats.map((item) => (
@@ -399,28 +414,30 @@ const SpecialNotices = () => {
                           >View</div>
                         )}
                       </Menu.Item>
-                      <Menu.Item>
-                        {({focus}) => (
-                          <div
-                            className={classNames(
-                              focus ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
-                            )}
-                            onClick={() => setConfirmUpdateNoticeModalOpen(true)}
-                          >Edit</div>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({focus}) => (
-                          <div
-                            className={classNames(
-                              focus ? 'bg-gray-50' : '',
-                              'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
-                            )}
-                            onClick={() => setConfirmDeleteNoticeModalOpen(true)}
-                          >Delete</div>
-                        )}
-                      </Menu.Item>
+                      {!loading && isAdmin && <>
+                        <Menu.Item>
+                          {({focus}) => (
+                            <div
+                              className={classNames(
+                                focus ? 'bg-gray-50' : '',
+                                'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
+                              )}
+                              onClick={() => setConfirmUpdateNoticeModalOpen(true)}
+                            >Edit</div>
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({focus}) => (
+                            <div
+                              className={classNames(
+                                focus ? 'bg-gray-50' : '',
+                                'block px-3 py-1 text-sm leading-6 text-gray-900 cursor-pointer'
+                              )}
+                              onClick={() => setConfirmDeleteNoticeModalOpen(true)}
+                            >Delete</div>
+                          )}
+                        </Menu.Item>
+                      </>}
                     </Menu.Items>
                   </Transition>
                 </Menu>

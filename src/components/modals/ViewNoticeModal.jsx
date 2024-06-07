@@ -4,7 +4,7 @@ import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton
 
 const ViewNoticeModal = (props) => {
 	const {open, setOpen, data, setData, onClickMarkAsViewed, updateMode, setUpdateMode, onClickUpdate, onClickSave,
-		onClickDelete} = props;
+		onClickDelete, loading, isAdmin} = props;
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -86,17 +86,19 @@ const ViewNoticeModal = (props) => {
 									}
 									<div className="flex flex-row items-center justify-end gap-2 mt-4">
 										<OutlineButton label={"Close"} onClick={() => setOpen(false)}/>
-										{!updateMode ?
-											<WarningButton label={"Edit"} onClick={onClickUpdate}/> :
-											<SuccessButton
-												label={"Save"}
-												onClick={() => {
-													setUpdateMode(false);
-													onClickSave();
-												}}
-											/>
-										}
-										<DangerButton label={"Delete"} onClick={onClickDelete}/>
+										{!loading && isAdmin && <>
+											{!updateMode ?
+												<WarningButton label={"Edit"} onClick={onClickUpdate}/> :
+												<SuccessButton
+													label={"Save"}
+													onClick={() => {
+														setUpdateMode(false);
+														onClickSave();
+													}}
+												/>
+											}
+											<DangerButton label={"Delete"} onClick={onClickDelete}/>
+										</>}
 										{!data.viewed && <PrimaryButton label={"Mark as Viewed"} onClick={onClickMarkAsViewed}/>}
 									</div>
 								</div>
