@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {DangerButton, SecondaryButton, SuccessButton} from "../components/Button";
+import Loading from "../components/Loading";
 
 const returnDigit = (digit) => {
 	if (digit < 10)
@@ -102,11 +103,7 @@ const MyAccount = () => {
 	}, []);
 
 	if (profile === null)
-		return (
-			<div className="flex justify-center items-center h-screen">
-				<img src="https://i.gifer.com/JVX7.gif" alt="Loading..." />
-			</div>
-		);
+		return <Loading/>;
 
 	return (
 		<div className="flex h-full">

@@ -6,6 +6,7 @@ import ErrorModal from "../components/modals/ErrorModal";
 import SuccessModal from "../components/modals/SuccessModal";
 import ConfirmAcceptLeaveRequestModal from "../components/modals/ConfirmAcceptLeaveRequestModal";
 import ConfirmRejectLeaveRequestModal from "../components/modals/ConfirmRejectLeaveRequestModal";
+import {useAuth} from "../context/AuthContext";
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ');
@@ -22,6 +23,8 @@ const requestStatusStyles = {
 }
 
 const LeaveRequests = () => {
+	const {isTL, isAdmin, loading} = useAuth();
+
 	const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 	const [getLeaveRequestDetailsErrorModalOpen, setGetLeaveRequestDetailsErrorModalOpen]
 		= useState(false);
@@ -98,8 +101,6 @@ const LeaveRequests = () => {
 	}
 
 	const rejectLeaveRequest = async () => {
-		console.log(selectedLeaveRequest);
-
 		try {
 			return {
 				result: await fetch(`http://localhost:4000/tl/leave-requests/reject`, {
@@ -117,16 +118,24 @@ const LeaveRequests = () => {
 		}
 	}
 
+	// Redirect to /attendance if not a TL or Admin
+	useEffect(() => {
+		if (!loading && !isTL && !isAdmin) {
+			window.location.href = '/attendance';
+		}
+	}, [loading, isTL, isAdmin]);
+
 	// get data
 	useEffect(() => {
 		getTeamMembersData()
 			.then(r => r.result.json())
 			.then((data) => {
+				console.log("DATA: ", data);
 				if (data.error) {
 					setGetTeamMembersDetailsErrorModalOpen(true);
 				} else {
 					const tempTeam = [];
-					data.team.map((person) => {
+					data.team && data.team.map((person) => {
 						tempTeam.push({
 							id: person.Id,
 							name: `${person.FirstName} ${person.LastName}`,
@@ -147,7 +156,7 @@ const LeaveRequests = () => {
 					setGetLeaveRequestDetailsErrorModalOpen(true);
 				} else {
 					const tempLeaveRequests = [];
-					data.leaveRequests.map((leaveRequest) => {
+					data.leaveRequests && data.leaveRequests.map((leaveRequest) => {
 						const relevantTeamMember = teamMembers.filter((person) => person.id === leaveRequest.CreatedBy)[0];
 						tempLeaveRequests.push({
 							id: leaveRequest.Id,
@@ -197,6 +206,10 @@ const LeaveRequests = () => {
 			setVisibleTeamMembers(tempVisibleEmployees);
 		}, 2000);
 	}, [teamMembers, searchEmployeeName]);
+
+	if (loading) {
+		return <div>Loading...</div>;
+	}
 
 	return (
 		<div className="grid lg:grid-cols-5 grid-cols-1 gap-2">
