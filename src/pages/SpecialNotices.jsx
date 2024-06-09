@@ -10,6 +10,7 @@ import ErrorModal from "../components/modals/ErrorModal";
 import ConfirmUpdateNoticeModal from "../components/modals/ConfirmUpdateNoticeModal";
 import ConfirmDeleteNoticeModal from "../components/modals/ConfirmDeleteNoticeModal";
 import {useAuth} from "../context/AuthContext";
+import Loading from "../components/Loading";
 
 const statuses = {
   true: 'text-green-700 bg-green-50 ring-green-600/20',
@@ -444,8 +445,8 @@ const SpecialNotices = () => {
               </div>
             </li>
           )) :
-          <div className="p-8 text-center text-lg font-semibold text-gray-400">
-            No special notices published yet
+          <div className="flex items-center justify-center h-screen">
+            <Loading/>
           </div>
         }
       </ul>
