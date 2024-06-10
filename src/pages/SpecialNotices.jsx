@@ -445,8 +445,8 @@ const SpecialNotices = () => {
               </div>
             </li>
           )) :
-          <div className="p-8 text-center text-lg font-semibold text-gray-400">
-            No special notices published yet
+          <div className="flex items-center justify-center h-screen">
+            <Loading/>
           </div>
         }
       </ul>
