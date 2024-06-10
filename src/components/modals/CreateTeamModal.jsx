@@ -106,7 +106,7 @@ const CreateTeamModal = (props) => {
 											setTeamLead(person)
 										}}
 									>
-										<p className="block text-sm font-medium leading-6 text-gray-900">Assigned to</p>
+										<p className="block text-sm font-medium leading-6 text-gray-900">Team Lead</p>
 										<div className="relative mt-2">
 											<Combobox.Input
 												className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1
