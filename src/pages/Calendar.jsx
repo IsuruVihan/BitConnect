@@ -1,218 +1,234 @@
-import { Fragment } from 'react'
-import {
-  CalendarIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  EllipsisHorizontalIcon,
-  MapPinIcon,
-} from '@heroicons/react/20/solid'
-import { Menu, Transition } from '@headlessui/react'
+import React, {useEffect, useMemo, useState} from 'react'
+import getMonthWithAdjacentDays from "../lib/getMonthWithAdjacentDays";
+import AllocationDetailsCard from "../components/AllocationDetailsCard";
+import {ChevronLeftIcon, ChevronRightIcon} from "@heroicons/react/20/solid";
+import getMonthString from "../lib/getMonthString";
 import {PrimaryButton} from "../components/Button";
-
-const meetings = [
-  {
-    id: 1,
-    date: 'January 10th, 2022',
-    time: '5:00 PM',
-    datetime: '2022-01-10T17:00',
-    name: 'Client 032 Meeting',
-    location: 'Barista, Kiribathgoda',
-  },
-  // More meetings...
-]
-const days = [
-  { date: '2021-12-27' },
-  { date: '2021-12-28' },
-  { date: '2021-12-29' },
-  { date: '2021-12-30' },
-  { date: '2021-12-31' },
-  { date: '2022-01-01', isCurrentMonth: true },
-  { date: '2022-01-02', isCurrentMonth: true },
-  { date: '2022-01-03', isCurrentMonth: true },
-  { date: '2022-01-04', isCurrentMonth: true },
-  { date: '2022-01-05', isCurrentMonth: true },
-  { date: '2022-01-06', isCurrentMonth: true },
-  { date: '2022-01-07', isCurrentMonth: true },
-  { date: '2022-01-08', isCurrentMonth: true },
-  { date: '2022-01-09', isCurrentMonth: true },
-  { date: '2022-01-10', isCurrentMonth: true },
-  { date: '2022-01-11', isCurrentMonth: true },
-  { date: '2022-01-12', isCurrentMonth: true, isToday: true },
-  { date: '2022-01-13', isCurrentMonth: true },
-  { date: '2022-01-14', isCurrentMonth: true },
-  { date: '2022-01-15', isCurrentMonth: true },
-  { date: '2022-01-16', isCurrentMonth: true },
-  { date: '2022-01-17', isCurrentMonth: true },
-  { date: '2022-01-18', isCurrentMonth: true },
-  { date: '2022-01-19', isCurrentMonth: true },
-  { date: '2022-01-20', isCurrentMonth: true },
-  { date: '2022-01-21', isCurrentMonth: true },
-  { date: '2022-01-22', isCurrentMonth: true, isSelected: true },
-  { date: '2022-01-23', isCurrentMonth: true },
-  { date: '2022-01-24', isCurrentMonth: true },
-  { date: '2022-01-25', isCurrentMonth: true },
-  { date: '2022-01-26', isCurrentMonth: true },
-  { date: '2022-01-27', isCurrentMonth: true },
-  { date: '2022-01-28', isCurrentMonth: true },
-  { date: '2022-01-29', isCurrentMonth: true },
-  { date: '2022-01-30', isCurrentMonth: true },
-  { date: '2022-01-31', isCurrentMonth: true },
-  { date: '2022-02-01' },
-  { date: '2022-02-02' },
-  { date: '2022-02-03' },
-  { date: '2022-02-04' },
-  { date: '2022-02-05' },
-  { date: '2022-02-06' },
-]
+import CreateEventModal from "../components/modals/CreateEventModal";
+import ViewEventModal from "../components/modals/ViewEventModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const Calendar = () => {
+  const today = useMemo(() => new Date(), []);
+
+  const [title, setTitle] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState("");
+
+  const [createEventModalOpen, setCreateEventModalOpen] = useState(false);
+  const [viewEventModalOpen, setViewEventModalOpen] = useState(false);
+
+  const [currentEvent, setCurrentEvent] = useState({
+    title: "", startDate: "", startTime: "", endDate: "", endTime: "",
+  });
+  const [events, setEvents] = useState([]);
+  const [visibleEvents, setVisibleEvents] = useState([]);
+
+  const [days, setDays] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  const [currentMonth, setCurrentMonth]
+    = useState({month: today.getMonth(), year: today.getFullYear()});
+  const [consideredMonth, setConsideredMonth]
+    = useState({month: today.getMonth(), year: today.getFullYear()});
+
+  useEffect(() => {
+    const tempEvents = events.filter((e) => {
+      const startDate = new Date(e.startDate);
+      const endDate = new Date(e.endDate);
+
+      return startDate <= selectedDay && endDate >= selectedDay;
+    });
+    setVisibleEvents(tempEvents);
+  }, [events, selectedDay]);
+
+  useEffect(() => {
+    const currentMonthDays = getMonthWithAdjacentDays(currentMonth.year, currentMonth.month + 1);
+    let tempDays = [];
+    currentMonthDays.map((currentMonthDay) => {
+      const checkIsToday = today.getDate() === currentMonthDay.getDate() &&
+        today.getMonth() === currentMonthDay.getMonth() &&
+        today.getFullYear() === currentMonthDay.getFullYear();
+      tempDays.push({
+        date: `${currentMonthDay.getFullYear()}-${currentMonthDay.getMonth() + 1}-${currentMonthDay.getDate()}`,
+        isCurrentMonth:
+          currentMonthDay.getMonth() === consideredMonth.month && currentMonthDay.getFullYear() === consideredMonth.year,
+        isToday: checkIsToday,
+        isSelected: checkIsToday,
+      });
+    });
+    setDays(tempDays);
+  }, [consideredMonth.month, consideredMonth.year, currentMonth]);
+
+  useEffect(() => {
+    const tempEvents = [
+      { title: "Task A", startDate: "2023-11-01", startTime: "08:00", endDate: "2023-11-01", endTime: "11:55" },
+      { title: "Task B", startDate: "2023-11-01", startTime: "12:00", endDate: "2023-11-01", endTime: "13:00" },
+      { title: "Task C", startDate: "2024-06-03", startTime: "15:00", endDate: "2024-06-07", endTime: "17:00" },
+      { title: "Task D", startDate: "2024-06-01", startTime: "17:00", endDate: "2024-06-05", endTime: "19:00" },
+    ];
+    setEvents(tempEvents);
+  }, [days, setEvents]);
+
+  const handleOnClickDay = (day) => {
+    if (day.isSelected) {
+      setSelectedDay(null);
+    } else {
+      const splitDay = day.date.split("-");
+      const year = splitDay[0];
+      const month = splitDay[1] < 10 ? "0" + splitDay[1] : splitDay[1];
+      const date = splitDay[2] < 10 ? "0" + splitDay[2] : splitDay[2];
+      const myDate = new Date(`${year}-${month}-${date}`);
+      setSelectedDay(myDate);
+    }
+
+    let updatedDays = days.map((d) => {
+      if (day === d)
+        return {...day, isSelected: true};
+      return {...d, isSelected: false};
+    });
+    setDays(updatedDays);
+  }
+
+  const handleOnClickPrevious = () => {
+    const updatedDay = {
+      month: currentMonth.month === 0 ? 11 : currentMonth.month - 1,
+      year: currentMonth.month === 0 ? currentMonth.year - 1 : currentMonth.year,
+    };
+    setConsideredMonth(updatedDay);
+    setCurrentMonth(updatedDay);
+  }
+
+  const handleOnClickNext = () => {
+    const updatedDay = {
+      month: (currentMonth.month + 1) % 12,
+      year: currentMonth.month === 11 ? currentMonth.year + 1 : currentMonth.year,
+    };
+    setConsideredMonth(updatedDay);
+    setCurrentMonth(updatedDay);
+  }
+
+  const handleOnClickAllocation = (oldEvent) => {
+    setCurrentEvent(oldEvent);
+    setViewEventModalOpen(true);
+  }
+
   return (
     <div>
-      <h2 className="text-base font-semibold leading-6 text-gray-900">Upcoming Events</h2>
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-16">
-        <div className="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
-          <div className="flex items-center text-gray-900">
-            <button
-              type="button"
-              className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-            >
-              <span className="sr-only">Previous month</span>
-              <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
-            </button>
-            <div className="flex-auto text-sm font-semibold">January</div>
-            <button
-              type="button"
-              className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-            >
-              <span className="sr-only">Next month</span>
-              <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="grid grid-cols-7 mt-6 text-xs leading-6 text-gray-500">
-            <div>M</div>
-            <div>T</div>
-            <div>W</div>
-            <div>T</div>
-            <div>F</div>
-            <div>S</div>
-            <div>S</div>
-          </div>
-          <div className="grid grid-cols-7 gap-px mt-2 text-sm bg-gray-200 rounded-lg shadow isolate ring-1 ring-gray-200">
-            {days.map((day, dayIdx) => (
-              <button
-                key={day.date}
-                type="button"
-                className={classNames(
-                  'py-1.5 hover:bg-gray-100 focus:z-10',
-                  day.isCurrentMonth ? 'bg-white' : 'bg-gray-50',
-                  (day.isSelected || day.isToday) && 'font-semibold',
-                  day.isSelected && 'text-white',
-                  !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900',
-                  !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400',
-                  day.isToday && !day.isSelected && 'text-indigo-600',
-                  dayIdx === 0 && 'rounded-tl-lg',
-                  dayIdx === 6 && 'rounded-tr-lg',
-                  dayIdx === days.length - 7 && 'rounded-bl-lg',
-                  dayIdx === days.length - 1 && 'rounded-br-lg'
-                )}
-              >
-                <time
-                  dateTime={day.date}
-                  className={classNames(
-                    'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
-                    day.isSelected && day.isToday && 'bg-indigo-600',
-                    day.isSelected && !day.isToday && 'bg-gray-900'
-                  )}
-                >
-                  {day.date.split('-').pop().replace(/^0/, '')}
-                </time>
-              </button>
-            ))}
-          </div>
-          <PrimaryButton onClick={() => {}} width={'full'} color={'indigo'} label={'Add Event'}/>
-        </div>
-        <ol className="mt-4 text-sm leading-6 divide-y divide-gray-100 lg:col-span-7 xl:col-span-8">
-          {meetings.map((meeting) => (
-            <li key={meeting.id} className="relative flex py-6 space-x-6 xl:static">
-              <div className="flex-auto">
-                <h3 className="pr-10 font-semibold text-gray-900 xl:pr-0">{meeting.name}</h3>
-                <dl className="flex flex-col mt-2 text-gray-500 xl:flex-row">
-                  <div className="flex items-start space-x-3">
-                    <dt className="mt-0.5">
-                      <span className="sr-only">Date</span>
-                      <CalendarIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-                    </dt>
-                    <dd>
-                      <time dateTime={meeting.datetime}>
-                        {meeting.date} at {meeting.time}
-                      </time>
-                    </dd>
-                  </div>
-                  <div className="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-gray-400 xl:border-opacity-50 xl:pl-3.5">
-                    <dt className="mt-0.5">
-                      <span className="sr-only">Location</span>
-                      <MapPinIcon className="w-5 h-5 text-gray-400" aria-hidden="true" />
-                    </dt>
-                    <dd>{meeting.location}</dd>
-                  </div>
-                </dl>
-              </div>
-              <Menu as="div" className="absolute right-0 top-6 xl:relative xl:right-auto xl:top-auto xl:self-center">
-                <div>
-                  <Menu.Button className="flex items-center p-2 -m-2 text-gray-500 rounded-full hover:text-gray-600">
-                    <span className="sr-only">Open options</span>
-                    <EllipsisHorizontalIcon className="w-5 h-5" aria-hidden="true" />
-                  </Menu.Button>
-                </div>
+      <CreateEventModal
+        open={createEventModalOpen}
+        setOpen={setCreateEventModalOpen}
+        title={title}
+        setTitle={setTitle}
+        startDate={startDate}
+        setStartDate={setStartDate}
+        endDate={endDate}
+        setEndDate={setEndDate}
+        startTime={startTime}
+        setStartTime={setStartTime}
+        endTime={endTime}
+        setEndTime={setEndTime}
+      />
+      <ViewEventModal
+        open={viewEventModalOpen}
+        setOpen={setViewEventModalOpen}
+        eventDetails={currentEvent}
+        setEventDetails={setCurrentEvent}
+      />
 
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
+      <div className="sm:flex-auto">
+        <h1 className="text-base font-semibold leading-6 text-gray-900">Company Events</h1>
+        <p className="mt-1 mb-5 text-sm text-gray-700">
+          Select a date to view event of that particular date.
+        </p>
+      </div>
+      <div className="w-full flex lg:flex-row flex-col-reverse pt-4">
+        <div className="lg:w-2/5 w-full">
+          <div role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 xl:gap-x-8">
+            {selectedDay === null ?
+              events.map((event, idx) => (
+                <AllocationDetailsCard key={idx} event={event} onClick={handleOnClickAllocation}/>
+              )) :
+              visibleEvents.length > 0 ? visibleEvents.map((event, idx) => (
+                <AllocationDetailsCard key={idx} event={event} onClick={handleOnClickAllocation}/>
+              )) : "No events"
+            }
+          </div>
+        </div>
+        <div className="lg:w-3/5 w-full lg:pl-8 lg:pb-0 pb-8">
+          <div className="w-full flex-none block mb-2">
+            <div className="w-full flex items-center text-center text-gray-900">
+              <button
+                type="button"
+                className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+                onClick={handleOnClickPrevious}
+              >
+                <span className="sr-only">Previous month</span>
+                <ChevronLeftIcon className="h-5 w-5" aria-hidden="true"/>
+              </button>
+              <div className="flex-auto text-sm font-semibold">
+                {getMonthString(currentMonth.month).fullName} {currentMonth.year}
+              </div>
+              <button
+                type="button"
+                className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+                onClick={handleOnClickNext}
+              >
+                <span className="sr-only">Next month</span>
+                <ChevronRightIcon className="h-5 w-5" aria-hidden="true"/>
+              </button>
+            </div>
+            <div className="w-full mt-6 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
+              {["M", "T", "W", "T", "F", "S", "S"].map((letter, idx) => {
+                return <div key={idx}>{letter}</div>;
+              })}
+            </div>
+            <div className="w-full isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1
+            ring-gray-200">
+              {days.map((day, dayIdx) => (
+                <button
+                  key={day.date}
+                  type="button"
+                  className={classNames(
+                    'py-2.5 hover:bg-gray-100 focus:z-10',
+                    day.isCurrentMonth ? 'bg-white' : 'bg-gray-50',
+                    (day.isSelected || day.isToday) && 'font-semibold',
+                    day.isSelected && 'text-white',
+                    !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900',
+                    !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400',
+                    day.isToday && !day.isSelected && 'text-indigo-600',
+                    dayIdx === 0 && 'rounded-tl-lg',
+                    dayIdx === 6 && 'rounded-tr-lg',
+                    dayIdx === days.length - 7 && 'rounded-bl-lg',
+                    dayIdx === days.length - 1 && 'rounded-br-lg'
+                  )}
+                  onClick={() => handleOnClickDay(day)}
                 >
-                  <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                              'block px-4 py-2 text-sm'
-                            )}
-                          >
-                            Edit
-                          </a>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(
-                              active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                              'block px-4 py-2 text-sm'
-                            )}
-                          >
-                            Cancel
-                          </a>
-                        )}
-                      </Menu.Item>
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            </li>
-          ))}
-        </ol>
+                  <time
+                    dateTime={day.date}
+                    className={classNames(
+                      'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
+                      day.isSelected && day.isToday && 'bg-indigo-600',
+                      day.isSelected && !day.isToday && 'bg-gray-900'
+                    )}
+                  >
+                    {day.date.split('-').pop()?.replace(/^0/, '')}
+                  </time>
+                </button>
+              ))}
+            </div>
+          </div>
+          <PrimaryButton
+            label={"Create Event"}
+            width={"full"}
+            onClick={() => setCreateEventModalOpen(true)}
+          />
+        </div>
       </div>
     </div>
   )
