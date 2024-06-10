@@ -1,20 +1,19 @@
 import React, {Fragment} from 'react';
-import {Dialog, Listbox, Transition} from "@headlessui/react";
+import {Dialog, Transition} from "@headlessui/react";
 import {SecondaryButton, SuccessButton} from "../Button";
 
 const CreateEmpAccModal = (props) => {
-	const {open, setOpen, firstName, setFirstName, lastName, setLastName, empEmail, setEmpEmail, empRole, setEmpRole, empTeam, setEmpTeam, joinedDate, setJoinedDate, createAccount} = props;
+	const {open, setOpen, firstName, setFirstName, lastName, setLastName, empEmail, setEmpEmail, empRole, setEmpRole,
+		teams, empTeam, setEmpTeam, joinedDate, setJoinedDate, createAccount} = props;
 
 	const emptyFirstName = firstName.trim() === "";
 	const emptyLastName = lastName.trim() === "";
 	const emptyEmail = empEmail.trim() === "";
-	// need to learn how Role and Team applicable here
-
-
 
 	return(
 		<Transition.Root show={open} as={Fragment}>
-			<Dialog as="div" className="relative z-10" onClose={setOpen}>
+			<Dialog as="div" className="relative z-10" onClose={() => {
+			}}>
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-300"
@@ -45,12 +44,12 @@ const CreateEmpAccModal = (props) => {
 
 								{/*Modal body start*/}
 								<div className=" sm:items-center mb-4 border-red-500">
-										<div className="sm:flex-auto">
-											<h1 className="text-base font-semibold leading-6 text-gray-900">Create an User Account</h1>
-											<p className="mt-1 mb-5 text-sm text-gray-700">
-												Enter relevant details of new employee.
-											</p>
-										</div>
+									<div className="sm:flex-auto">
+										<h1 className="text-base font-semibold leading-6 text-gray-900">Create an User Account</h1>
+										<p className="mt-1 mb-5 text-sm text-gray-700">
+											Enter relevant details of new employee.
+										</p>
+									</div>
 
 									<div className="flex sm:flex-row flex-col gap-4 items-center justify-between mt-3">
 										<div className="w-full">
@@ -66,6 +65,7 @@ const CreateEmpAccModal = (props) => {
 													ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
 													sm:text-sm sm:leading-6"
 													value={firstName}
+													onChange={(e) => setFirstName(e.target.value)}
 												/>
 											</div>
 										</div>
@@ -82,6 +82,7 @@ const CreateEmpAccModal = (props) => {
 													ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
 													sm:text-sm sm:leading-6"
 													value={lastName}
+													onChange={(e) => setLastName(e.target.value)}
 												/>
 											</div>
 										</div>
@@ -100,6 +101,7 @@ const CreateEmpAccModal = (props) => {
                         ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
                         sm:text-sm sm:leading-6"
 												value={empEmail}
+												onChange={(e) => setEmpEmail(e.target.value)}
 											/>
 										</div>
 									</div>
@@ -119,9 +121,7 @@ const CreateEmpAccModal = (props) => {
 													value={empTeam}
 													onChange={(e) => setEmpTeam(e.target.value)}
 												>
-													<option value="Team A">Team A</option>
-													<option value="Team B">Team B</option>
-													<option value="Team C">Team C</option>
+													{teams.map(team => <option key={team.name} value={team.name}>{team.name}</option>)}
 												</select>
 											</div>
 										</div>
@@ -139,10 +139,13 @@ const CreateEmpAccModal = (props) => {
 													value={empRole}
 													onChange={(e) => setEmpRole(e.target.value)}
 												>
-													<option value="BA">BA</option>
-													<option value="SE">SE</option>
-													<option value="QA">QA</option>
-													<option value="Team Lead">Team Lead</option>
+													<option value="Business Analyst">Business Analyst</option>
+													<option value="Software Engineer">Software Engineer</option>
+													<option value="DevOps Engineer">DevOps Engineer</option>
+													<option value="Quality Engineer">Quality Engineer</option>
+													<option value="Human Resources">Human Resources</option>
+													<option value="Marketing">Marketing</option>
+													<option value="Finance">Finance</option>
 												</select>
 											</div>
 										</div>
@@ -162,6 +165,7 @@ const CreateEmpAccModal = (props) => {
 											ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
 											sm:text-sm sm:leading-6"
 												value={joinedDate}
+												onChange={(e) => setJoinedDate(e.target.value)}
 											/>
 										</div>
 									</div>
@@ -173,8 +177,7 @@ const CreateEmpAccModal = (props) => {
 											setOpen(false);
 										}}
 									/>
-									<SuccessButton label={'Create'}/>
-									{/*<SuccessButton label={'Generate'} onClick={generateReport} disabled={!noErrors}/>*/}
+									<SuccessButton label={'Create'} onClick={createAccount}/>
 								</div>
 								{/*Modal body end*/}
 

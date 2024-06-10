@@ -1,9 +1,24 @@
-import React, {Fragment} from 'react';
-import {Dialog, Listbox, Transition} from "@headlessui/react";
+import React, {Fragment, useState} from 'react';
+import {Dialog, Transition,Combobox} from "@headlessui/react";
 import {SecondaryButton, SuccessButton} from "../Button";
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+
+function classNames(...classes) {
+	return classes.filter(Boolean).join(' ');
+}
 
 const CreateTeamModal = (props) => {
-	const {open, setOpen, teamName, setTeamName, clientName, setClientName} = props;
+	const {open, setOpen, teamName, setTeamName, clientName, setClientName, eligibleTeamLeads, teamLead, setTeamLead,
+		createTeam} = props;
+
+	const [query, setQuery] = useState('');
+
+	const filteredPeople =
+		query === ''
+			? eligibleTeamLeads
+			: eligibleTeamLeads.filter((person) => {
+				return person.name.toLowerCase().includes(query.toLowerCase())
+			})
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -37,7 +52,8 @@ const CreateTeamModal = (props) => {
 							>
 
 								{/*Modal body start*/}
-								<div className=" sm:items-center mb-4 border-red-500">
+								<div className=" sm:items-center border-red-500">
+
 									<div className="sm:flex-auto">
 										<h1 className="text-base font-semibold leading-6 text-gray-900">Create a Project Team</h1>
 										<p className="mt-1 mb-5 text-sm text-gray-700">
@@ -45,7 +61,7 @@ const CreateTeamModal = (props) => {
 										</p>
 									</div>
 
-									<div className="flex sm:flex-row flex-col gap-4 items-center justify-between mt-3">
+									<div className="flex sm:flex-row flex-col gap-4 items-center justify-between mt-3 mb-2">
 										<div className="w-full">
 											<label htmlFor="team-name" className="block text-sm font-medium leading-6 text-gray-900">
 												Team Name
@@ -59,6 +75,7 @@ const CreateTeamModal = (props) => {
 													ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
 													sm:text-sm sm:leading-6"
 													value={teamName}
+													onChange={(e) => setTeamName(e.target.value)}
 												/>
 											</div>
 										</div>
@@ -75,20 +92,84 @@ const CreateTeamModal = (props) => {
 													ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
 													sm:text-sm sm:leading-6"
 													value={clientName}
+													onChange={(e) => setClientName(e.target.value)}
 												/>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div className="flex flex-row items-center justify-between px-4 mt-6">
-									<SecondaryButton
-										label={'Cancel'}
-										onClick={() => {
-											setOpen(false);
+
+									<Combobox
+										as="div"
+										value={teamLead}
+										onChange={(person) => {
+											setQuery('')
+											setTeamLead(person)
 										}}
-									/>
-									<SuccessButton label={'Create'}/>
-									{/*<SuccessButton label={'Generate'} onClick={generateReport} disabled={!noErrors}/>*/}
+									>
+										<p className="block text-sm font-medium leading-6 text-gray-900">Assigned to</p>
+										<div className="relative mt-2">
+											<Combobox.Input
+												className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1
+												ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm
+												sm:leading-6"
+												onChange={(event) => setQuery(event.target.value)}
+												onBlur={() => setQuery('')}
+												displayValue={(person) => person?.name}
+											/>
+											<Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2
+											focus:outline-none">
+												<ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
+											</Combobox.Button>
+
+											{filteredPeople.length > 0 && (
+												<Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md
+												bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none
+												sm:text-sm">
+													{filteredPeople.map((person) => (
+														<Combobox.Option
+															key={person.id}
+															value={person}
+															className={({focus}) =>
+																classNames(
+																	'relative cursor-default select-none py-2 pl-3 pr-9',
+																	focus ? 'bg-indigo-600 text-white' : 'text-gray-900'
+																)
+															}
+														>
+															{({focus, selected}) => (
+																<>
+																	<span className={classNames('block truncate', selected && 'font-semibold')}>
+																		{person.name}
+																	</span>
+
+																	{selected && (
+																		<span
+																			className={classNames(
+																				'absolute inset-y-0 right-0 flex items-center pr-4',
+																				focus ? 'text-white' : 'text-indigo-600'
+																			)}
+																		>
+                        							<CheckIcon className="h-5 w-5" aria-hidden="true"/>
+                      							</span>
+																	)}
+																</>
+															)}
+														</Combobox.Option>
+													))}
+												</Combobox.Options>
+											)}
+										</div>
+									</Combobox>
+
+									<div className="flex flex-row items-center justify-between px-4 mt-6">
+										<SecondaryButton
+											label={'Cancel'}
+											onClick={() => {
+												setOpen(false);
+											}}
+										/>
+										<SuccessButton label={'Create'} onClick={createTeam}/>
+									</div>
 								</div>
 								{/*Modal body end*/}
 
@@ -101,4 +182,4 @@ const CreateTeamModal = (props) => {
 	);
 
 };
-export default CreateTeamModal ;
+export default CreateTeamModal;
