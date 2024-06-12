@@ -1,23 +1,109 @@
 import {PrimaryButton} from "../components/Button";
 import CreateEmpAccModal from "../components/modals/CreateEmpAccModal";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import CreateTeamModal from "../components/modals/CreateTeamModal";
 import ViewEmployeeModal from "../components/modals/ViewEmployeeModal";
-import {Menu, Transition} from "@headlessui/react";
-import {EllipsisVerticalIcon} from "@heroicons/react/20/solid";
 import ConfirmCreateEmployeeModal from "../components/modals/ConfirmCreateEmployeeModal";
 import SuccessModal from "../components/modals/SuccessModal";
 import ErrorModal from "../components/modals/ErrorModal";
 import ConfirmCreateTeamModal from "../components/modals/ConfirmCreateTeamModal";
 import ViewTeamModal from "../components/modals/ViewTeamModal";
 import {useAuth} from "../context/AuthContext";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import ConfirmUpdateEmployeeModal from "../components/modals/ConfirmUpdateEmployeeModal";
+import ConfirmDeleteEmployeeModal from "../components/modals/ConfirmDeleteEmployeeModal";
 
 const EmpView = () => {
   const {loading, isTL, isAdmin} = useAuth();
+
+  const roles = useMemo(() => [
+    {id: 1, title: "Business Analyst"},
+    {id: 2, title: "Engineer"},
+    {id: 3, title: "Human Resources"},
+    {id: 4, title: "Marketing"},
+    {id: 5, title: "Finance"},
+  ], []);
+
+  const [teams, setTeams] = useState([
+    {
+      id: 1,
+      name: 'Team A',
+      client: 'Leslie Alexander',
+      members: [
+        {email: "john.doe@example.com", firstName: "John", lastName: "Doe", role: "Engineer", isTL: false},
+        {email: "jane.smith@example.com", firstName: "Jane", lastName: "Smith", role: "Engineer", isTL: false},
+        {email: "alice.jones@example.com", firstName: "Alice", lastName: "Jones", role: "Engineer", isTL: true},
+        {email: "bob.brown@example.com", firstName: "Bob", lastName: "Brown", role: "Engineer", isTL: false},
+        {email: "charlie.davis@example.com", firstName: "Charlie", lastName: "Davis", role: "Engineer", isTL: false},
+      ],
+    },
+    {
+      id: 2,
+      name: 'Team B',
+      client: 'Leslie Alexander',
+      members: [
+        {email: "diane.evans@example.com", firstName: "Diane", lastName: "Evans", role: "Engineer", isTL: false},
+        {email: "eric.frank@example.com", firstName: "Eric", lastName: "Frank", role: "Engineer", isTL: true},
+        {email: "fiona.green@example.com", firstName: "Fiona", lastName: "Green", role: "Engineer", isTL: false},
+        {email: "george.harris@example.com", firstName: "George", lastName: "Harris", role: "Engineer", isTL: false},
+        {email: "hannah.jackson@example.com", firstName: "Hannah", lastName: "Jackson", role: "Engineer", isTL: false},
+        {email: "ian.king@example.com", firstName: "Ian", lastName: "King", role: "Engineer", isTL: false},
+        {email: "jill.lee@example.com", firstName: "Jill", lastName: "Lee", role: "Engineer", isTL: false},
+        {email: "kevin.morris@example.com", firstName: "Kevin", lastName: "Morris", role: "Engineer", isTL: false},
+        {email: "laura.nelson@example.com", firstName: "Laura", lastName: "Nelson", role: "Engineer", isTL: false},
+      ],
+    },
+    {
+      id: 3,
+      name: 'Team C',
+      client: 'Courtney Henry',
+      members: [
+        {email: "mike.owen@example.com", firstName: "Mike", lastName: "Owen", role: "Engineer", isTL: true},
+        {email: "nina.perez@example.com", firstName: "Nina", lastName: "Perez", role: "Engineer", isTL: false},
+        {email: "oliver.quinn@example.com", firstName: "Oliver", lastName: "Quinn", role: "Engineer", isTL: false},
+        {email: "paula.ross@example.com", firstName: "Paula", lastName: "Ross", role: "Engineer", isTL: false},
+      ],
+    },
+    {
+      id: 4,
+      name: 'Team D',
+      client: 'Leonard Krasner',
+      members: [
+        {email: "quentin.smith@example.com", firstName: "Quentin", lastName: "Smith", role: "Engineer", isTL: false},
+        {email: "rachel.taylor@example.com", firstName: "Rachel", lastName: "Taylor", role: "Engineer", isTL: true},
+      ],
+    },
+    {
+      id: 5,
+      name: 'Team E',
+      client: 'Courtney Henry',
+      members: [
+        {email: "sam.underwood@example.com", firstName: "Sam", lastName: "Underwood", role: "Engineer", isTL: false},
+        {email: "tina.vaughn@example.com", firstName: "Tina", lastName: "Vaughn", role: "Engineer", isTL: false},
+        {email: "ulysses.williams@example.com", firstName: "Ulysses", lastName: "Williams", role: "Engineer", isTL: false},
+        {email: "victor.xavier@example.com", firstName: "Victor", lastName: "Xavier", role: "Engineer", isTL: true},
+        {email: "wendy.young@example.com", firstName: "Wendy", lastName: "Young", role: "Engineer", isTL: false},
+      ],
+    },
+  ]);
+  const [searchTeam, setSearchTeam] = useState("");
+  const [visibleTeams, setVisibleTeams] = useState([]);
+  const [openCreateTeamModal, setOpenCreateTeamModal] = useState(false);
+  const [teamName, setTeamName] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [eligibleTeamLeads, setEligibleTeamLeads] = useState([]);
+  const [teamLead, setTeamLead] = useState(null);
+  const [retrieveTeamDataErrorModalOpen, setRetrieveTeamDataErrorModalOpen] = useState(false);
+  const [confirmCreateTeamModalOpen, setConfirmCreateTeamModalOpen] = useState(false);
+  const [createTeamSuccessModalOpen, setCreateTeamSuccessModalOpen] = useState(false);
+  const [createTeamErrorModalOpen, setCreateTeamErrorModalOpen] = useState(false);
+  const [viewTeamModalOpen, setViewTeamModalOpen] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [confirmUpdateTeamModalOpen, setConfirmUpdateTeamModalOpen] = useState(false);
+  const [updateTeamSuccessModalOpen, setUpdateTeamSuccessModalOpen] = useState(false);
+  const [updateTeamErrorModalOpen, setUpdateTeamErrorModalOpen] = useState(false);
+  const [confirmDeleteTeamModalOpen, setConfirmDeleteTeamModalOpen] = useState(false);
+  const [deleteTeamSuccessModalOpen, setDeleteTeamSuccessModalOpen] = useState(false);
+  const [deleteTeamErrorModalOpen, setDeleteTeamErrorModalOpen] = useState(false);
 
   const [employees, setEmployees] = useState([
     {
@@ -57,7 +143,7 @@ const EmpView = () => {
       firstName: "Michael",
       lastName: "Brown",
       email: "michael.brown@example.com",
-      role: "QA Engineer",
+      role: "CEO",
       team: "",
       isTL: false,
       isAdmin: true,
@@ -82,9 +168,10 @@ const EmpView = () => {
   const [fName, setFName] = useState('');
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
-  const [team, setTeam] = useState('');
+  const [role, setRole] = useState(roles[0]);
+  const [team, setTeam] = useState(teams[0]);
   const [joinedDate, setJoinedDate] = useState('');
+  const [retrieveEmployeeDataErrorModalOpen, setRetrieveEmployeeDataErrorModalOpen] = useState(false);
   const [confirmCreateEmployeeAccountModalOpen, setConfirmCreateEmployeeAccountModalOpen]
     = useState(false);
   const [createEmployeeAccountSuccessModalOpen, setCreateEmployeeAccountSuccessModalOpen]
@@ -118,59 +205,27 @@ const EmpView = () => {
   const [deleteEmployeeAccountErrorModalOpen, setDeleteEmployeeAccountErrorModalOpen]
     = useState(false);
 
-  const [teams, setTeams] = useState([
-    {
-      id: 1,
-      name: 'GraphQL API',
-      client: 'Leslie Alexander',
-      members: 2,
-    },
-    {
-      id: 2,
-      name: 'New benefits plan',
-      client: 'Leslie Alexander',
-      members: 23,
-    },
-    {
-      id: 3,
-      name: 'Onboarding emails',
-      client: 'Courtney Henry',
-      members: 34,
-    },
-    {
-      id: 4,
-      name: 'iOS app',
-      client: 'Leonard Krasner',
-      members: 12,
-    },
-    {
-      id: 5,
-      name: 'Marketing site redesign',
-      client: 'Courtney Henry',
-      members: 31,
-    },
-  ]);
-  const [searchTeam, setSearchTeam] = useState("");
-  const [visibleTeams, setVisibleTeams] = useState([]);
-  const [openCreateTeamModal, setOpenCreateTeamModal] = useState(false);
-  const [teamName, setTeamName] = useState("");
-  const [clientName, setClientName] = useState("");
-  const [eligibleTeamLeads, setEligibleTeamLeads] = useState([
-    { id: 1, name: 'Leslie Alexander' },
-  ]);
-  const [teamLead, setTeamLead] = useState(null);
-  const [confirmCreateTeamModalOpen, setConfirmCreateTeamModalOpen] = useState(false);
-  const [createTeamSuccessModalOpen, setCreateTeamSuccessModalOpen] = useState(false);
-  const [createTeamErrorModalOpen, setCreateTeamErrorModalOpen] = useState(false);
-  const [viewTeamModalOpen, setViewTeamModalOpen] = useState(false);
-  const [selectedTeamData, setSelectedTeamData] = useState();
-  const [confirmUpdateTeamModalOpen, setConfirmUpdateTeamModalOpen] = useState(false);
-  const [updateTeamSuccessModalOpen, setUpdateTeamSuccessModalOpen] = useState(false);
-  const [updateTeamErrorModalOpen, setUpdateTeamErrorModalOpen] = useState(false);
-  const [confirmDeleteTeamModalOpen, setConfirmDeleteTeamModalOpen] = useState(false);
-  const [deleteTeamSuccessModalOpen, setDeleteTeamSuccessModalOpen] = useState(false);
-  const [deleteTeamErrorModalOpen, setDeleteTeamErrorModalOpen] = useState(false);
+  // Retrieve employee and team data
+  const getEmployeeData = () => {}
+  const getTeamData = () => {}
+  useEffect(() => {
+    getEmployeeData();
+    // setRetrieveEmployeeDataErrorModalOpen(true);
 
+    getTeamData();
+    // setRetrieveTeamDataErrorModalOpen(true);
+  }, []);
+
+  // Set eligible TLs
+  useEffect(() => {
+    const tempEligibleTLs =
+      employees.filter(e => !e.isTL && !e.isAdmin).map(e => (
+        {name: `${e.firstName} ${e.lastName}`, email: e.email}
+      ));
+    setEligibleTeamLeads(tempEligibleTLs);
+  }, [employees]);
+
+  // Search and filter employees
   useEffect(() => {
     setTimeout(() => {
       const tempEmployees = employees.filter((employee) => {
@@ -181,6 +236,7 @@ const EmpView = () => {
     }, 1000);
   }, [employees, searchEmployee]);
 
+  // Search and filter teams
   useEffect(() => {
     setTimeout(() => {
       const tempTeams = teams.filter((team) => {
@@ -193,11 +249,54 @@ const EmpView = () => {
   const createEmployee = () => {}
   const confirmCreateEmployee = () => {
     createEmployee();
+    setCreateEmployeeAccountSuccessModalOpen(true);
+    setCreateEmployeeAccountErrorModalOpen(true);
+  }
+
+  const updateEmployee = () => {}
+  const confirmUpdateEmployee = () => {
+    updateEmployee();
+    setUpdateEmployeeAccountSuccessModalOpen(true);
+    setUpdateEmployeeAccountErrorModalOpen(true);
+  }
+
+  const deleteEmployee = () => {}
+  const confirmDeleteEmployee = () => {
+    deleteEmployee();
+    setDeleteEmployeeAccountSuccessModalOpen(true);
+    setDeleteEmployeeAccountErrorModalOpen(true);
+  }
+
+  const createTeam = () => {}
+  const confirmCreateTeam = () => {
+    createTeam();
+    setCreateTeamSuccessModalOpen(true);
+    setCreateTeamErrorModalOpen(true);
+  }
+
+  const updateTeam = () => {}
+  const confirmUpdateTeam = () => {
+    updateTeam();
+    setUpdateTeamSuccessModalOpen(true);
+    setUpdateTeamErrorModalOpen(true);
+  }
+
+  const deleteTeam = () => {}
+  const confirmDeleteTeam = () => {
+    deleteTeam();
+    setDeleteTeamSuccessModalOpen(true);
+    setDeleteTeamErrorModalOpen(true);
   }
 
   return (
     <div>
       <>
+        <ErrorModal
+          title={"Employee Data"}
+          message={"An error occurred while retrieving Employee data. Please try again."}
+          open={retrieveEmployeeDataErrorModalOpen}
+          setOpen={setRetrieveEmployeeDataErrorModalOpen}
+        />
         <CreateEmpAccModal
           open={createEmployeeAccountModalOpen}
           setOpen={setCreateEmployeeAccountModalOpen}
@@ -214,6 +313,7 @@ const EmpView = () => {
           setEmpTeam={setTeam}
           joinedDate={joinedDate}
           setJoinedDate={setJoinedDate}
+          roles={roles}
           createAccount={() => setConfirmCreateEmployeeAccountModalOpen(true)}
         />
         <ConfirmCreateEmployeeModal
@@ -239,7 +339,14 @@ const EmpView = () => {
           selectedEmployee={selectedEmployee}
           setSelectedEmployee={setSelectedEmployee}
           isAdmin={isAdmin}
+          onClickSave={() => setConfirmUpdateEmployeeAccountModalOpen(true)}
+          onClickDelete={() => setConfirmDeleteEmployeeAccountModalOpen(true)}
         />}
+        <ConfirmUpdateEmployeeModal
+          open={confirmUpdateEmployeeAccountModalOpen}
+          setOpen={setConfirmUpdateEmployeeAccountModalOpen}
+          onClickComplete={confirmUpdateEmployee}
+        />
         <SuccessModal
           title={"Update Employee Account"}
           message={"Employee account has been updated successfully"}
@@ -251,6 +358,11 @@ const EmpView = () => {
           message={"An error occurred while updating the Employee account. Please try again."}
           open={updateEmployeeAccountErrorModalOpen}
           setOpen={setUpdateEmployeeAccountErrorModalOpen}
+        />
+        <ConfirmDeleteEmployeeModal
+          open={confirmDeleteEmployeeAccountModalOpen}
+          setOpen={setConfirmDeleteEmployeeAccountModalOpen}
+          onClickComplete={confirmDeleteEmployee}
         />
         <SuccessModal
           title={"Delete Employee Account"}
@@ -265,6 +377,12 @@ const EmpView = () => {
           setOpen={setDeleteEmployeeAccountErrorModalOpen}
         />
 
+        <ErrorModal
+          title={"Teams Data"}
+          message={"An error occurred while retrieving Teams data. Please try again."}
+          open={retrieveTeamDataErrorModalOpen}
+          setOpen={setRetrieveTeamDataErrorModalOpen}
+        />
         <CreateTeamModal
           open={openCreateTeamModal}
           setOpen={setOpenCreateTeamModal}
@@ -294,12 +412,12 @@ const EmpView = () => {
           open={createTeamErrorModalOpen}
           setOpen={setCreateTeamErrorModalOpen}
         />
-        {/*<ViewTeamModal*/}
-        {/*	open={viewTeamModalOpen}*/}
-        {/*	setOpen={setViewTeamModalOpen}*/}
-        {/*	selectedTeamData={selectedTeamData}*/}
-        {/*	setSelectedTeamData={setSelectedTeamData}*/}
-        {/*/>*/}
+        {selectedTeam && <ViewTeamModal
+          open={viewTeamModalOpen}
+          setOpen={setViewTeamModalOpen}
+          selectedTeam={selectedTeam}
+          setSelectedTeam={setSelectedTeam}
+        />}
         <SuccessModal
           title={"Update a Team"}
           message={"Team has been updated successfully"}
@@ -352,11 +470,11 @@ const EmpView = () => {
             value={searchEmployee}
             onChange={(e) => setSearchEmployee(e.target.value)}
           />
-          <ul role="list" className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          <ul role="list" className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {visibleEmployees.map((person) => (
               <li
                 key={person.email}
-                className="flex flex-col col-span-1 text-center bg-white divide-y divide-gray-200 rounded-lg shadow
+                className="flex flex-col col-span-1 text-center bg-white divide-y divide-gray-200 rounded-lg shadow-lg
 								cursor-pointer hover:bg-gray-100"
                 onClick={() => {
                   setSelectedEmployee(person);
@@ -364,7 +482,7 @@ const EmpView = () => {
                 }}
               >
                 <div className="flex flex-col flex-1 p-4">
-                  <img className="flex-shrink-0 w-32 h-32 mx-auto rounded-full" src={person.imageUrl} alt=""/>
+                  <img className="flex-shrink-0 w-16 h-16 mx-auto rounded-full" src={person.imageUrl} alt=""/>
                   <h3 className="mt-6 text-sm font-medium text-gray-900">{person.firstName} {person.lastName}</h3>
                   <dl className="flex flex-col justify-between flex-grow mt-1">
                     <dt className="sr-only">Role</dt>
@@ -419,8 +537,15 @@ const EmpView = () => {
           />
           <ul role="list" className="divide-y divide-gray-100">
             {visibleTeams.map((team) => (
-              <li key={team.id} className="flex items-center justify-between gap-x-6 py-5 cursor-pointer
-							hover:bg-gray-100 px-4 rounded-lg">
+              <li
+                key={team.id}
+                className="flex items-center justify-between gap-x-6 py-5 cursor-pointer hover:bg-gray-100 px-4
+                rounded-lg"
+                onClick={() => {
+                  setSelectedTeam(team);
+                  setViewTeamModalOpen(true);
+                }}
+              >
                 <div className="min-w-0">
                   <div className="flex items-start gap-x-3">
                     <p className="text-sm font-semibold leading-6 text-gray-900">{team.name}</p>
@@ -432,53 +557,8 @@ const EmpView = () => {
                     <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 fill-current">
                       <circle cx={1} cy={1} r={1}/>
                     </svg>
-                    <p className="truncate">{team.members} members</p>
+                    <p className="truncate">{team.members.length} members</p>
                   </div>
-                </div>
-                <div className="flex flex-none items-center gap-x-4">
-                  <Menu as="div" className="relative flex-none">
-                    <Menu.Button className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
-                      <span className="sr-only">Open options</span>
-                      <EllipsisVerticalIcon className="h-5 w-5" aria-hidden="true"/>
-                    </Menu.Button>
-                    <Transition
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items
-                        className="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg
-												ring-1 ring-gray-900/5 focus:outline-none">
-                        <Menu.Item>
-                          {({focus}) => (
-                            <div
-                              className={classNames(
-                                focus ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-gray-900'
-                              )}
-                            >
-                              Edit<span className="sr-only">, {team.name}</span>
-                            </div>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({focus}) => (
-                            <div
-                              className={classNames(
-                                focus ? 'bg-gray-50' : '',
-                                'block px-3 py-1 text-sm leading-6 text-gray-900'
-                              )}
-                            >
-                              Delete<span className="sr-only">, {team.name}</span>
-                            </div>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
                 </div>
               </li>
             ))}

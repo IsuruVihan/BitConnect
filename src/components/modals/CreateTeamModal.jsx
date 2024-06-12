@@ -127,7 +127,7 @@ const CreateTeamModal = (props) => {
 												sm:text-sm">
 													{filteredPeople.map((person) => (
 														<Combobox.Option
-															key={person.id}
+															key={person.email}
 															value={person}
 															className={({focus}) =>
 																classNames(
