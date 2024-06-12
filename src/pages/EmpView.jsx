@@ -11,9 +11,13 @@ import ViewTeamModal from "../components/modals/ViewTeamModal";
 import {useAuth} from "../context/AuthContext";
 import ConfirmUpdateEmployeeModal from "../components/modals/ConfirmUpdateEmployeeModal";
 import ConfirmDeleteEmployeeModal from "../components/modals/ConfirmDeleteEmployeeModal";
+import AddTeamMemberModal from "../components/modals/AddMemberModal";
+import ConfirmUpdateTeamModal from "../components/modals/ConfirmUpdateTeamModal";
+import ConfirmDeleteTeamModal from "../components/modals/ConfirmDeleteTeamModal";
+import areObjectsIdentical from "../lib/areObjectsIdentical";
 
 const EmpView = () => {
-  const {loading, isTL, isAdmin} = useAuth();
+  const {isAdmin} = useAuth();
 
   const roles = useMemo(() => [
     {id: 1, title: "Business Analyst"},
@@ -24,66 +28,66 @@ const EmpView = () => {
   ], []);
 
   const [teams, setTeams] = useState([
-    {
-      id: 1,
-      name: 'Team A',
-      client: 'Leslie Alexander',
-      members: [
-        {email: "john.doe@example.com", firstName: "John", lastName: "Doe", role: "Engineer", isTL: false},
-        {email: "jane.smith@example.com", firstName: "Jane", lastName: "Smith", role: "Engineer", isTL: false},
-        {email: "alice.jones@example.com", firstName: "Alice", lastName: "Jones", role: "Engineer", isTL: true},
-        {email: "bob.brown@example.com", firstName: "Bob", lastName: "Brown", role: "Engineer", isTL: false},
-        {email: "charlie.davis@example.com", firstName: "Charlie", lastName: "Davis", role: "Engineer", isTL: false},
-      ],
-    },
-    {
-      id: 2,
-      name: 'Team B',
-      client: 'Leslie Alexander',
-      members: [
-        {email: "diane.evans@example.com", firstName: "Diane", lastName: "Evans", role: "Engineer", isTL: false},
-        {email: "eric.frank@example.com", firstName: "Eric", lastName: "Frank", role: "Engineer", isTL: true},
-        {email: "fiona.green@example.com", firstName: "Fiona", lastName: "Green", role: "Engineer", isTL: false},
-        {email: "george.harris@example.com", firstName: "George", lastName: "Harris", role: "Engineer", isTL: false},
-        {email: "hannah.jackson@example.com", firstName: "Hannah", lastName: "Jackson", role: "Engineer", isTL: false},
-        {email: "ian.king@example.com", firstName: "Ian", lastName: "King", role: "Engineer", isTL: false},
-        {email: "jill.lee@example.com", firstName: "Jill", lastName: "Lee", role: "Engineer", isTL: false},
-        {email: "kevin.morris@example.com", firstName: "Kevin", lastName: "Morris", role: "Engineer", isTL: false},
-        {email: "laura.nelson@example.com", firstName: "Laura", lastName: "Nelson", role: "Engineer", isTL: false},
-      ],
-    },
-    {
-      id: 3,
-      name: 'Team C',
-      client: 'Courtney Henry',
-      members: [
-        {email: "mike.owen@example.com", firstName: "Mike", lastName: "Owen", role: "Engineer", isTL: true},
-        {email: "nina.perez@example.com", firstName: "Nina", lastName: "Perez", role: "Engineer", isTL: false},
-        {email: "oliver.quinn@example.com", firstName: "Oliver", lastName: "Quinn", role: "Engineer", isTL: false},
-        {email: "paula.ross@example.com", firstName: "Paula", lastName: "Ross", role: "Engineer", isTL: false},
-      ],
-    },
-    {
-      id: 4,
-      name: 'Team D',
-      client: 'Leonard Krasner',
-      members: [
-        {email: "quentin.smith@example.com", firstName: "Quentin", lastName: "Smith", role: "Engineer", isTL: false},
-        {email: "rachel.taylor@example.com", firstName: "Rachel", lastName: "Taylor", role: "Engineer", isTL: true},
-      ],
-    },
-    {
-      id: 5,
-      name: 'Team E',
-      client: 'Courtney Henry',
-      members: [
-        {email: "sam.underwood@example.com", firstName: "Sam", lastName: "Underwood", role: "Engineer", isTL: false},
-        {email: "tina.vaughn@example.com", firstName: "Tina", lastName: "Vaughn", role: "Engineer", isTL: false},
-        {email: "ulysses.williams@example.com", firstName: "Ulysses", lastName: "Williams", role: "Engineer", isTL: false},
-        {email: "victor.xavier@example.com", firstName: "Victor", lastName: "Xavier", role: "Engineer", isTL: true},
-        {email: "wendy.young@example.com", firstName: "Wendy", lastName: "Young", role: "Engineer", isTL: false},
-      ],
-    },
+    // {
+    //   id: 1,
+    //   name: 'Team A',
+    //   client: 'Leslie Alexander',
+    //   members: [
+    //     {email: "john.doe@example.com", firstName: "John", lastName: "Doe", role: "Engineer", isTL: false},
+    //     {email: "jane.smith@example.com", firstName: "Jane", lastName: "Smith", role: "Engineer", isTL: false},
+    //     {email: "alice.jones@example.com", firstName: "Alice", lastName: "Jones", role: "Engineer", isTL: true},
+    //     {email: "bob.brown@example.com", firstName: "Bob", lastName: "Brown", role: "Engineer", isTL: false},
+    //     {email: "charlie.davis@example.com", firstName: "Charlie", lastName: "Davis", role: "Engineer", isTL: false},
+    //   ],
+    // },
+    // {
+    //   id: 2,
+    //   name: 'Team B',
+    //   client: 'Leslie Alexander',
+    //   members: [
+    //     {email: "diane.evans@example.com", firstName: "Diane", lastName: "Evans", role: "Engineer", isTL: false},
+    //     {email: "eric.frank@example.com", firstName: "Eric", lastName: "Frank", role: "Engineer", isTL: true},
+    //     {email: "fiona.green@example.com", firstName: "Fiona", lastName: "Green", role: "Engineer", isTL: false},
+    //     {email: "george.harris@example.com", firstName: "George", lastName: "Harris", role: "Engineer", isTL: false},
+    //     {email: "hannah.jackson@example.com", firstName: "Hannah", lastName: "Jackson", role: "Engineer", isTL: false},
+    //     {email: "ian.king@example.com", firstName: "Ian", lastName: "King", role: "Engineer", isTL: false},
+    //     {email: "jill.lee@example.com", firstName: "Jill", lastName: "Lee", role: "Engineer", isTL: false},
+    //     {email: "kevin.morris@example.com", firstName: "Kevin", lastName: "Morris", role: "Engineer", isTL: false},
+    //     {email: "laura.nelson@example.com", firstName: "Laura", lastName: "Nelson", role: "Engineer", isTL: false},
+    //   ],
+    // },
+    // {
+    //   id: 3,
+    //   name: 'Team C',
+    //   client: 'Courtney Henry',
+    //   members: [
+    //     {email: "mike.owen@example.com", firstName: "Mike", lastName: "Owen", role: "Engineer", isTL: true},
+    //     {email: "nina.perez@example.com", firstName: "Nina", lastName: "Perez", role: "Engineer", isTL: false},
+    //     {email: "oliver.quinn@example.com", firstName: "Oliver", lastName: "Quinn", role: "Engineer", isTL: false},
+    //     {email: "paula.ross@example.com", firstName: "Paula", lastName: "Ross", role: "Engineer", isTL: false},
+    //   ],
+    // },
+    // {
+    //   id: 4,
+    //   name: 'Team D',
+    //   client: 'Leonard Krasner',
+    //   members: [
+    //     {email: "quentin.smith@example.com", firstName: "Quentin", lastName: "Smith", role: "Engineer", isTL: false},
+    //     {email: "rachel.taylor@example.com", firstName: "Rachel", lastName: "Taylor", role: "Engineer", isTL: true},
+    //   ],
+    // },
+    // {
+    //   id: 5,
+    //   name: 'Team E',
+    //   client: 'Courtney Henry',
+    //   members: [
+    //     {email: "sam.underwood@example.com", firstName: "Sam", lastName: "Underwood", role: "Engineer", isTL: false},
+    //     {email: "tina.vaughn@example.com", firstName: "Tina", lastName: "Vaughn", role: "Engineer", isTL: false},
+    //     {email: "ulysses.williams@example.com", firstName: "Ulysses", lastName: "Williams", role: "Engineer", isTL: false},
+    //     {email: "victor.xavier@example.com", firstName: "Victor", lastName: "Xavier", role: "Engineer", isTL: true},
+    //     {email: "wendy.young@example.com", firstName: "Wendy", lastName: "Young", role: "Engineer", isTL: false},
+    //   ],
+    // },
   ]);
   const [searchTeam, setSearchTeam] = useState("");
   const [visibleTeams, setVisibleTeams] = useState([]);
@@ -98,21 +102,11 @@ const EmpView = () => {
   const [createTeamErrorModalOpen, setCreateTeamErrorModalOpen] = useState(false);
   const [viewTeamModalOpen, setViewTeamModalOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [confirmUpdateTeamModalOpen, setConfirmUpdateTeamModalOpen] = useState(false);
-  const [updateTeamSuccessModalOpen, setUpdateTeamSuccessModalOpen] = useState(false);
-  const [updateTeamErrorModalOpen, setUpdateTeamErrorModalOpen] = useState(false);
-  const [confirmDeleteTeamModalOpen, setConfirmDeleteTeamModalOpen] = useState(false);
-  const [deleteTeamSuccessModalOpen, setDeleteTeamSuccessModalOpen] = useState(false);
-  const [deleteTeamErrorModalOpen, setDeleteTeamErrorModalOpen] = useState(false);
-
-  const [employees, setEmployees] = useState([
+  const [eligibleEmployees, setEligibleEmployees] = useState([
     {
       firstName: "John",
       lastName: "Doe",
       email: "john.doe@example.com",
-      role: "Developer",
-      team: "Team A",
-      isTL: true,
       isAdmin: false,
       birthDay: "1990-01-15",
       imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
@@ -121,9 +115,6 @@ const EmpView = () => {
       firstName: "Jane",
       lastName: "Smith",
       email: "jane.smith@example.com",
-      role: "Project Manager",
-      team: "Team A",
-      isTL: false,
       isAdmin: false,
       birthDay: "1985-05-30",
       imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
@@ -132,35 +123,100 @@ const EmpView = () => {
       firstName: "Emily",
       lastName: "Johnson",
       email: "emily.johnson@example.com",
-      role: "UX Designer",
-      team: "Team B",
-      isTL: false,
       isAdmin: false,
       birthDay: "1992-07-21",
       imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
-      firstName: "Michael",
-      lastName: "Brown",
-      email: "michael.brown@example.com",
-      role: "CEO",
-      team: "",
-      isTL: false,
-      isAdmin: true,
-      birthDay: "1988-03-10",
+      firstName: "John",
+      lastName: "Doe",
+      email: "1john.doe@example.com",
+      isAdmin: false,
+      birthDay: "1990-01-15",
       imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     },
     {
-      firstName: "Lisa",
-      lastName: "Davis",
-      email: "lisa.davis@example.com",
-      role: "Data Analyst",
-      team: "Team B",
-      isTL: true,
+      firstName: "Jane",
+      lastName: "Smith",
+      email: "1jane.smith@example.com",
       isAdmin: false,
-      birthDay: "1993-11-25",
+      birthDay: "1985-05-30",
+      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    },
+    {
+      firstName: "Emily",
+      lastName: "Johnson",
+      email: "1emily.johnson@example.com",
+      isAdmin: false,
+      birthDay: "1992-07-21",
       imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
     }
+  ]);
+  const [addedEmployees, setAddedEmployees] = useState([]);
+  const [addTeamMemberModalOpen, setAddTeamMemberModalOpen] = useState(false);
+  const [confirmUpdateTeamModalOpen, setConfirmUpdateTeamModalOpen] = useState(false);
+  const [updateTeamSuccessModalOpen, setUpdateTeamSuccessModalOpen] = useState(false);
+  const [updateTeamErrorModalOpen, setUpdateTeamErrorModalOpen] = useState(false);
+  const [confirmDeleteTeamModalOpen, setConfirmDeleteTeamModalOpen] = useState(false);
+  const [deleteTeamSuccessModalOpen, setDeleteTeamSuccessModalOpen] = useState(false);
+  const [deleteTeamErrorModalOpen, setDeleteTeamErrorModalOpen] = useState(false);
+
+  const [employees, setEmployees] = useState([
+    // {
+    //   firstName: "John",
+    //   lastName: "Doe",
+    //   email: "john.doe@example.com",
+    //   role: "Developer",
+    //   team: "Team A",
+    //   isTL: true,
+    //   isAdmin: false,
+    //   birthDay: "1990-01-15",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Jane",
+    //   lastName: "Smith",
+    //   email: "jane.smith@example.com",
+    //   role: null,
+    //   team: null,
+    //   isTL: false,
+    //   isAdmin: false,
+    //   birthDay: "1985-05-30",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Emily",
+    //   lastName: "Johnson",
+    //   email: "emily.johnson@example.com",
+    //   role: "UX Designer",
+    //   team: "Team B",
+    //   isTL: false,
+    //   isAdmin: false,
+    //   birthDay: "1992-07-21",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Michael",
+    //   lastName: "Brown",
+    //   email: "michael.brown@example.com",
+    //   role: "CEO",
+    //   team: "",
+    //   isTL: false,
+    //   isAdmin: true,
+    //   birthDay: "1988-03-10",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Lisa",
+    //   lastName: "Davis",
+    //   email: "lisa.davis@example.com",
+    //   role: "Data Analyst",
+    //   team: "Team B",
+    //   isTL: true,
+    //   isAdmin: false,
+    //   birthDay: "1993-11-25",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // }
   ]);
   const [searchEmployee, setSearchEmployee] = useState("");
   const [visibleEmployees, setVisibleEmployees] = useState([]);
@@ -169,7 +225,7 @@ const EmpView = () => {
   const [lName, setLName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState(roles[0]);
-  const [team, setTeam] = useState(teams[0]);
+  const [team, setTeam] = useState('');
   const [joinedDate, setJoinedDate] = useState('');
   const [retrieveEmployeeDataErrorModalOpen, setRetrieveEmployeeDataErrorModalOpen] = useState(false);
   const [confirmCreateEmployeeAccountModalOpen, setConfirmCreateEmployeeAccountModalOpen]
@@ -179,6 +235,7 @@ const EmpView = () => {
   const [createEmployeeAccountErrorModalOpen, setCreateEmployeeAccountErrorModalOpen]
     = useState(false);
   const [viewEmployeeModalOpen, setViewEmployeeModalOpen] = useState(false);
+  const [initSelectedEmployee, setInitSelectedEmployee] = useState(null);
   const [selectedEmployee, setSelectedEmployee] = useState(null
     // {
     // 	firstName: "John",
@@ -205,24 +262,84 @@ const EmpView = () => {
   const [deleteEmployeeAccountErrorModalOpen, setDeleteEmployeeAccountErrorModalOpen]
     = useState(false);
 
-  // Retrieve employee and team data
-  const getEmployeeData = () => {}
-  const getTeamData = () => {}
-  useEffect(() => {
-    getEmployeeData();
-    // setRetrieveEmployeeDataErrorModalOpen(true);
+  // setTeam
+  // useEffect(() => {
+  //   setTeam(teams[0].name);
+  // }, [teams]);
 
-    getTeamData();
+  // Retrieve employee and team data
+  const getEmployeeData = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/employee`, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+          }
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
+  const getTeamData = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/team`, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+          }
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
+  useEffect(() => {
+    getEmployeeData()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return {error: true};
+        return r.result.json();
+      })
+      .then((data) => {
+        if (data.error) {
+          setRetrieveEmployeeDataErrorModalOpen(true);
+        } else {
+          setEmployees(data.employees);
+        }
+      });
+
+    getTeamData()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return {error: true};
+        return r.result.json();
+      })
+      .then((data) => {
+        if (data.error) {
+          setRetrieveTeamDataErrorModalOpen(true);
+        } else {
+          setTeams(data.teams);
+        }
+      });
     // setRetrieveTeamDataErrorModalOpen(true);
   }, []);
 
-  // Set eligible TLs
+  // Set eligible employees and TLs
   useEffect(() => {
     const tempEligibleTLs =
       employees.filter(e => !e.isTL && !e.isAdmin).map(e => (
         {name: `${e.firstName} ${e.lastName}`, email: e.email}
       ));
     setEligibleTeamLeads(tempEligibleTLs);
+
+    const tempEligibleEmployees =
+      employees.filter(e => !e.isAdmin && !e.team);
+    setEligibleEmployees(tempEligibleEmployees);
   }, [employees]);
 
   // Search and filter employees
@@ -246,18 +363,47 @@ const EmpView = () => {
     }, 1000);
   }, [teams, searchTeam]);
 
-  const createEmployee = () => {}
+  const createEmployee = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/employee`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName: fName,
+            lastName: lName,
+            email: email,
+            team: team,
+            role: role,
+            joinedOn: joinedDate,
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
   const confirmCreateEmployee = () => {
-    createEmployee();
-    setCreateEmployeeAccountSuccessModalOpen(true);
-    setCreateEmployeeAccountErrorModalOpen(true);
+    createEmployee()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setCreateEmployeeAccountErrorModalOpen(true);
+        return setCreateEmployeeAccountSuccessModalOpen(true);
+      });
   }
 
   const updateEmployee = () => {}
   const confirmUpdateEmployee = () => {
-    updateEmployee();
-    setUpdateEmployeeAccountSuccessModalOpen(true);
-    setUpdateEmployeeAccountErrorModalOpen(true);
+    if(!areObjectsIdentical(initSelectedEmployee, selectedEmployee)) {
+      console.log(selectedEmployee);
+    }
+    // updateEmployee();
+    // setUpdateEmployeeAccountSuccessModalOpen(true);
+    // setUpdateEmployeeAccountErrorModalOpen(true);
   }
 
   const deleteEmployee = () => {}
@@ -288,6 +434,8 @@ const EmpView = () => {
     setDeleteTeamErrorModalOpen(true);
   }
 
+  const addTeamMembers = () => {}
+
   return (
     <div>
       <>
@@ -314,7 +462,7 @@ const EmpView = () => {
           joinedDate={joinedDate}
           setJoinedDate={setJoinedDate}
           roles={roles}
-          createAccount={() => setConfirmCreateEmployeeAccountModalOpen(true)}
+          createAccount={() => {setConfirmCreateEmployeeAccountModalOpen(true)}}
         />
         <ConfirmCreateEmployeeModal
           open={confirmCreateEmployeeAccountModalOpen}
@@ -339,7 +487,11 @@ const EmpView = () => {
           selectedEmployee={selectedEmployee}
           setSelectedEmployee={setSelectedEmployee}
           isAdmin={isAdmin}
-          onClickSave={() => setConfirmUpdateEmployeeAccountModalOpen(true)}
+          teams={teams}
+          onClickSave={() => {
+            if (!areObjectsIdentical(initSelectedEmployee, selectedEmployee))
+              setConfirmUpdateEmployeeAccountModalOpen(true);
+          }}
           onClickDelete={() => setConfirmDeleteEmployeeAccountModalOpen(true)}
         />}
         <ConfirmUpdateEmployeeModal
@@ -398,7 +550,7 @@ const EmpView = () => {
         <ConfirmCreateTeamModal
           open={confirmCreateTeamModalOpen}
           setOpen={setConfirmCreateTeamModalOpen}
-          onClickComplete={() => {}}
+          onClickComplete={confirmCreateTeam}
         />
         <SuccessModal
           title={"Create a Team"}
@@ -412,13 +564,32 @@ const EmpView = () => {
           open={createTeamErrorModalOpen}
           setOpen={setCreateTeamErrorModalOpen}
         />
-        {selectedTeam && <ViewTeamModal
-          open={viewTeamModalOpen}
-          setOpen={setViewTeamModalOpen}
-          roles={roles}
-          selectedTeam={selectedTeam}
-          setSelectedTeam={setSelectedTeam}
-        />}
+        {selectedTeam && <>
+          <ViewTeamModal
+            open={viewTeamModalOpen}
+            setOpen={setViewTeamModalOpen}
+            roles={roles}
+            selectedTeam={selectedTeam}
+            setSelectedTeam={setSelectedTeam}
+            setAddTeamMemberModalOpen={setAddTeamMemberModalOpen}
+            onClickSave={() => setConfirmUpdateTeamModalOpen(true)}
+            onClickDelete={() => setConfirmDeleteTeamModalOpen(true)}
+          />
+          <AddTeamMemberModal
+            open={addTeamMemberModalOpen}
+            setOpen={setAddTeamMemberModalOpen}
+            eligibleEmployees={eligibleEmployees}
+            setEligibleEmployees={setEligibleEmployees}
+            addedEmployees={addedEmployees}
+            setAddedEmployees={setAddedEmployees}
+            addTeamMembers={addTeamMembers}
+          />
+        </>}
+        <ConfirmUpdateTeamModal
+          open={confirmUpdateTeamModalOpen}
+          setOpen={setConfirmUpdateTeamModalOpen}
+          onClickComplete={confirmUpdateTeam}
+        />
         <SuccessModal
           title={"Update a Team"}
           message={"Team has been updated successfully"}
@@ -430,6 +601,11 @@ const EmpView = () => {
           message={"An error occurred while updating the new team. Please try again."}
           open={updateTeamErrorModalOpen}
           setOpen={setUpdateTeamErrorModalOpen}
+        />
+        <ConfirmDeleteTeamModal
+          open={confirmDeleteTeamModalOpen}
+          setOpen={setConfirmDeleteTeamModalOpen}
+          onClickComplete={confirmDeleteTeam}
         />
         <SuccessModal
           title={"Delete a Team"}
@@ -479,6 +655,7 @@ const EmpView = () => {
 								cursor-pointer hover:bg-gray-100"
                 onClick={() => {
                   setSelectedEmployee(person);
+                  setInitSelectedEmployee(person);
                   setViewEmployeeModalOpen(true);
                 }}
               >

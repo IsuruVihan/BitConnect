@@ -3,7 +3,7 @@ import {Dialog, Transition} from "@headlessui/react";
 import {DangerButton, OutlineButton, SuccessButton, WarningButton} from "../Button";
 
 const ViewEmployeeModal = (props) => {
-	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, onClickSave, onClickDelete} = props;
+	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, onClickSave, onClickDelete, teams} = props;
 
 	const [updateMode, setUpdateMode] = useState(false);
 
@@ -147,27 +147,24 @@ const ViewEmployeeModal = (props) => {
 										{!selectedEmployee.isAdmin && <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 											<dt className="text-sm font-medium leading-6 text-gray-900">Team</dt>
 											<dd className="mt-1 flex text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-												<p className="flex-grow">
+												<div className="flex-grow">
 													{!updateMode ?
 														selectedEmployee.team :
 														<select
 															name="team"
 															id="team"
-															className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-																ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600
-																sm:text-sm sm:leading-6"
+															className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1
+															ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm
+															sm:leading-6"
 															value={selectedEmployee.team}
 															onChange={(e) =>
 																setSelectedEmployee({...selectedEmployee, team: e.target.value})
 															}
 														>
-															<option value="Business Analyst">Business Analyst</option>
-															<option value="Software Engineer">Software Engineer</option>
-															<option value="DevOps Engineer">DevOps Engineer</option>
-															<option value="Quality Engineer">Quality Engineer</option>
-															<option value="Human Resources">Human Resources</option>
-															<option value="Marketing">Marketing</option>
-															<option value="Finance">Finance</option>
+															{teams.map((t) => {
+																if (t.name.toLowerCase().trim() !== "admin")
+																	return <option key={t.id} value={t.name}>{t.name}</option>;
+															})}
 														</select>
 													}
 													{!updateMode && selectedEmployee.isTL &&
@@ -176,7 +173,7 @@ const ViewEmployeeModal = (props) => {
 															Team Lead
 														</p>
 													}
-												</p>
+												</div>
 												{!updateMode && selectedEmployee.isTL &&
 													<p className="sm:inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium
 													text-green-700 ring-1 ring-inset ring-green-600/10 ml-2 hidden">
@@ -205,81 +202,86 @@ const ViewEmployeeModal = (props) => {
 												}
 											</dd>
 										</div>
-										{updateMode && <div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-											<dt className="text-sm font-medium leading-6 text-gray-900">Type</dt>
-											<dd className="mt-1 flex flex-col text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
-												<div className="relative flex items-start">
-													<div className="flex h-6 items-center">
-														<input
-															id="team-member"
-															name="team-member"
-															type="checkbox"
-															className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-															checked={(!selectedEmployee.isAdmin) && (!selectedEmployee.isTL)}
-															onChange={(e) =>
-																setSelectedEmployee({
-																	...selectedEmployee,
-																	isTL: (!e.target.checked) && (selectedEmployee.isTL) && (!selectedEmployee.isAdmin),
-																	isAdmin: (!e.target.checked) && (!selectedEmployee.isTL) && (selectedEmployee.isAdmin),
-																})
-															}
-														/>
+										{updateMode &&
+											<div className="px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+												<dt className="text-sm font-medium leading-6 text-gray-900">Type</dt>
+												<dd className="mt-1 flex flex-col text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+													<div className="relative flex items-start">
+														<div className="flex h-6 items-center">
+															<input
+																id="team-member"
+																name="team-member"
+																type="checkbox"
+																className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+																checked={(!selectedEmployee.isAdmin) && (!selectedEmployee.isTL)}
+																onChange={(e) =>
+																	setSelectedEmployee({
+																		...selectedEmployee,
+																		isTL: (!e.target.checked) && (selectedEmployee.isTL) && (!selectedEmployee.isAdmin),
+																		isAdmin: (!e.target.checked) && (!selectedEmployee.isTL) &&
+																			(selectedEmployee.isAdmin),
+																	})
+																}
+																disabled={selectedEmployee.isAdmin}
+															/>
+														</div>
+														<div className="ml-3 text-sm leading-6">
+															<label htmlFor="team-member" className="font-medium text-gray-900">
+																Team member
+															</label>
+														</div>
 													</div>
-													<div className="ml-3 text-sm leading-6">
-														<label htmlFor="team-member" className="font-medium text-gray-900">
-															Team member
-														</label>
+													<div className="relative flex items-start">
+														<div className="flex h-6 items-center">
+															<input
+																id="team-lead"
+																name="team-lead"
+																type="checkbox"
+																className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+																checked={selectedEmployee.isTL}
+																onChange={(e) =>
+																	setSelectedEmployee({
+																		...selectedEmployee,
+																		isTL: e.target.checked,
+																		isAdmin: !e.target.checked,
+																	})
+																}
+																disabled={selectedEmployee.isAdmin}
+															/>
+														</div>
+														<div className="ml-3 text-sm leading-6">
+															<label htmlFor="team-lead" className="font-medium text-gray-900">
+																Team lead
+															</label>
+														</div>
 													</div>
-												</div>
-												<div className="relative flex items-start">
-													<div className="flex h-6 items-center">
-														<input
-															id="team-lead"
-															name="team-lead"
-															type="checkbox"
-															className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-															checked={selectedEmployee.isTL}
-															onChange={(e) =>
-																setSelectedEmployee({
-																	...selectedEmployee,
-																	isTL: e.target.checked,
-																	isAdmin: !e.target.checked,
-																})
-															}
-														/>
+													<div className="relative flex items-start">
+														<div className="flex h-6 items-center">
+															<input
+																id="admin"
+																name="admin"
+																type="checkbox"
+																className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+																checked={selectedEmployee.isAdmin}
+																onChange={(e) =>
+																	setSelectedEmployee({
+																		...selectedEmployee,
+																		isTL: !e.target.checked,
+																		isAdmin: e.target.checked,
+																	})
+																}
+																disabled={true}
+															/>
+														</div>
+														<div className="ml-3 text-sm leading-6">
+															<label htmlFor="admin" className="font-medium text-gray-900">
+																Admin
+															</label>
+														</div>
 													</div>
-													<div className="ml-3 text-sm leading-6">
-														<label htmlFor="team-lead" className="font-medium text-gray-900">
-															Team lead
-														</label>
-													</div>
-												</div>
-												<div className="relative flex items-start">
-													<div className="flex h-6 items-center">
-														<input
-															id="admin"
-															name="admin"
-															type="checkbox"
-															className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-															checked={selectedEmployee.isAdmin}
-															onChange={(e) =>
-																setSelectedEmployee({
-																	...selectedEmployee,
-																	isTL: !e.target.checked,
-																	isAdmin: e.target.checked,
-																})
-															}
-															disabled={true}
-														/>
-													</div>
-													<div className="ml-3 text-sm leading-6">
-														<label htmlFor="admin" className="font-medium text-gray-900">
-															Admin
-														</label>
-													</div>
-												</div>
-											</dd>
-										</div>}
+												</dd>
+											</div>
+										}
 									</dl>
 
 									<div className="mt-2 flex flex-row justify-end items-center gap-2">

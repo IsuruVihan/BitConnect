@@ -9,7 +9,14 @@ const returnDigit = (digit) => {
 }
 
 const MyAccount = () => {
-	const [profile, setProfile] = useState(null);
+	const [loading, setLoading] = useState(false);
+
+	const [profile, setProfile] = useState({
+		imageUrl:
+			'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+		coverImageUrl:
+			'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+	});
 	const [updateMode, setUpdateMode] = useState(false);
 
 	const [firstName, setFirstName] = useState("");
@@ -48,7 +55,6 @@ const MyAccount = () => {
 				},
 				body: formData,
 			});
-			console.log(response);
 		} catch (error) {
 			console.error('Error fetching data from API:', error);
 		}
@@ -72,6 +78,7 @@ const MyAccount = () => {
 
 		const token = localStorage.getItem("token");
 
+		setLoading(true);
 		getMyAccountData(token)
 			.then(data => {
 				setFirstName(data[0].FirstName);
@@ -87,8 +94,8 @@ const MyAccount = () => {
 				setTitle(data[0].Role);
 				setTeam(data[0].Team);
 
-				setBirthday(data[0].Birthdate.split("T")[0]);
-				setInitBirthday(data[0].Birthdate.split("T")[0]);
+				setBirthday(data[0].Birthdate ? data[0].Birthdate.split("T")[0] : '');
+				setInitBirthday(data[0].Birthdate ? data[0].Birthdate.split("T")[0] : '');
 
 				setProfile({
 					imageUrl:
@@ -96,13 +103,14 @@ const MyAccount = () => {
 					coverImageUrl:
 						'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
 				});
+				setLoading(false);
 			})
 			.catch(error => {
 				console.error("Error fetching data from API:", error);
 			});
 	}, []);
 
-	if (profile === null)
+	if (loading)
 		return <Loading/>;
 
 	return (
@@ -133,14 +141,6 @@ const MyAccount = () => {
 											</div>
 											<div
 												className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
-												{/*<button*/}
-												{/*	type="button"*/}
-												{/*	className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm*/}
-												{/*	font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"*/}
-												{/*>*/}
-												{/*	<EnvelopeIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>*/}
-												{/*	Message*/}
-												{/*</button>*/}
 
 												{!updateMode ?
 													<SecondaryButton
@@ -157,7 +157,11 @@ const MyAccount = () => {
 															width={'32'}
 															label={'Save'}
 														/>
-														<DangerButton onClick={() => setUpdateMode(false)} width={'32'} label={'Cancel'}/>
+														<DangerButton
+															onClick={() => setUpdateMode(false)}
+															width={'32'}
+															label={'Cancel'}
+														/>
 													</div>
 												}
 											</div>
@@ -172,13 +176,16 @@ const MyAccount = () => {
 							<div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8">
 								<dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
 									{[
-										{label: "First Name", type: "text", value: firstName, onChange: (e) => setFirstName(e.target.value)},
-										{label: "Last Name", type: "text", value: lastName, onChange: (e) => setLastName(e.target.value)},
+										{label: "First Name", type: "text", value: firstName,
+											onChange: (e) => setFirstName(e.target.value)},
+										{label: "Last Name", type: "text", value: lastName,
+											onChange: (e) => setLastName(e.target.value)},
 										{label: "Phone", type: "text", value: phone, onChange: (e) => setPhone(e.target.value)},
 										{label: "Email", type: "email", value: email},
 										{label: "Title", type: "text", value: title},
 										{label: "Team", type: "text", value: team},
-										{label: "Birthday", type: "date", value: birthday, onChange: (e) => setBirthday(e.target.value)}
+										{label: "Birthday", type: "date", value: birthday,
+											onChange: (e) => setBirthday(e.target.value)}
 									].map((field) => (
 										<div key={field.label} className="sm:col-span-1">
 											<dt className="text-sm font-medium text-gray-500">{field.label}</dt>

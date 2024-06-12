@@ -3,7 +3,9 @@ import {Dialog, Transition} from "@headlessui/react";
 import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton} from "../Button";
 
 const ViewTeamModal = (props) => {
-	const {open, setOpen, roles, selectedTeam, setSelectedTeam} = props;
+	const {
+		open, setOpen, roles, selectedTeam, setSelectedTeam, setAddTeamMemberModalOpen, onClickSave, onClickDelete
+	} = props;
 
 	const [updateMode, setUpdateMode] = useState(false);
 
@@ -115,15 +117,12 @@ const ViewTeamModal = (props) => {
 											{
 												updateMode ?
 													<>
-														<PrimaryButton label="Add Member" onClick={() => {
-														}}/>
-														<DangerButton label="Delete" onClick={() => {
-														}}/>
-														<SuccessButton label="Save" onClick={() => {
-														}}/>
+														<PrimaryButton label="Add Member" onClick={() => setAddTeamMemberModalOpen(true)}/>
+														<SuccessButton label="Save" onClick={onClickSave}/>
 													</> :
 													<WarningButton label="Update" onClick={() => setUpdateMode(true)}/>
 											}
+											<DangerButton label="Delete" onClick={onClickDelete}/>
 											<OutlineButton
 												label="Close"
 												onClick={() => {

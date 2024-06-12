@@ -1,10 +1,16 @@
 import React, {Fragment} from 'react';
 import {Dialog, Transition} from "@headlessui/react";
 import {SecondaryButton, SuccessButton} from "../Button";
+import isValidEmail from "../../lib/isValidEmail";
 
 const CreateEmpAccModal = (props) => {
 	const {open, setOpen, firstName, setFirstName, lastName, setLastName, empEmail, setEmpEmail, empRole, setEmpRole,
 		teams, empTeam, setEmpTeam, joinedDate, setJoinedDate, createAccount, roles} = props;
+
+	const emptyFirstName = firstName.trim().length === 0;
+	const emptyLastName = lastName.trim().length === 0;
+	const emptyEmail = empEmail.trim().length === 0;
+	const invalidEmail = !isValidEmail(empEmail);
 
 	return(
 		<Transition.Root show={open} as={Fragment}>
@@ -116,7 +122,8 @@ const CreateEmpAccModal = (props) => {
       											sm:text-sm sm:leading-6"
 													value={empTeam.name}
 													onChange={(e) => {
-														setEmpTeam(teams.filter(t => t.name === e.target.value)[0]);
+														// setEmpTeam(teams.filter(t => t.name === e.target.value)[0]);
+														setEmpTeam(e.target.value);
 													}}
 												>
 													{teams.map(team => <option key={team.name} value={team.name}>{team.name}</option>)}
@@ -163,6 +170,13 @@ const CreateEmpAccModal = (props) => {
 										</div>
 									</div>
 								</div>
+								<div className="text-red-600 text-center">
+									{
+										(emptyEmail || emptyFirstName || emptyLastName) ?
+											'First name, last name, and email is required' :
+											invalidEmail && 'Invalid email'
+									}
+								</div>
 								<div className="flex flex-row items-center justify-between px-4 mt-6">
 									<SecondaryButton
 										label={'Cancel'}
@@ -170,7 +184,11 @@ const CreateEmpAccModal = (props) => {
 											setOpen(false);
 										}}
 									/>
-									<SuccessButton label={'Create'} onClick={createAccount}/>
+									<SuccessButton
+										label={'Create'}
+										onClick={createAccount}
+										disabled={emptyEmail || emptyFirstName || emptyLastName || invalidEmail}
+									/>
 								</div>
 								{/*Modal body end*/}
 

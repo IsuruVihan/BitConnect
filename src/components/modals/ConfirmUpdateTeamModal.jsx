@@ -2,7 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import {PrimaryButton, SecondaryButton} from "../Button";
 
-const ConfirmUpdateEmployeeModal = ({open, setOpen, onClickComplete}) => {
+const ConfirmUpdateTeamModal = ({open, setOpen, onClickComplete}) => {
 	return (
 		<Transition show={open}>
 			<Dialog className="relative z-10" onClose={setOpen}>
@@ -36,11 +36,11 @@ const ConfirmUpdateEmployeeModal = ({open, setOpen, onClickComplete}) => {
 									</div>
 									<div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
 										<Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-900">
-											Confirm Update Employee Account
+											Confirm Update Team
 										</Dialog.Title>
 										<div className="mt-2">
 											<p className="text-sm text-gray-500">
-												Are you sure you want to update this employee account with relevant data?
+												Are you sure you want to update this team with relevant data?
 											</p>
 										</div>
 									</div>
@@ -64,4 +64,4 @@ const ConfirmUpdateEmployeeModal = ({open, setOpen, onClickComplete}) => {
 	)
 }
 
-export default ConfirmUpdateEmployeeModal;
+export default ConfirmUpdateTeamModal;
