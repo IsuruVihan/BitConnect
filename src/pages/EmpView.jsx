@@ -415,6 +415,7 @@ const EmpView = () => {
         {selectedTeam && <ViewTeamModal
           open={viewTeamModalOpen}
           setOpen={setViewTeamModalOpen}
+          roles={roles}
           selectedTeam={selectedTeam}
           setSelectedTeam={setSelectedTeam}
         />}

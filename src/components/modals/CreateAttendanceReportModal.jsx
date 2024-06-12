@@ -111,7 +111,14 @@ const CreateAttendanceReportModal = (props) => {
                       setOpen(false);
                     }}
                   />
-                  <SuccessButton label={'Generate'} onClick={generateReport} disabled={!noErrors}/>
+                  <SuccessButton
+                    label={'Generate'}
+                    onClick={() => {
+                      generateReport();
+                      setOpen(false);
+                    }}
+                    disabled={!noErrors}
+                  />
                 </div>
                 {/*Modal body end*/}
 

@@ -3,7 +3,7 @@ import {Dialog, Transition} from "@headlessui/react";
 import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton} from "../Button";
 
 const ViewTeamModal = (props) => {
-	const {open, setOpen, selectedTeam, setSelectedTeam} = props;
+	const {open, setOpen, roles, selectedTeam, setSelectedTeam} = props;
 
 	const [updateMode, setUpdateMode] = useState(false);
 
@@ -167,31 +167,82 @@ const ViewTeamModal = (props) => {
 																{person.firstName} {person.lastName}
 															</td>
 															<td className="whitespace-nowrap px-1 py-4 text-sm text-gray-500">
-																{person.isTL ?
-																	<p className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs
-																	font-medium text-green-600 ring-1 ring-inset ring-green-500/10">
-																		Team Lead
-																	</p> :
-																	<p className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs
-																	font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
-																		Member
-																	</p>
+																{
+																	!updateMode ?
+																		person.isTL ?
+																			<p className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs
+																			font-medium text-green-600 ring-1 ring-inset ring-green-500/10">
+																				Team Lead
+																			</p> :
+																			<p className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs
+																			font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+																				Member
+																			</p> :
+																		<select
+																			name="type"
+																			id="type"
+																			className="block w-fit rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1
+																			ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600
+																			sm:text-sm sm:leading-6"
+																			value={person.isTL ? "Team Lead" : "Member"}
+																			onChange={(e) => {
+																				setSelectedTeam({
+																					...selectedTeam,
+																					members: selectedTeam.members.map((m) => {
+																						if (m.email === person.email)
+																							return {...m, isTL: e.target.value === "Team Lead"};
+																						return {...m, isTL: false};
+																					})
+																				});
+																			}}
+																		>
+																			<option value="Member">Member</option>
+																			<option value="Team Lead">Team Lead</option>
+																		</select>
 																}
 															</td>
 															<td className="whitespace-nowrap px-1 py-4 text-sm text-gray-500">
 																{person.email}
 															</td>
 															<td className="whitespace-nowrap px-1 py-4 text-sm text-gray-500">
-																{person.role}
+																{
+																	!updateMode ?
+																		person.role :
+																		<select
+																			name="role"
+																			id="role"
+																			className="block w-fit rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1
+																			ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600
+																			sm:text-sm sm:leading-6"
+																			value={person.role}
+																			onChange={(e) => {
+																				setSelectedTeam({
+																					...selectedTeam,
+																					members: selectedTeam.members.map((m) => {
+																						if (m.email === person.email)
+																							return {...m, role: e.target.value};
+																						return m;
+																					})
+																				});
+																			}}
+																		>
+																			{roles.map(r => <option key={r.id} value={r.title}>{r.title}</option>)}
+																		</select>
+																}
 															</td>
 															{
 																updateMode &&
 																<td className="relative whitespace-nowrap py-4 pl-1 pr-1 text-right text-sm font-medium
 																sm:pr-3">
-																	<div className="text-indigo-600 hover:text-indigo-900">
-																		Edit
-																	</div>
-																	<div className="text-red-600 hover:text-red-900">
+																	<div
+																		className="text-red-600 hover:text-red-900 cursor-pointer"
+																		onClick={() => {
+																			setSelectedTeam({
+																				...selectedTeam,
+																				members: selectedTeam.members.filter(m => m.email !== person.email)
+																			});
+																		}}
+																	>
 																		Remove
 																	</div>
 																</td>
