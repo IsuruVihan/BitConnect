@@ -5,7 +5,8 @@ const ButtonBase = ({ onClick, label, width, textColor, colorClasses, disabled }
 		<button
 			type="button"
 			className={`w-${width} px-3 py-2 text-sm font-semibold text-${textColor} rounded-md shadow
-      ${colorClasses} hover:bg-opacity-90 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-5`}
+      ${colorClasses} hover:bg-opacity-90 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-5 
+      hover:cursor-pointer`}
 			onClick={onClick}
 			disabled={disabled}
 		>
