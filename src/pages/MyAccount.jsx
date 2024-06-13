@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {DangerButton, SecondaryButton, SuccessButton} from "../components/Button";
+import {DangerButton, PrimaryButton, SecondaryButton, SuccessButton} from "../components/Button";
 import Loading from "../components/Loading";
+import ResetPasswordModal from "../components/modals/ResetPasswordModal";
 
 const returnDigit = (digit) => {
 	if (digit < 10)
@@ -11,6 +12,15 @@ const returnDigit = (digit) => {
 const MyAccount = () => {
 	const [profile, setProfile] = useState(null);
 	const [updateMode, setUpdateMode] = useState(false);
+
+	//Reset Password
+	const handleResetPassword = () =>{
+		console.log("Password did reset");
+	}
+	const [openResetPasswordModal, setOpenResetPasswordModal] = useState(false);
+	const [currentPassword, setCurrentPassword] = useState('');
+	const [newPassword, setNewPassword] = useState('');
+	const [retypePassword, setRetypePassword] = useState('');
 
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -107,6 +117,18 @@ const MyAccount = () => {
 
 	return (
 		<div className="flex h-full">
+			<ResetPasswordModal
+				open={openResetPasswordModal}
+				setOpen={setOpenResetPasswordModal}
+				currentPassword={currentPassword}
+				setCurrentPassword={setCurrentPassword}
+				newPassword={newPassword}
+				setNewPassword={setNewPassword}
+				retypePassword={retypePassword}
+				setRetypePassword={setRetypePassword}
+				resetPassword={handleResetPassword}
+			/>
+
 			<div className="flex min-w-0 flex-1 flex-col overflow-hidden">
 				<div className="relative z-0 flex flex-1 overflow-hidden">
 					<main className="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last">
@@ -141,6 +163,11 @@ const MyAccount = () => {
 												{/*	<EnvelopeIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>*/}
 												{/*	Message*/}
 												{/*</button>*/}
+												<PrimaryButton
+													onClick={() => setOpenResetPasswordModal(true)}
+													width={'36'}
+													label={'Reset Password'}
+												/>
 
 												{!updateMode ?
 													<SecondaryButton
