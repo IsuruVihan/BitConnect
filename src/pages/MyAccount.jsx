@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {DangerButton, PrimaryButton, SecondaryButton, SuccessButton} from "../components/Button";
 import Loading from "../components/Loading";
+import ChangeProfilePictureModal from "../components/modals/ChangeProfilePictureModal";
 import ResetPasswordModal from "../components/modals/ResetPasswordModal";
 
 const returnDigit = (digit) => {
@@ -41,6 +42,9 @@ const MyAccount = () => {
 	const [initLastName, setInitLastName] = useState("");
 	const [initPhone, setInitPhone] = useState("");
 	const [initBirthday, setInitBirthday] = useState("");
+
+	//change profile pic
+	const [openChangeImage, setOpenChangeImage] = useState(false)
 
 	const handleOnClickSave = async () => {
 		try {
@@ -124,6 +128,11 @@ const MyAccount = () => {
 		return <Loading/>;
 
 	return (
+		<>
+			<ChangeProfilePictureModal
+				open={openChangeImage}
+				setOpen={setOpenChangeImage}
+			/>
 		<div className="flex h-full">
 			<ResetPasswordModal
 				open={openResetPasswordModal}
@@ -148,16 +157,16 @@ const MyAccount = () => {
 								<div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 									<div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
 										<div className="flex">
-											<img
-												className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-												src={profile.imageUrl}
-												alt=""
+											<img className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
+													 src={profile.imageUrl}
+													 alt=""
+													 onClick={() => setOpenChangeImage(true)}
 											/>
 										</div>
 										<div
 											className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
 											<div className="mt-6 min-w-0 flex-1 2xl:block">
-												<h1 className="truncate text-2xl font-bold text-gray-900">
+											<h1 className="truncate text-2xl font-bold text-gray-900">
 													{firstName + " " + lastName}
 												</h1>
 											</div>
@@ -245,6 +254,7 @@ const MyAccount = () => {
 				</div>
 			</div>
 		</div>
+		</>
 	);
 }
 export default MyAccount;
