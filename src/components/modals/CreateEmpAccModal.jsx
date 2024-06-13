@@ -1,14 +1,16 @@
 import React, {Fragment} from 'react';
 import {Dialog, Transition} from "@headlessui/react";
 import {SecondaryButton, SuccessButton} from "../Button";
+import isValidEmail from "../../lib/isValidEmail";
 
 const CreateEmpAccModal = (props) => {
 	const {open, setOpen, firstName, setFirstName, lastName, setLastName, empEmail, setEmpEmail, empRole, setEmpRole,
-		teams, empTeam, setEmpTeam, joinedDate, setJoinedDate, createAccount} = props;
+		teams, empTeam, setEmpTeam, joinedDate, setJoinedDate, createAccount, roles} = props;
 
-	const emptyFirstName = firstName.trim() === "";
-	const emptyLastName = lastName.trim() === "";
-	const emptyEmail = empEmail.trim() === "";
+	const emptyFirstName = firstName.trim().length === 0;
+	const emptyLastName = lastName.trim().length === 0;
+	const emptyEmail = empEmail.trim().length === 0;
+	const invalidEmail = !isValidEmail(empEmail);
 
 	return(
 		<Transition.Root show={open} as={Fragment}>
@@ -118,8 +120,11 @@ const CreateEmpAccModal = (props) => {
 													className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
       											ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600
       											sm:text-sm sm:leading-6"
-													value={empTeam}
-													onChange={(e) => setEmpTeam(e.target.value)}
+													value={empTeam.name}
+													onChange={(e) => {
+														// setEmpTeam(teams.filter(t => t.name === e.target.value)[0]);
+														setEmpTeam(e.target.value);
+													}}
 												>
 													{teams.map(team => <option key={team.name} value={team.name}>{team.name}</option>)}
 												</select>
@@ -134,18 +139,13 @@ const CreateEmpAccModal = (props) => {
 													name="role"
 													id="role"
 													className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-															ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600
-															sm:text-sm sm:leading-6"
-													value={empRole}
-													onChange={(e) => setEmpRole(e.target.value)}
+													ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+													value={empRole.title}
+													onChange={(e) => {
+														setEmpRole(roles.filter(r => r.title === e.target.value)[0]);
+													}}
 												>
-													<option value="Business Analyst">Business Analyst</option>
-													<option value="Software Engineer">Software Engineer</option>
-													<option value="DevOps Engineer">DevOps Engineer</option>
-													<option value="Quality Engineer">Quality Engineer</option>
-													<option value="Human Resources">Human Resources</option>
-													<option value="Marketing">Marketing</option>
-													<option value="Finance">Finance</option>
+													{roles.map(r => <option key={r.id} value={r.title}>{r.title}</option>)}
 												</select>
 											</div>
 										</div>
@@ -162,13 +162,20 @@ const CreateEmpAccModal = (props) => {
 												id="joinedDate"
 												autoComplete="to"
 												className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-											ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
-											sm:text-sm sm:leading-6"
+												ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
+												sm:text-sm sm:leading-6"
 												value={joinedDate}
 												onChange={(e) => setJoinedDate(e.target.value)}
 											/>
 										</div>
 									</div>
+								</div>
+								<div className="text-red-600 text-center">
+									{
+										(emptyEmail || emptyFirstName || emptyLastName) ?
+											'First name, last name, and email is required' :
+											invalidEmail && 'Invalid email'
+									}
 								</div>
 								<div className="flex flex-row items-center justify-between px-4 mt-6">
 									<SecondaryButton
@@ -177,7 +184,11 @@ const CreateEmpAccModal = (props) => {
 											setOpen(false);
 										}}
 									/>
-									<SuccessButton label={'Create'} onClick={createAccount}/>
+									<SuccessButton
+										label={'Create'}
+										onClick={createAccount}
+										disabled={emptyEmail || emptyFirstName || emptyLastName || invalidEmail}
+									/>
 								</div>
 								{/*Modal body end*/}
 

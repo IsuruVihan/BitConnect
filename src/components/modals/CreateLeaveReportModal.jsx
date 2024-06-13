@@ -60,7 +60,7 @@ const CreateLeaveReportModal = (props) => {
 						>
 							<Dialog.Panel
 								className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl
-								transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+								transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 h-80"
 							>
 
 								{/*Modal body start*/}
@@ -110,12 +110,13 @@ const CreateLeaveReportModal = (props) => {
 										</div>
 									</div>
 								</div>
-								<div className="flex sm:flex-row flex-col gap-4 items-center justify-between">
+
+								<div className="flex sm:flex-row flex-col gap-4 items-center">
 									<Listbox value={leaveType} onChange={setLeaveType}>
 										{({open}) => (
 											<>
 												<Listbox.Label className="block text-sm font-medium leading-6 text-gray-900">
-													Assigned to
+													Leave type
 												</Listbox.Label>
 												<div className="relative mt-2">
 													<Listbox.Button
@@ -135,7 +136,7 @@ const CreateLeaveReportModal = (props) => {
 														leaveTo="opacity-0"
 													>
 														<Listbox.Options
-															className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base
+															className="absolute z-10 mt-1 max-h-60 w-fit overflow-auto rounded-md bg-white py-1 text-base
 													shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
 														>
 															{leaveTypesReport.map((leaveType, idx) => (
@@ -178,6 +179,7 @@ const CreateLeaveReportModal = (props) => {
 										)}
 									</Listbox>
 								</div>
+
 								<div>
 									{displayErrors()}
 								</div>
