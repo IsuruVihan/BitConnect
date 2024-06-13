@@ -94,13 +94,13 @@ const EmpView = () => {
   const [openCreateTeamModal, setOpenCreateTeamModal] = useState(false);
   const [teamName, setTeamName] = useState("");
   const [clientName, setClientName] = useState("");
-  const [eligibleTeamLeads, setEligibleTeamLeads] = useState([]);
   const [teamLead, setTeamLead] = useState(null);
   const [retrieveTeamDataErrorModalOpen, setRetrieveTeamDataErrorModalOpen] = useState(false);
   const [confirmCreateTeamModalOpen, setConfirmCreateTeamModalOpen] = useState(false);
   const [createTeamSuccessModalOpen, setCreateTeamSuccessModalOpen] = useState(false);
   const [createTeamErrorModalOpen, setCreateTeamErrorModalOpen] = useState(false);
   const [viewTeamModalOpen, setViewTeamModalOpen] = useState(false);
+  const [initSelectedTeam, setInitSelectedTeam] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [eligibleEmployees, setEligibleEmployees] = useState([
     {
@@ -262,11 +262,6 @@ const EmpView = () => {
   const [deleteEmployeeAccountErrorModalOpen, setDeleteEmployeeAccountErrorModalOpen]
     = useState(false);
 
-  // setTeam
-  // useEffect(() => {
-  //   setTeam(teams[0].name);
-  // }, [teams]);
-
   // Retrieve employee and team data
   const getEmployeeData = async () => {
     try {
@@ -329,14 +324,8 @@ const EmpView = () => {
     // setRetrieveTeamDataErrorModalOpen(true);
   }, []);
 
-  // Set eligible employees and TLs
+  // Set eligible employees
   useEffect(() => {
-    const tempEligibleTLs =
-      employees.filter(e => !e.isTL && !e.isAdmin).map(e => (
-        {name: `${e.firstName} ${e.lastName}`, email: e.email}
-      ));
-    setEligibleTeamLeads(tempEligibleTLs);
-
     const tempEligibleEmployees =
       employees.filter(e => !e.isAdmin && !e.team);
     setEligibleEmployees(tempEligibleEmployees);
@@ -396,45 +385,192 @@ const EmpView = () => {
       });
   }
 
-  const updateEmployee = () => {}
+  const updateEmployee = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/employee`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            firstName: selectedEmployee.firstName,
+            lastName: selectedEmployee.lastName,
+            email: selectedEmployee.email,
+            role: selectedEmployee.role,
+            birthDay: selectedEmployee.birthDay,
+            team: selectedEmployee.team,
+            isTL: selectedEmployee.isTL,
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
   const confirmUpdateEmployee = () => {
     if(!areObjectsIdentical(initSelectedEmployee, selectedEmployee)) {
-      console.log(selectedEmployee);
+      updateEmployee()
+        .then((r) => {
+          if (r.error || r.result.status !== 200)
+            return setUpdateEmployeeAccountErrorModalOpen(true);
+          return setUpdateEmployeeAccountSuccessModalOpen(true);
+        });
     }
-    // updateEmployee();
-    // setUpdateEmployeeAccountSuccessModalOpen(true);
-    // setUpdateEmployeeAccountErrorModalOpen(true);
   }
 
-  const deleteEmployee = () => {}
+  const deleteEmployee = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/employee`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: selectedEmployee.email,
+            isTL: selectedEmployee.isTL,
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
   const confirmDeleteEmployee = () => {
-    deleteEmployee();
-    setDeleteEmployeeAccountSuccessModalOpen(true);
-    setDeleteEmployeeAccountErrorModalOpen(true);
+    deleteEmployee()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setDeleteEmployeeAccountErrorModalOpen(true);
+        return setDeleteEmployeeAccountSuccessModalOpen(true);
+      });
   }
 
-  const createTeam = () => {}
+  const createTeam = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/team`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: teamName.trim(),
+            client: clientName.trim(),
+            newTeamLeadEmail: teamLead ? teamLead.email : ''
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
   const confirmCreateTeam = () => {
-    createTeam();
-    setCreateTeamSuccessModalOpen(true);
-    setCreateTeamErrorModalOpen(true);
+    createTeam()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setCreateTeamErrorModalOpen(true);
+        return setCreateTeamSuccessModalOpen(true);
+      });
   }
 
-  const updateTeam = () => {}
+  const updateTeam = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/team`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            team: selectedTeam
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
   const confirmUpdateTeam = () => {
-    updateTeam();
-    setUpdateTeamSuccessModalOpen(true);
-    setUpdateTeamErrorModalOpen(true);
+    if(!areObjectsIdentical(initSelectedTeam, selectedTeam)) {
+      updateTeam()
+        .then((r) => {
+          if (r.error || r.result.status !== 200)
+            return setUpdateTeamErrorModalOpen(true);
+          return setUpdateTeamSuccessModalOpen(true);
+        });
+    }
   }
 
-  const deleteTeam = () => {}
+  const deleteTeam = async () => {
+    try {
+      return {
+        result: await fetch(`http://localhost:4000/team`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            teamId: selectedTeam.id,
+          }),
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
   const confirmDeleteTeam = () => {
-    deleteTeam();
-    setDeleteTeamSuccessModalOpen(true);
-    setDeleteTeamErrorModalOpen(true);
+    deleteTeam()
+      .then((r) => {
+        if (r.error || r.result.status !== 200)
+          return setDeleteTeamErrorModalOpen(true);
+        return setDeleteTeamSuccessModalOpen(true);
+      });
   }
 
-  const addTeamMembers = () => {}
+  const addTeamMembers = () => {
+    const newEmployeesToBeAdded = addedEmployees.map(e => {
+      return {
+        birthDay: undefined,
+        email: e.email,
+        firstName: e.firstName,
+        imageUrl: undefined,
+        isAdmin: undefined,
+        isTL: e.isTL,
+        lastName: e.lastName,
+        role: e.role,
+        team: undefined,
+      };
+    });
+
+    const uniqueEmails = new Set();
+    const uniqueArray = [...selectedTeam.members, ...newEmployeesToBeAdded].filter(obj => {
+      if (uniqueEmails.has(obj.email)) {
+        return false;
+      } else {
+        uniqueEmails.add(obj.email);
+        return true;
+      }
+    });
+
+    const tempSelectedTeam = {
+      id: 1,
+      name: selectedTeam.name,
+      client: selectedTeam.client,
+      members: uniqueArray
+    };
+    setSelectedTeam(tempSelectedTeam);
+  }
 
   return (
     <div>
@@ -488,6 +624,7 @@ const EmpView = () => {
           setSelectedEmployee={setSelectedEmployee}
           isAdmin={isAdmin}
           teams={teams}
+          roles={roles}
           onClickSave={() => {
             if (!areObjectsIdentical(initSelectedEmployee, selectedEmployee))
               setConfirmUpdateEmployeeAccountModalOpen(true);
@@ -542,7 +679,7 @@ const EmpView = () => {
           setTeamName={setTeamName}
           clientName={clientName}
           setClientName={setClientName}
-          eligibleTeamLeads={eligibleTeamLeads}
+          eligibleTeamLeads={eligibleEmployees}
           teamLead={teamLead}
           setTeamLead={setTeamLead}
           createTeam={() => setConfirmCreateTeamModalOpen(true)}
@@ -572,14 +709,17 @@ const EmpView = () => {
             selectedTeam={selectedTeam}
             setSelectedTeam={setSelectedTeam}
             setAddTeamMemberModalOpen={setAddTeamMemberModalOpen}
-            onClickSave={() => setConfirmUpdateTeamModalOpen(true)}
+            isAdmin={isAdmin}
+            onClickSave={() => {
+              if (!areObjectsIdentical(initSelectedTeam, selectedTeam))
+                setConfirmUpdateTeamModalOpen(true);
+            }}
             onClickDelete={() => setConfirmDeleteTeamModalOpen(true)}
           />
           <AddTeamMemberModal
             open={addTeamMemberModalOpen}
             setOpen={setAddTeamMemberModalOpen}
             eligibleEmployees={eligibleEmployees}
-            setEligibleEmployees={setEligibleEmployees}
             addedEmployees={addedEmployees}
             setAddedEmployees={setAddedEmployees}
             addTeamMembers={addTeamMembers}
@@ -628,13 +768,13 @@ const EmpView = () => {
               <div className="ml-4 mt-4">
                 <h3 className="text-base font-semibold leading-6 text-gray-900">Employees</h3>
               </div>
-              <div className="ml-4 mt-4 flex-shrink-0 flex gap-2">
+              {isAdmin && <div className="ml-4 mt-4 flex-shrink-0 flex gap-2">
                 <PrimaryButton
                   onClick={() => setCreateEmployeeAccountModalOpen(true)}
                   label={'Create Account'}
                   color={'indigo'}
                 />
-              </div>
+              </div>}
             </div>
           </div>
           <input
@@ -694,13 +834,13 @@ const EmpView = () => {
               <div className="ml-4 mt-4">
                 <h3 className="text-base font-semibold leading-6 text-gray-900">Teams</h3>
               </div>
-              <div className="ml-4 mt-4 flex-shrink-0 flex gap-2">
+              {isAdmin && <div className="ml-4 mt-4 flex-shrink-0 flex gap-2">
                 <PrimaryButton
                   onClick={() => setOpenCreateTeamModal(true)}
                   label={'Create Team'}
                   color={'indigo'}
                 />
-              </div>
+              </div>}
             </div>
           </div>
           <input
@@ -720,6 +860,7 @@ const EmpView = () => {
                 className="flex items-center justify-between gap-x-6 py-5 cursor-pointer hover:bg-gray-100 px-4
                 rounded-lg"
                 onClick={() => {
+                  setInitSelectedTeam(team);
                   setSelectedTeam(team);
                   setViewTeamModalOpen(true);
                 }}

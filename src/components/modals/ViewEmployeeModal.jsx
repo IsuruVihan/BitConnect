@@ -3,9 +3,13 @@ import {Dialog, Transition} from "@headlessui/react";
 import {DangerButton, OutlineButton, SuccessButton, WarningButton} from "../Button";
 
 const ViewEmployeeModal = (props) => {
-	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, onClickSave, onClickDelete, teams} = props;
+	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, onClickSave, onClickDelete, teams,
+		roles} = props;
 
 	const [updateMode, setUpdateMode] = useState(false);
+
+	const emptyFirstName = selectedEmployee.firstName.trim() === "";
+	const emptyLastName = selectedEmployee.lastName.trim() === "";
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -39,7 +43,7 @@ const ViewEmployeeModal = (props) => {
 							>
 
 								{/*Modal body start*/}
-								<div className="flex justify-between gap-x-6">
+								{!updateMode && <div className="flex justify-between gap-x-6">
 									<div className="flex min-w-0 gap-x-4">
 										<img
 											className="h-12 w-12 flex-none rounded-full bg-gray-50"
@@ -69,7 +73,7 @@ const ViewEmployeeModal = (props) => {
 											</p>
 										}
 									</div>
-								</div>
+								</div>}
 
 								<div className="mt-6 border-t border-gray-100">
 									<dl className="divide-y divide-gray-100">
@@ -132,13 +136,7 @@ const ViewEmployeeModal = (props) => {
 																setSelectedEmployee({...selectedEmployee, role: e.target.value})
 															}
 														>
-															<option value="Business Analyst">Business Analyst</option>
-															<option value="Software Engineer">Software Engineer</option>
-															<option value="DevOps Engineer">DevOps Engineer</option>
-															<option value="Quality Engineer">Quality Engineer</option>
-															<option value="Human Resources">Human Resources</option>
-															<option value="Marketing">Marketing</option>
-															<option value="Finance">Finance</option>
+															{roles.map(r => <option key={r.id} value={r.title}>{r.title}</option>)}
 														</select>
 													}
 												</p>
@@ -217,9 +215,7 @@ const ViewEmployeeModal = (props) => {
 																onChange={(e) =>
 																	setSelectedEmployee({
 																		...selectedEmployee,
-																		isTL: (!e.target.checked) && (selectedEmployee.isTL) && (!selectedEmployee.isAdmin),
-																		isAdmin: (!e.target.checked) && (!selectedEmployee.isTL) &&
-																			(selectedEmployee.isAdmin),
+																		isTL: (!e.target.checked) && (selectedEmployee.isTL),
 																	})
 																}
 																disabled={selectedEmployee.isAdmin}
@@ -243,7 +239,6 @@ const ViewEmployeeModal = (props) => {
 																	setSelectedEmployee({
 																		...selectedEmployee,
 																		isTL: e.target.checked,
-																		isAdmin: !e.target.checked,
 																	})
 																}
 																disabled={selectedEmployee.isAdmin}
@@ -255,41 +250,23 @@ const ViewEmployeeModal = (props) => {
 															</label>
 														</div>
 													</div>
-													<div className="relative flex items-start">
-														<div className="flex h-6 items-center">
-															<input
-																id="admin"
-																name="admin"
-																type="checkbox"
-																className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-																checked={selectedEmployee.isAdmin}
-																onChange={(e) =>
-																	setSelectedEmployee({
-																		...selectedEmployee,
-																		isTL: !e.target.checked,
-																		isAdmin: e.target.checked,
-																	})
-																}
-																disabled={true}
-															/>
-														</div>
-														<div className="ml-3 text-sm leading-6">
-															<label htmlFor="admin" className="font-medium text-gray-900">
-																Admin
-															</label>
-														</div>
-													</div>
 												</dd>
 											</div>
 										}
 									</dl>
+
+									{updateMode && (emptyFirstName || emptyLastName) && <>
+										<div className="text-center text-red-600 py-2">
+											First name and last name cannot be empty
+										</div>
+									</>}
 
 									<div className="mt-2 flex flex-row justify-end items-center gap-2">
 										<OutlineButton label="Close" onClick={() => {
 											setUpdateMode(false);
 											setOpen(false);
 										}}/>
-										{isAdmin && <>
+										{isAdmin && !selectedEmployee.isAdmin && <>
 											{!updateMode && <WarningButton label="Update" onClick={() => setUpdateMode(true)}/>}
 											{updateMode && <SuccessButton label="Save" onClick={() => {
 												onClickSave();

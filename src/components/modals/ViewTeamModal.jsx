@@ -4,7 +4,7 @@ import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton
 
 const ViewTeamModal = (props) => {
 	const {
-		open, setOpen, roles, selectedTeam, setSelectedTeam, setAddTeamMemberModalOpen, onClickSave, onClickDelete
+		open, setOpen, roles, selectedTeam, setSelectedTeam, setAddTeamMemberModalOpen, onClickSave, onClickDelete, isAdmin
 	} = props;
 
 	const [updateMode, setUpdateMode] = useState(false);
@@ -24,7 +24,7 @@ const ViewTeamModal = (props) => {
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
-			<Dialog as="div" className="relative z-10" onClose={setOpen}>
+			<Dialog as="div" className="relative z-10" onClose={() => {}}>
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-300"
@@ -114,15 +114,17 @@ const ViewTeamModal = (props) => {
 												</div>}
 										</div>
 										<div className="mt-4 sm:ml-16 sm:mt-0 flex flex-row gap-1">
-											{
-												updateMode ?
-													<>
-														<PrimaryButton label="Add Member" onClick={() => setAddTeamMemberModalOpen(true)}/>
-														<SuccessButton label="Save" onClick={onClickSave}/>
-													</> :
-													<WarningButton label="Update" onClick={() => setUpdateMode(true)}/>
-											}
-											<DangerButton label="Delete" onClick={onClickDelete}/>
+											{isAdmin && <>
+												{
+													updateMode ?
+														<>
+															<PrimaryButton label="Add Member" onClick={() => setAddTeamMemberModalOpen(true)}/>
+															<SuccessButton label="Save" onClick={onClickSave}/>
+														</> :
+														<WarningButton label="Update" onClick={() => setUpdateMode(true)}/>
+												}
+												<DangerButton label="Delete" onClick={onClickDelete}/>
+											</>}
 											<OutlineButton
 												label="Close"
 												onClick={() => {

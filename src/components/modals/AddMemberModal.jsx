@@ -66,17 +66,17 @@ const AddTeamMemberModal = (props) => {
 												</p>
 											</div>
 											<div className="ml-4 mt-4 flex-shrink-0 flex gap-1">
-												<PrimaryButton label="Done" onClick={() => {}}/>
+												<PrimaryButton label="Done" onClick={() => {
+													addTeamMembers();
+													setOpen(false);
+												}}/>
 												<SecondaryButton
 													label="Reset"
 													onClick={reset}
 												/>
 												<OutlineButton
 													label="Close"
-													onClick={() => {
-														reset();
-														setOpen(false);
-													}}
+													onClick={() => setOpen(false)}
 												/>
 											</div>
 										</div>
