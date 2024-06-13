@@ -14,10 +14,10 @@ const CreateTeamModal = (props) => {
 	const [query, setQuery] = useState('');
 
 	const filteredPeople =
-		query === ''
-			? eligibleTeamLeads
-			: eligibleTeamLeads.filter((person) => {
-				return person.name.toLowerCase().includes(query.toLowerCase())
+		query === '' ?
+			eligibleTeamLeads :
+			eligibleTeamLeads.filter((person) => {
+				return `${person.firstName.toLowerCase()}${person.lastName.toLowerCase()}`.includes(query.toLowerCase())
 			})
 
 	return (
@@ -114,7 +114,10 @@ const CreateTeamModal = (props) => {
 												sm:leading-6"
 												onChange={(event) => setQuery(event.target.value)}
 												onBlur={() => setQuery('')}
-												displayValue={(person) => person?.name}
+												displayValue={(person) => {
+													if (person)
+														return person.firstName + " " + person.lastName;
+												}}
 											/>
 											<Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2
 											focus:outline-none">
@@ -122,12 +125,12 @@ const CreateTeamModal = (props) => {
 											</Combobox.Button>
 
 											{filteredPeople.length > 0 && (
-												<Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md
-												bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none
-												sm:text-sm">
+												<Combobox.Options className="relative z-10 mt-1 max-h-[25vh] sm:max-h-[30vh] lg:max-h-[38vh]
+												w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black
+												ring-opacity-5 focus:outline-none sm:text-sm">
 													{filteredPeople.map((person) => (
 														<Combobox.Option
-															key={person.id}
+															key={person.email}
 															value={person}
 															className={({focus}) =>
 																classNames(
@@ -139,7 +142,7 @@ const CreateTeamModal = (props) => {
 															{({focus, selected}) => (
 																<>
 																	<span className={classNames('block truncate', selected && 'font-semibold')}>
-																		{person.name}
+																		{person.firstName + " " + person.lastName}
 																	</span>
 
 																	{selected && (
