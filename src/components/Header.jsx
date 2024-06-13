@@ -68,7 +68,7 @@ const Header = () => {
     {name: 'KT Courses', path: '/kt-courses', icon: AcademicCapIcon, current: false, tl: false, admin: false},
     {name: 'Calendar', path: '/calendar', icon: CalendarIcon, current: false, tl: false, admin: false},
     {
-      name: 'Employees View',
+      name: 'Employees',
       path: '/employees-view',
       icon: IdentificationIcon,
       current: false,

@@ -54,7 +54,7 @@ const LeaveRequests = () => {
 	const getTeamMembersData = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/${isAdmin ? 'admin' : 'tl'}/team-members`, {
+				result: await fetch(`http://localhost:4000/team-members`, {
 					method: 'GET',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -70,7 +70,7 @@ const LeaveRequests = () => {
 	const getTeamLeaveRequestData = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/${isAdmin ? 'admin' : 'tl'}/leave-requests`, {
+				result: await fetch(`http://localhost:4000/leave-requests`, {
 					method: 'GET',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -86,7 +86,7 @@ const LeaveRequests = () => {
 	const acceptLeaveRequest = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/${isAdmin ? 'admin' : 'tl'}/leave-requests/accept`, {
+				result: await fetch(`http://localhost:4000/leave-requests/accept`, {
 					method: 'POST',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -103,7 +103,7 @@ const LeaveRequests = () => {
 	const rejectLeaveRequest = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/${isAdmin ? 'admin' : 'tl'}/leave-requests/reject`, {
+				result: await fetch(`http://localhost:4000/leave-requests/reject`, {
 					method: 'POST',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -120,6 +120,7 @@ const LeaveRequests = () => {
 
 	// Redirect to /attendance if not a TL or Admin
 	useEffect(() => {
+		// console.log(loading, isTL, isAdmin);
 		if (!loading && !isTL && !isAdmin) {
 			window.location.href = '/attendance';
 		}

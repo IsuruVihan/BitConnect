@@ -30,20 +30,16 @@ export const AuthProvider = ({ children }) => {
             if (adminData.status === 403) {
                 setIsAdmin(false);
             } else {
-                const a = await adminData.json();
-                setIsAdmin(a.isAdmin);
+                setIsAdmin(true);
             }
 
             if (tlData.status === 403) {
                 setIsTL(false);
             } else {
-                const t = await tlData.json();
-                setIsTL(t.isTL);
+                setIsTL(true);
             }
         } catch (error) {
             console.error('An error occurred while fetching admin or TL status:', error);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -58,6 +54,7 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             setLoading(true);
             fetchData();
+            setLoading(false);
         }
     }, [token]);
 
