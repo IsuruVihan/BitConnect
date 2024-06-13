@@ -103,54 +103,54 @@ const EmpView = () => {
   const [initSelectedTeam, setInitSelectedTeam] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [eligibleEmployees, setEligibleEmployees] = useState([
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      isAdmin: false,
-      birthDay: "1990-01-15",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "jane.smith@example.com",
-      isAdmin: false,
-      birthDay: "1985-05-30",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      firstName: "Emily",
-      lastName: "Johnson",
-      email: "emily.johnson@example.com",
-      isAdmin: false,
-      birthDay: "1992-07-21",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      firstName: "John",
-      lastName: "Doe",
-      email: "1john.doe@example.com",
-      isAdmin: false,
-      birthDay: "1990-01-15",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      firstName: "Jane",
-      lastName: "Smith",
-      email: "1jane.smith@example.com",
-      isAdmin: false,
-      birthDay: "1985-05-30",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    },
-    {
-      firstName: "Emily",
-      lastName: "Johnson",
-      email: "1emily.johnson@example.com",
-      isAdmin: false,
-      birthDay: "1992-07-21",
-      imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    }
+    // {
+    //   firstName: "John",
+    //   lastName: "Doe",
+    //   email: "john.doe@example.com",
+    //   isAdmin: false,
+    //   birthDay: "1990-01-15",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Jane",
+    //   lastName: "Smith",
+    //   email: "jane.smith@example.com",
+    //   isAdmin: false,
+    //   birthDay: "1985-05-30",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Emily",
+    //   lastName: "Johnson",
+    //   email: "emily.johnson@example.com",
+    //   isAdmin: false,
+    //   birthDay: "1992-07-21",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "John",
+    //   lastName: "Doe",
+    //   email: "1john.doe@example.com",
+    //   isAdmin: false,
+    //   birthDay: "1990-01-15",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Jane",
+    //   lastName: "Smith",
+    //   email: "1jane.smith@example.com",
+    //   isAdmin: false,
+    //   birthDay: "1985-05-30",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // },
+    // {
+    //   firstName: "Emily",
+    //   lastName: "Johnson",
+    //   email: "1emily.johnson@example.com",
+    //   isAdmin: false,
+    //   birthDay: "1992-07-21",
+    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
+    // }
   ]);
   const [addedEmployees, setAddedEmployees] = useState([]);
   const [addTeamMemberModalOpen, setAddTeamMemberModalOpen] = useState(false);
@@ -266,7 +266,7 @@ const EmpView = () => {
   const getEmployeeData = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/employee`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/employee`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -281,7 +281,7 @@ const EmpView = () => {
   const getTeamData = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/team`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/team`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -355,7 +355,7 @@ const EmpView = () => {
   const createEmployee = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/employee`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/employee`, {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -388,7 +388,7 @@ const EmpView = () => {
   const updateEmployee = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/employee`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/employee`, {
           method: 'PUT',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -424,7 +424,7 @@ const EmpView = () => {
   const deleteEmployee = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/employee`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/employee`, {
           method: 'DELETE',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -453,7 +453,7 @@ const EmpView = () => {
   const createTeam = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/team`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/team`, {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -483,7 +483,7 @@ const EmpView = () => {
   const updateTeam = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/team`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/team`, {
           method: 'PUT',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -513,7 +513,7 @@ const EmpView = () => {
   const deleteTeam = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/team`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/team`, {
           method: 'DELETE',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),

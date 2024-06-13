@@ -10,14 +10,14 @@ export const AuthProvider = ({ children }) => {
 
     const fetchData = async () => {
         try {
-            const adminResponse = await fetch(`http://localhost:4000/is-admin`, {
+            const adminResponse = await fetch(`${process.env.REACT_APP_API_URL}/is-admin`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("token"),
                 }
             });
 
-            const tlResponse = await fetch(`http://localhost:4000/is-tl`, {
+            const tlResponse = await fetch(`${process.env.REACT_APP_API_URL}/is-tl`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("token"),

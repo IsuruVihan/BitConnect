@@ -159,20 +159,13 @@ const Leave = () => {
       rows: filteredData,
     });
 
-    console.log({
-      from: fromDateReport ,
-      to: toDateReport,
-      type: leaveType,
-      rows: filteredData,
-    });
-
     setPDFModalOpen(true);
   };
 
   const getLeavesData = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/leaves`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/leaves`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -191,7 +184,7 @@ const Leave = () => {
     const day = today.getDate();
     if (errorCount === 0) {
       try {
-        const response = await fetch('http://localhost:4000/leaves', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/leaves`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -220,7 +213,7 @@ const Leave = () => {
   }
   const deleteLeaveRequest = async() => {
     try {
-      await fetch('http://localhost:4000/leaves', {
+      await fetch(`${process.env.REACT_APP_API_URL}/leaves`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

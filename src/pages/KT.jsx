@@ -122,7 +122,7 @@ const KT = () => {
     const getCourses = async () => {
         try {
             return {
-                result: await fetch(`http://localhost:4000/courses`, {
+                result: await fetch(`${process.env.REACT_APP_API_URL}/courses`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -137,7 +137,7 @@ const KT = () => {
     const getLeaderboard = async () => {
         try {
             return {
-                result: await fetch(`http://localhost:4000/leaderboard`, {
+                result: await fetch(`${process.env.REACT_APP_API_URL}/leaderboard`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -176,7 +176,7 @@ const KT = () => {
     const getCourse = async (courseId) => {
         try {
             return {
-                result: await fetch(`http://localhost:4000/courses/${courseId}`, {
+                result: await fetch(`${process.env.REACT_APP_API_URL}/courses/${courseId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -223,7 +223,7 @@ const KT = () => {
     const completeCourse = async () => {
         try {
             return {
-                result: await fetch(`http://localhost:4000/courses/${selectedCourse.id}`, {
+                result: await fetch(`${process.env.REACT_APP_API_URL}/courses/${selectedCourse.id}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -279,7 +279,7 @@ const KT = () => {
             formData.append('Quiz', quizBlob);
 
             return {
-                result: await fetch(`http://localhost:4000/courses`, {
+                result: await fetch(`${process.env.REACT_APP_API_URL}/courses`, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + localStorage.getItem("token"),

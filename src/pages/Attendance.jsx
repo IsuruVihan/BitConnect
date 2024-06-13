@@ -6,7 +6,6 @@ import Pagination from "../components/Pagination";
 import ErrorModal from "../components/modals/ErrorModal";
 import AttendanceReportGenerator from "../components/reports/AttendanceReportGenerator";
 import SuccessModal from "../components/modals/SuccessModal";
-import Loading from "../components/Loading";
 
 const Attendance = () => {
   const [checkInDate, setCheckInDate] = useState('');
@@ -46,7 +45,7 @@ const Attendance = () => {
     const day = currentDate.getDate() >= 10 ? currentDate.getDate() : `0${currentDate.getDate()}`;
     try {
       return {
-        result: await fetch(`http://localhost:4000/attendance/check-in?date=${year}-${month}-${day}`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/attendance/check-in?date=${year}-${month}-${day}`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -65,7 +64,7 @@ const Attendance = () => {
     const day = currentDate.getDate() >= 10 ? currentDate.getDate() : `0${currentDate.getDate()}`;
     try {
       return {
-        result: await fetch(`http://localhost:4000/attendance/check-out?date=${year}-${month}-${day}`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/attendance/check-out?date=${year}-${month}-${day}`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -80,7 +79,7 @@ const Attendance = () => {
   const getAttendanceRecords = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/attendance`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/attendance`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -95,11 +94,19 @@ const Attendance = () => {
 
   const handleOnClickCheckIn = async () => {
     const currentDateAndTime = new Date();
-    const currentDate = currentDateAndTime.toISOString().slice(0, 10);
     const currentTime = currentDateAndTime.toTimeString().slice(0, 8);
 
+    const today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let date = today.getDate();
+    month = month < 10 ? '0' + month : month;
+    date = date < 10 ? '0' + date : date;
+
+    const currentDate = `${year}-${month}-${date}`;
+
     try {
-      const response = await fetch('http://localhost:4000/attendance/check-in', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/attendance/check-in`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -116,13 +123,22 @@ const Attendance = () => {
   };
   const handleCheckOut = async () => {
     const currentDateAndTime = new Date();
-    const currentDate = currentDateAndTime.toISOString().slice(0, 10);
+
+    const today = new Date();
+    const year = today.getFullYear();
+    let month = today.getMonth() + 1;
+    let date = today.getDate();
+    month = month < 10 ? '0' + month : month;
+    date = date < 10 ? '0' + date : date;
+
+    const currentDate = `${year}-${month}-${date}`;
     setCheckOutDate(currentDate);
+
     const currentTime = currentDateAndTime.toTimeString().slice(0, 8);
     setCheckOutTime(currentTime);
 
     try {
-      const response = await fetch('http://localhost:4000/attendance/check-out', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/attendance/check-out`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +159,7 @@ const Attendance = () => {
       const toD = new Date(toDate);
       if (fromD <= toD) {
         try {
-          await fetch(`http://localhost:4000/attendance?from=${fromDate}&to=${toDate}`, {
+          await fetch(`${process.env.REACT_APP_API_URL}/attendance?from=${fromDate}&to=${toDate}`, {
             method: 'GET',
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem("token"),

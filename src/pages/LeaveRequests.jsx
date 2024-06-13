@@ -54,7 +54,7 @@ const LeaveRequests = () => {
 	const getTeamMembersData = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/team-members`, {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/team-members`, {
 					method: 'GET',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -70,7 +70,7 @@ const LeaveRequests = () => {
 	const getTeamLeaveRequestData = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/leave-requests`, {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/leave-requests`, {
 					method: 'GET',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -86,7 +86,7 @@ const LeaveRequests = () => {
 	const acceptLeaveRequest = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/leave-requests/accept`, {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/leave-requests/accept`, {
 					method: 'POST',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -103,7 +103,7 @@ const LeaveRequests = () => {
 	const rejectLeaveRequest = async () => {
 		try {
 			return {
-				result: await fetch(`http://localhost:4000/leave-requests/reject`, {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/leave-requests/reject`, {
 					method: 'POST',
 					headers: {
 						'Authorization': 'Bearer ' + localStorage.getItem("token"),

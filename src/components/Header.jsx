@@ -10,6 +10,7 @@ import SpecialNotices from '../pages/SpecialNotices';
 import KT from '../pages/KT';
 import Calendar from '../pages/Calendar';
 import EmpView from '../pages/EmpView';
+import Dashboard from '../pages/Dashboard';
 
 import {
   AcademicCapIcon,
@@ -82,7 +83,7 @@ const Header = () => {
   useEffect(() => {
     const getLoggedInUser = async (token) => {
       try {
-        return await fetch('http://localhost:4000/user', {
+        return await fetch(`${process.env.REACT_APP_API_URL}/user`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + token
@@ -180,6 +181,7 @@ const Header = () => {
                         className="w-auto h-8"
                         src="https://www.bitzquad.com/logo.webp"
                         alt="Company"
+                        onClick={() => window.location.push('/')}
                       />
                     </div>
                     <nav className="flex flex-col flex-1">
@@ -221,36 +223,38 @@ const Header = () => {
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex flex-col px-6 pb-4 overflow-y-auto bg-gray-900 grow gap-y-5">
             <div className="flex items-center h-16 shrink-0">
-              <img
-                className="w-auto h-8"
-                src="https://www.bitzquad.com/logo.webp"
-                alt="Company"
-              />
+              <a href={"/"}>
+                <img
+                  className="w-auto h-8"
+                  src="https://www.bitzquad.com/logo.webp"
+                  alt="Company"
+                />
+              </a>
             </div>
             <nav className="flex flex-col flex-1">
               <ul role="list" className="flex flex-col flex-1 gap-y-7">
-                <li>
-                  <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => {
-                      if (!(item.path === "/leave-requests" && !loading && !isAdmin && !isTL))
-                        return (
-                          <li key={item.name}>
-                            <p
-                              onClick={() => redirect(item.path)}
-                              className={classNames(
-                                item.current
-                                  ? 'bg-gray-800 text-white'
-                                  : 'text-gray-400 hover:text-white hover:bg-gray-800',
-                                'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                              )}
-                            >
-                              <item.icon className="w-6 h-6 shrink-0" aria-hidden="true"/>
-                              {item.name}
-                            </p>
-                          </li>
-                        );
-                    })}
-                  </ul>
+              <li>
+                <ul role="list" className="-mx-2 space-y-1">
+                  {navigation.map((item) => {
+                    if (!(item.path === "/leave-requests" && !loading && !isAdmin && !isTL))
+                      return (
+                        <li key={item.name}>
+                          <p
+                            onClick={() => redirect(item.path)}
+                            className={classNames(
+                              item.current
+                                ? 'bg-gray-800 text-white'
+                                : 'text-gray-400 hover:text-white hover:bg-gray-800',
+                              'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                            )}
+                          >
+                            <item.icon className="w-6 h-6 shrink-0" aria-hidden="true"/>
+                            {item.name}
+                          </p>
+                        </li>
+                      );
+                  })}
+                </ul>
                 </li>
               </ul>
             </nav>
@@ -351,6 +355,7 @@ const Header = () => {
                 <Route path="/employees-view" element={<EmpView/>}/>
                 <Route path="/my-account" element={<MyAccount/>}/>
                 <Route path="/leave-requests" element={<LeaveRequests/>}/>
+                <Route path="/" element={<Dashboard/>}/>
               </Routes>
             </div>
           </main>

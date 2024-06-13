@@ -71,7 +71,7 @@ const SpecialNotices = () => {
   const [deleteNoticeErrorModalOpen, setDeleteNoticeErrorModalOpen] = useState(false);
 
   const markAsViewed = async () => {
-    const result = await fetch(`http://localhost:4000/notices/mark-as-viewed`, {
+    const result = await fetch(`${process.env.REACT_APP_API_URL}/notices/mark-as-viewed`, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -92,7 +92,7 @@ const SpecialNotices = () => {
     if (newTitle.trim() !== "" && newDescription.trim() !== "")
       try {
         return {
-          result: await fetch(`http://localhost:4000/notices`, {
+          result: await fetch(`${process.env.REACT_APP_API_URL}/notices`, {
             method: 'POST',
             headers: {
               'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -125,7 +125,7 @@ const SpecialNotices = () => {
   const updateSpecialNotice = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/notices`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/notices`, {
           method: 'PUT',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -159,7 +159,7 @@ const SpecialNotices = () => {
   const deleteSpecialNotice = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/notices`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/notices`, {
           method: 'DELETE',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -191,7 +191,7 @@ const SpecialNotices = () => {
   const getSpecialNotices = async () => {
     try {
       return {
-        result: await fetch(`http://localhost:4000/notices`, {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/notices`, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem("token"),

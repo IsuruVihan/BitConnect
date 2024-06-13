@@ -4,12 +4,6 @@ import Loading from "../components/Loading";
 import ChangeProfilePictureModal from "../components/modals/ChangeProfilePictureModal";
 import ResetPasswordModal from "../components/modals/ResetPasswordModal";
 
-const returnDigit = (digit) => {
-	if (digit < 10)
-		return '0' + digit;
-	return digit;
-}
-
 const MyAccount = () => {
 	const [loading, setLoading] = useState(false);
 
@@ -62,7 +56,7 @@ const MyAccount = () => {
 			if (formData.entries()) {
 
 			}
-			const response = await fetch('http://localhost:4000/my-account', {
+			const response = await fetch(`${process.env.REACT_APP_API_URL}/my-account`, {
 				method: 'POST',
 				headers: {
 					'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -77,7 +71,7 @@ const MyAccount = () => {
 	useEffect(() => {
 		const getMyAccountData = async (token) => {
 			try {
-				const response = await fetch('http://localhost:4000/my-account', {
+				const response = await fetch(`${process.env.REACT_APP_API_URL}/my-account`, {
 					method: 'GET',
 					headers: {
 						'Authorization': 'Bearer ' + token
