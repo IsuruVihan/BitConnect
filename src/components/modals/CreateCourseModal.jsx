@@ -133,29 +133,6 @@ const CreateCourseModal = (props) => {
 														className="sr-only"
 														accept=".pdf"
 														onChange={(e) => {
-															// e.preventDefault();
-															// const fileList = e.target.files;
-															// if (fileList) {
-															// 	const blobArray = [];
-															// 	for (let i = 0; i < fileList.length; i++) {
-															// 		const file = fileList[i];
-															// 		const reader = new FileReader();
-															// 		reader.onload = () => {
-															// 			const result = reader.result;
-															// 			if (result) {
-															// 				const blob = new Blob([result]);
-															// 				blobArray.push(blob);
-															// 				if (blobArray.length === fileList.length) {
-															// 					// Ensure that only the specified number of files are stored if multiple is a number
-															// 					console.log("BLOB ARRAY: ", blobArray);
-															// 					setNewCourseContent(blobArray[0]);
-															// 				}
-															// 			}
-															// 		};
-															// 		reader.readAsArrayBuffer(file);
-															// 	}
-															// }
-
 															setNewCourseContent(e.target.files[0])
 														}}
 													/>

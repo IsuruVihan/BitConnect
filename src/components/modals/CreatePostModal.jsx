@@ -5,7 +5,11 @@ import {PhotoIcon} from "@heroicons/react/16/solid";
 import {SecondaryButton, SuccessButton} from "../Button";
 
 const CreatePostModal = (props) => {
-	const {open, setOpen} = props;
+	const {open, setOpen, newPostTitle, setNewPostTitle, newPostDescription, setNewPostDescription, newPostAttachment,
+		setNewPostAttachment, sharePost} = props;
+
+	const emptyTitle = newPostTitle.trim() === "";
+	const emptyDescription = newPostDescription.trim() === "";
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -58,6 +62,8 @@ const CreatePostModal = (props) => {
 																autoComplete="title"
 																className="w-full border-0 bg-transparent py-1.5 pl-3 text-gray-900
 																focus:ring-0 sm:text-sm sm:leading-6"
+																value={newPostTitle}
+																onChange={(e) => setNewPostTitle(e.target.value)}
 															/>
 														</div>
 													</div>
@@ -67,10 +73,15 @@ const CreatePostModal = (props) => {
 														About
 													</label>
 													<div className="mt-2">
-                						<textarea id="about" name="about" rows={2} className="block w-full rounded-md border-0
-                							py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400
-                							focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-																			defaultValue={''}
+                						<textarea
+															id="about"
+															name="about"
+															rows={2}
+															className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1
+															ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset
+															focus:ring-indigo-600 sm:text-sm sm:leading-6"
+															value={newPostDescription}
+															onChange={(e) => setNewPostDescription(e.target.value)}
 														/>
 													</div>
 												</div>
@@ -91,7 +102,16 @@ const CreatePostModal = (props) => {
 																	focus-within:ring-offset-2 hover:text-indigo-500"
 																>
 																	<span>Upload a file</span>
-																	<input id="file-upload" name="file-upload" type="file" className="sr-only"/>
+																	<input
+																		id="file-upload"
+																		name="file-upload"
+																		type="file"
+																		className="sr-only"
+																		onChange={(e) => {
+																			setNewPostAttachment(e.target.files[0])
+																		}}
+																		accept="image/*"
+																	/>
 																</label>
 																<p className="pl-1">or drag and drop</p>
 															</div>
@@ -104,9 +124,18 @@ const CreatePostModal = (props) => {
 									</div>
 									<div className="mt-2 flex items-center justify-end gap-x-6">
 										<SecondaryButton
-											label="Cancel" onClick={() => setOpen(false)}/>
+											label="Cancel"
+											onClick={() => {
+												setNewPostTitle('');
+												setNewPostDescription('');
+												setNewPostAttachment(null);
+												setOpen(false);
+											}}
+										/>
 										<SuccessButton
-											label="Share" onClick={() => {}}/>
+											label="Share"
+											onClick={sharePost}
+										/>
 									</div>
 								</form>
 								{/*Modal body end*/}

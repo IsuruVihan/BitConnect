@@ -1,5 +1,4 @@
-import React, {useState} from "react";
-import { HeartIcon} from "@heroicons/react/20/solid";
+import React, {useEffect, useState} from "react";
 import CreatePostModal from "../components/modals/CreatePostModal";
 import {PrimaryButton} from "../components/Button";
 
@@ -13,67 +12,18 @@ const CommonWall = () => {
 		{name: 'Events', current: false},
 	]);
 
-	const posts = [
-		{
-			id: 1,
-			title: 'Boost your conversion rate',
-			href: '#',
-			description:
-				'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.',
-			imageUrl:
-				'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
-			date: 'Mar 16, 2020',
-			datetime: '2020-03-16',
-			category: {title: 'Marketing', href: '#'},
-			author: {
-				name: 'Michael Foster',
-				role: 'Co-Founder / CTO',
-				href: '#',
-				imageUrl:
-					'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-			},
-		},
-		{
-			id: 2,
-			title: 'Boost your conversion rate',
-			href: '#',
-			description:
-				'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.',
-			imageUrl:
-				'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
-			date: 'Mar 16, 2020',
-			datetime: '2020-03-16',
-			category: {title: 'Marketing', href: '#'},
-			author: {
-				name: 'Michael Foster',
-				role: 'Co-Founder / CTO',
-				href: '#',
-				imageUrl:
-					'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-			},
-		},
-		{
-			id: 3,
-			title: 'Boost your conversion rate',
-			href: '#',
-			description:
-				'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.',
-			imageUrl:
-				'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
-			date: 'Mar 16, 2020',
-			datetime: '2020-03-16',
-			category: {title: 'Marketing', href: '#'},
-			author: {
-				name: 'Michael Foster',
-				role: 'Co-Founder / CTO',
-				href: '#',
-				imageUrl:
-					'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-			},
-		},
-		// More posts...
-	]
-
+	const [posts, setPosts] = useState([
+		// {
+		// 	id: 1,
+		// 	title: 'Boost your conversion rate',
+		// 	description:
+		// 		'Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.',
+		// 	imageUrl:
+		// 		'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3603&q=80',
+		// 	date: 'Mar 16, 2020',
+		// 	authorName: 'Michael Foster'
+		// },
+	]);
 	const [notices, setNotices] = useState([
 		{title: "This is Notice 1", date: "Mar 16, 2020"},
 		{title: "This is Notice 2", date: "Mar 17, 2020"},
@@ -81,7 +31,6 @@ const CommonWall = () => {
 		{title: "This is Notice 4", date: "Mar 19, 2020"},
 		{title: "This is Notice 5", date: "Mar 20, 2020"},
 	]);
-
 	const [events, setEvents] = useState([
 		{title: "This is Event 1", date: "Mar 11, 2020"},
 		{title: "This is Event 2", date: "Mar 12, 2020"},
@@ -91,6 +40,10 @@ const CommonWall = () => {
 	]);
 
 	const [createPostModalOpen, setCreatePostModalOpen] = useState(false);
+
+	const [newPostTitle, setNewPostTitle] = useState('');
+	const [newPostDescription, setNewPostDescription] = useState('');
+	const [newPostAttachment, setNewPostAttachment] = useState(null);
 
 	const handleOnClickTab = (name) => {
 		const updatedTabs = tabs.map(tab => {
@@ -104,10 +57,96 @@ const CommonWall = () => {
 		setTabs(updatedTabs);
 	}
 
+	const getPosts = async () => {
+		try {
+			return {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/post`, {
+					method: 'GET',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem("token"),
+					},
+				}),
+				error: false
+			};
+		} catch (error) {
+			return {error: true};
+		}
+	}
+	useEffect(() => {
+		getPosts()
+			.then((r) => {
+				if (r.error || r.result.status !== 200)
+					return {error: true};
+				return r.result.json();
+			})
+			.then((data) => {
+				if (data.error) {
+					// setRetrieveTeamDataErrorModalOpen(true);
+				} else {
+					setPosts(data.posts);
+				}
+			});
+	}, []);
+
+	const sharePost = async () => {
+		try {
+			const formData = new FormData();
+			formData.append('Title', newPostTitle);
+			formData.append('Description', newPostDescription);
+			formData.append('Attachment', newPostAttachment);
+
+			return {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/post`, {
+					method: 'POST',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem("token"),
+					},
+					body: formData,
+				}),
+				error: false
+			};
+		} catch (error) {
+			return {error: true};
+		}
+	}
+	const onClickSharePost = () => {
+		sharePost();
+	}
+
+	const deletePost = async (postId) => {
+		try {
+			return {
+				result: await fetch(`${process.env.REACT_APP_API_URL}/post`, {
+					method: 'DELETE',
+					headers: {
+						'Authorization': 'Bearer ' + localStorage.getItem("token"),
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({postId}),
+				}),
+				error: false
+			};
+		} catch (error) {
+			return {error: true};
+		}
+	}
+	const onClickDeletePost = (postId) => {
+		deletePost(postId);
+	}
 
 	return (
 		<div className="w-full grid grid-cols-4 min-h-[79vh]">
-			<CreatePostModal open={createPostModalOpen} setOpen={setCreatePostModalOpen}/>
+			<CreatePostModal
+				open={createPostModalOpen}
+				setOpen={setCreatePostModalOpen}
+				newPostTitle={newPostTitle}
+				setNewPostTitle={setNewPostTitle}
+				newPostDescription={newPostDescription}
+				setNewPostDescription={setNewPostDescription}
+				newPostAttachment={newPostAttachment}
+				setNewPostAttachment={setNewPostAttachment}
+				sharePost={onClickSharePost}
+			/>
 			<div className="xl:col-span-3 col-span-4">
 				<div className="bg-white">
 					<div className="mx-auto max-w-7xl px-4 lg:px-6">
@@ -118,53 +157,58 @@ const CommonWall = () => {
 							width={"full"}
 						/>
 						<div
-							className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-1">
-							{posts.map((post) => (
-								<article key={post.id} className="flex flex-col items-start justify-between">
-									<div className="relative mt-6 flex items-center gap-x-4 mb-2">
-										<img src={post.author.imageUrl} alt="" className="h-10 w-10 rounded-full bg-gray-100"/>
+							className="grid max-w-2xl grid-cols-1 lg:mx-0 lg:max-w-none lg:grid-cols-1">
+							{posts.length > 0 ? posts.map((post) => (
+								<article key={post.id} className="flex flex-col items-start justify-between rounded-lg shadow p-4 mt-4">
+									<div className="relative flex items-center gap-x-4">
+										<img
+											src={'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
+											alt=""
+											className="h-10 w-10 rounded-full bg-gray-100"
+										/>
 										<div className="text-sm leading-6">
-											<p className="font-semibold text-gray-900">
-												<a href={post.author.href}>
+											<div className="font-semibold text-gray-900">
+												<div>
 													<span className="absolute inset-0"/>
-													{post.author.name}
-												</a>
-											</p>
-											<p className="text-gray-600">{post.date}</p>
+													{post.authorName}
+												</div>
+											</div>
+											<p className="text-gray-600">{post.date.split('T')[0]}</p>
 										</div>
 									</div>
-									<div className="relative w-full">
-										<img
+									<div className="relative w-full mt-2">
+										{post.imageUrl && <img
 											src={post.imageUrl}
 											alt=""
 											className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
-										/>
+										/>}
 										<div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10"/>
 									</div>
 									<div className="w-full">
 										<div className="group relative">
 											<h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-												<a href={post.href}>
+												<div>
 													<span className="absolute inset-0"/>
 													{post.title}
-												</a>
+												</div>
 											</h3>
-											<p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600">{post.description}</p>
+											<p className="mt-2 line-clamp-3 leading-6 text-gray-600">{post.description}</p>
 										</div>
 									</div>
-									<div className="group relative pt-2">
-										<div
-											className="flex space-x-1 justify-center items-center w-fit rounded-3xl text-gray-400 cursor-pointer">
-											<HeartIcon height={20} width={20}/> <span>12</span>
-										</div>
+									<div
+										className="text-sm text-red-600 hover:text-red-800 cursor-pointer"
+										onClick={() => onClickDeletePost(post.id)}
+									>
+										Delete
 									</div>
 								</article>
-							))}
+							)) : <div className="p-10 w-full text-center text-lg font-bold text-gray-300">
+								No posts
+							</div>}
 						</div>
 					</div>
 				</div>
 			</div>
-
 
 			<div className="hidden xl:block mr-2">
 				<div>
