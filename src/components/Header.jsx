@@ -49,6 +49,9 @@ function classNames(...classes) {
 const Header = () => {
   const {loading, isAdmin, isTL} = useAuth();
 
+  // notification modal
+  const [openNotifications, setOpenNotifications] = useState(false);
+
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [navigation, setNavigation] = useState([
@@ -278,7 +281,9 @@ const Header = () => {
 
             <div className="flex self-stretch flex-1 gap-x-4 lg:gap-x-6">
               <div className="flex items-center justify-end flex-1 gap-x-4 lg:gap-x-6">
-                <button type="button" className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500">
+                <button type="button"
+                        className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
+                        onClick={() => {setOpenNotifications(true)}}>
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="w-6 h-6" aria-hidden="true"/>
                 </button>
