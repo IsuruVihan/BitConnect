@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 
 const ChatListModal = (props) => {
-	const {open, setOpen, contactList} = props;
+	const {open, setOpen, visibleContactList, searchContact, setSearchContact, setSelectedContact} = props;
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
@@ -41,22 +41,35 @@ const ChatListModal = (props) => {
 									<div className="p-4">
 										<div>
 											<input
-												type="email"
-												name="email"
-												id="email"
+												type="text"
+												name="text"
+												id="text"
 												className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset
-							ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
-							sm:text-sm sm:leading-6"
+												ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600
+												sm:text-sm sm:leading-6"
 												placeholder="Search employee"
+												value={searchContact}
+												onChange={(e) => setSearchContact(e.target.value)}
 											/>
 										</div>
 									</div>
 									<div className="h-[68vh] overflow-y-auto">
 										<ul role="list" className="flex flex-col divide-y divide-gray-100 gap-2">
-											{contactList.map((person) => (
-												<li key={person.email} className="flex items-center py-3 pl-3">
+											{visibleContactList && visibleContactList.map((person) => (
+												<li
+													key={person.email}
+													className="flex items-center py-3 pl-3"
+													onClick={() => {
+														setSelectedContact(person);
+														setOpen(false);
+													}}
+												>
 													<div className="flex min-w-0 gap-x-4 justify-center align-middle">
-														<img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt=""/>
+														<img
+															className="h-12 w-12 flex-none rounded-full bg-gray-50"
+															src={'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
+															alt=""
+														/>
 														<div className="min-w-0 flex-auto">
 															<p className="text-sm font-semibold leading-6 text-gray-900">{person.name}</p>
 															<p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.email}</p>
@@ -68,7 +81,6 @@ const ChatListModal = (props) => {
 									</div>
 								</div>
 								{/*Modal body end*/}
-
 
 							</Dialog.Panel>
 						</Transition.Child>

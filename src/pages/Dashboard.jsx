@@ -104,7 +104,7 @@ const Dashboard = () => {
 				items-center">
         <div className="w-fit p-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-700
 					to-pink-500">
-          {getGreeting()} Isuru!
+          {getGreeting()}!
         </div>
       </div>
 
