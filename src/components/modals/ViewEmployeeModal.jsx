@@ -1,6 +1,8 @@
 import React, {Fragment, useState} from 'react';
 import {Dialog, Transition} from "@headlessui/react";
-import {DangerButton, OutlineButton, SuccessButton, WarningButton} from "../Button";
+import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton} from "../Button";
+import CreateAttendanceReportModal from "./CreateAttendanceReportModal";
+
 
 const ViewEmployeeModal = (props) => {
 	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, onClickSave, onClickDelete, teams,
@@ -11,8 +13,25 @@ const ViewEmployeeModal = (props) => {
 	const emptyFirstName = selectedEmployee.firstName.trim() === "";
 	const emptyLastName = selectedEmployee.lastName.trim() === "";
 
+
+
+	// under construction
+	const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
+
 	return (
 		<Transition.Root show={open} as={Fragment}>
+			{/*under construction - start*/}
+			<CreateAttendanceReportModal
+				open={openCreateAttendanceReportModal}
+				setOpen={setOpenCreateAttendanceReportModal}
+				fromDate={fromDate}
+				toDate={toDate}
+				setFromDate={setFromDate}
+				setToDate={setToDate}
+				generateReport={handleGenerateReport}
+			/>
+			{/*under construction - end*/}
+
 			<Dialog as="div" className="relative z-10" onClose={setOpen}>
 				<Transition.Child
 					as={Fragment}
@@ -266,6 +285,16 @@ const ViewEmployeeModal = (props) => {
 											setUpdateMode(false);
 											setOpen(false);
 										}}/>
+
+										{/*// under construction - start*/}
+										<PrimaryButton label="Attendance" onClick={()=> setOpenCreateAttendanceReportModal(true)}
+										/>
+										<PrimaryButton label="Leave" onClick={()=> {}}
+										/>
+
+										 {/*under construction - end*/}
+
+
 										{isAdmin && !selectedEmployee.isAdmin && <>
 											{!updateMode && <WarningButton label="Update" onClick={() => setUpdateMode(true)}/>}
 											{updateMode && <SuccessButton label="Save" onClick={() => {
