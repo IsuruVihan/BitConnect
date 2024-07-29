@@ -7,6 +7,7 @@ import SuccessModal from "../components/modals/SuccessModal";
 import ConfirmAcceptLeaveRequestModal from "../components/modals/ConfirmAcceptLeaveRequestModal";
 import ConfirmRejectLeaveRequestModal from "../components/modals/ConfirmRejectLeaveRequestModal";
 import {useAuth} from "../context/AuthContext";
+import UserImage from "../components/UserImage";
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ');
@@ -131,7 +132,6 @@ const LeaveRequests = () => {
 		getTeamMembersData()
 			.then(r => r.result.json())
 			.then((data) => {
-				console.log("DATA: ", data);
 				if (data.error) {
 					setGetTeamMembersDetailsErrorModalOpen(true);
 				} else {
@@ -142,8 +142,7 @@ const LeaveRequests = () => {
 							name: `${person.FirstName} ${person.LastName}`,
 							email: person.Email,
 							role: person.Role,
-							imageUrl:
-								'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+							imageUrl: person.URL,
 						});
 					});
 					setTeamMembers(tempTeam);
@@ -334,7 +333,10 @@ const LeaveRequests = () => {
 							}}
 						>
 							<div className="flex min-w-0 gap-x-4">
-								<img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt=""/>
+								{!['', null].includes(person.imageUrl) ?
+									<img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt=""/> :
+									<UserImage size={12}/>
+								}
 								<div className="min-w-0 flex-auto">
 									<p className="text-sm font-semibold leading-6 text-gray-900">{person.name}</p>
 									<p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.email}</p>

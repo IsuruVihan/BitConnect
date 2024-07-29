@@ -4,7 +4,7 @@ import {SecondaryButton, SuccessButton} from "../Button";
 import {PhotoIcon} from "@heroicons/react/16/solid";
 
 const ChangeProfilePictureModal = (props) => {
-	const {open, setOpen} = props;
+	const {open, setOpen, setProfilePicture} = props;
 	return(
 		<Transition.Root show={open} as={Fragment}>
 			<Dialog as="div" className="relative z-10" onClose={setOpen}>
@@ -58,7 +58,14 @@ const ChangeProfilePictureModal = (props) => {
 																	focus-within:ring-offset-2 hover:text-indigo-500"
 																>
 																	<span>Upload a file</span>
-																	<input id="file-upload" name="file-upload" type="file" className="sr-only"/>
+																	<input
+																		id="file-upload"
+																		name="file-upload"
+																		type="file"
+																		className="sr-only"
+																		accept="image/*"
+																		onChange={(e) => setProfilePicture(e.target.files[0])}
+																	/>
 																</label>
 																<p className="pl-1">or drag and drop</p>
 															</div>
@@ -69,11 +76,15 @@ const ChangeProfilePictureModal = (props) => {
 											</div>
 										</div>
 									</div>
-									<div className="mt-2 flex items-center justify-end gap-x-6">
+									<div className="mt-2 flex items-center justify-end gap-x-2">
 										<SecondaryButton
-											label="Cancel" onClick={() => setOpen(false)}/>
-										<SuccessButton
-											label="Update" onClick={() => {}}/>
+											label="Cancel"
+											onClick={() => {
+												setProfilePicture(null);
+												setOpen(false);
+											}}
+										/>
+										<SuccessButton label="Done" onClick={() => setOpen(false)}/>
 									</div>
 								</form>
 								{/*Modal body end*/}

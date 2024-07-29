@@ -1,4 +1,5 @@
 import React from "react";
+import UserImage from "../UserImage";
 
 const LeaderboardBody = ({people}) => {
 	return (
@@ -7,11 +8,14 @@ const LeaderboardBody = ({people}) => {
 				{people.map((person) => (
 					<li key={person.id} className="flex justify-between gap-x-6 py-5 shadow px-4 rounded mb-2">
 						<div className="flex flex-row items-center min-w-0 gap-x-4">
-							<img
-								className="h-12 w-12 flex-none rounded-full bg-gray-50"
-								src={"https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"}
-								alt="profile picture"
-							/>
+							{!['', null].includes(person.profilePicture) ?
+								<img
+									className="h-12 w-12 flex-none rounded-full bg-gray-50"
+									src={person.profilePicture}
+									alt=""
+								/> :
+								<UserImage size={12}/>
+							}
 							<p className="text-sm font-semibold leading-6 text-gray-900 sm:block hidden">
 								{person.name}
 							</p>

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import CreatePostModal from "../components/modals/CreatePostModal";
 import {PrimaryButton} from "../components/Button";
+import UserImage from "../components/UserImage";
 
 function classNames(...classes) {
 	return classes.filter(Boolean).join(' ')
@@ -161,11 +162,14 @@ const CommonWall = () => {
 							{posts.length > 0 ? posts.map((post) => (
 								<article key={post.id} className="flex flex-col items-start justify-between rounded-lg shadow p-4 mt-4">
 									<div className="relative flex items-center gap-x-4">
-										<img
-											src={'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'}
-											alt=""
-											className="h-10 w-10 rounded-full bg-gray-100"
-										/>
+										{!['', null].includes(post.ProfilePicture) ?
+											<img
+												src={post.ProfilePicture}
+												alt=""
+												className="h-10 w-10 rounded-full bg-gray-100"
+											/> :
+											<UserImage size={10}/>
+										}
 										<div className="text-sm leading-6">
 											<div className="font-semibold text-gray-900">
 												<div>

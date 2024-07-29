@@ -3,6 +3,7 @@ import {DangerButton, PrimaryButton, SecondaryButton, SuccessButton} from "../co
 import Loading from "../components/Loading";
 import ChangeProfilePictureModal from "../components/modals/ChangeProfilePictureModal";
 import ResetPasswordModal from "../components/modals/ResetPasswordModal";
+import UserImage from "../components/UserImage";
 
 const MyAccount = () => {
 	const [loading, setLoading] = useState(false);
@@ -28,6 +29,7 @@ const MyAccount = () => {
 	const [title, setTitle] = useState("");
 	const [team, setTeam] = useState("");
 	const [birthday, setBirthday] = useState("");
+	const [profilePicture, setProfilePicture] = useState(null);
 
 	const [initFirstName, setInitFirstName] = useState("");
 	const [initLastName, setInitLastName] = useState("");
@@ -49,11 +51,10 @@ const MyAccount = () => {
 				formData.append("ContactNumber", phone);
 			if (birthday !== initBirthday)
 				formData.append("Birthdate", birthday);
+			if (profilePicture !== null)
+				formData.append("ProfilePicture", profilePicture);
 
-			if (formData.entries()) {
-
-			}
-			const response = await fetch(`${process.env.REACT_APP_API_URL}/my-account`, {
+			await fetch(`${process.env.REACT_APP_API_URL}/my-account`, {
 				method: 'POST',
 				headers: {
 					'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -131,8 +132,7 @@ const MyAccount = () => {
 				setInitBirthday(data[0].Birthdate ? data[0].Birthdate.split("T")[0] : '');
 
 				setProfile({
-					imageUrl:
-						'https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80',
+					imageUrl: data[0].imageUrl,
 					coverImageUrl:
 						'https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
 				});
@@ -151,6 +151,7 @@ const MyAccount = () => {
 			<ChangeProfilePictureModal
 				open={openChangeImage}
 				setOpen={setOpenChangeImage}
+				setProfilePicture={setProfilePicture}
 			/>
 			<div className="flex h-full">
 				<ResetPasswordModal
@@ -176,11 +177,15 @@ const MyAccount = () => {
 									<div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 										<div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
 											<div className="flex">
-												<img className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-														 src={profile.imageUrl}
-														 alt=""
-														 onClick={() => setOpenChangeImage(true)}
-												/>
+												{!['', null, undefined].includes(profile.imageUrl) ?
+													<img
+														className="h-24 w-24 flex-none rounded-full bg-gray-50"
+														src={profile.imageUrl}
+														alt=""
+														onClick={() => updateMode && setOpenChangeImage(true)}
+													/> :
+													<UserImage size={24}/>
+												}
 											</div>
 											<div
 												className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
@@ -190,7 +195,8 @@ const MyAccount = () => {
 													</h1>
 												</div>
 												<div
-													className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0">
+													className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0"
+												>
 
 													{updateMode && <PrimaryButton
 														onClick={() => setOpenResetPasswordModal(true)}

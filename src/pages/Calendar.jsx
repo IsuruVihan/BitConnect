@@ -33,9 +33,25 @@ const Calendar = () => {
   const [selectedDay, setSelectedDay] = useState(null);
 
   const [currentMonth, setCurrentMonth]
-    = useState({month: today.getMonth(), year: today.getFullYear()});
+      = useState({month: today.getMonth(), year: today.getFullYear()});
   const [consideredMonth, setConsideredMonth]
-    = useState({month: today.getMonth(), year: today.getFullYear()});
+      = useState({month: today.getMonth(), year: today.getFullYear()});
+
+  useEffect(() => {
+    const tempSelectedDay = selectedDay == null ? new Date() : selectedDay;
+
+    getEvents(tempSelectedDay)
+        .then((r) => {
+          if (!r.result) {
+            // setGetCheckInDataErrorModalOpen(true);
+            return;
+          }
+          return r.result.json();
+        })
+        .then((data) => {
+          console.log(data);
+        });
+  }, [selectedDay]);
 
   useEffect(() => {
     const tempEvents = events.filter((e) => {
@@ -52,12 +68,12 @@ const Calendar = () => {
     let tempDays = [];
     currentMonthDays.map((currentMonthDay) => {
       const checkIsToday = today.getDate() === currentMonthDay.getDate() &&
-        today.getMonth() === currentMonthDay.getMonth() &&
-        today.getFullYear() === currentMonthDay.getFullYear();
+          today.getMonth() === currentMonthDay.getMonth() &&
+          today.getFullYear() === currentMonthDay.getFullYear();
       tempDays.push({
         date: `${currentMonthDay.getFullYear()}-${currentMonthDay.getMonth() + 1}-${currentMonthDay.getDate()}`,
         isCurrentMonth:
-          currentMonthDay.getMonth() === consideredMonth.month && currentMonthDay.getFullYear() === consideredMonth.year,
+            currentMonthDay.getMonth() === consideredMonth.month && currentMonthDay.getFullYear() === consideredMonth.year,
         isToday: checkIsToday,
         isSelected: checkIsToday,
       });
@@ -74,6 +90,34 @@ const Calendar = () => {
     ];
     setEvents(tempEvents);
   }, [days, setEvents]);
+
+  const getEvents = async (date) => {
+    try {
+      return {
+        result: await fetch(`${process.env.REACT_APP_API_URL}/calendar?date=${date}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem("token"),
+          }
+        }),
+        error: false
+      };
+    } catch (error) {
+      return {error: true};
+    }
+  }
+
+  const createEvent = () => {
+
+  }
+
+  const updateEvents = () => {
+
+  }
+
+  const deleteEvents = () => {
+
+  }
 
   const handleOnClickDay = (day) => {
     if (day.isSelected) {
@@ -119,118 +163,118 @@ const Calendar = () => {
   }
 
   return (
-    <div>
-      <CreateEventModal
-        open={createEventModalOpen}
-        setOpen={setCreateEventModalOpen}
-        title={title}
-        setTitle={setTitle}
-        startDate={startDate}
-        setStartDate={setStartDate}
-        endDate={endDate}
-        setEndDate={setEndDate}
-        startTime={startTime}
-        setStartTime={setStartTime}
-        endTime={endTime}
-        setEndTime={setEndTime}
-      />
-      <ViewEventModal
-        open={viewEventModalOpen}
-        setOpen={setViewEventModalOpen}
-        eventDetails={currentEvent}
-        setEventDetails={setCurrentEvent}
-      />
+      <div>
+        <CreateEventModal
+            open={createEventModalOpen}
+            setOpen={setCreateEventModalOpen}
+            title={title}
+            setTitle={setTitle}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            startTime={startTime}
+            setStartTime={setStartTime}
+            endTime={endTime}
+            setEndTime={setEndTime}
+        />
+        <ViewEventModal
+            open={viewEventModalOpen}
+            setOpen={setViewEventModalOpen}
+            eventDetails={currentEvent}
+            setEventDetails={setCurrentEvent}
+        />
 
-      <div className="sm:flex-auto">
-        <h1 className="text-base font-semibold leading-6 text-gray-900">Company Events</h1>
-        <p className="mt-1 mb-5 text-sm text-gray-700">
-          Select a date to view event of that particular date.
-        </p>
-      </div>
-      <div className="w-full flex lg:flex-row flex-col-reverse pt-4">
-        <div className="lg:w-2/5 w-full">
-          <div role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 xl:gap-x-8">
-            {selectedDay === null ?
-              events.map((event, idx) => (
-                <AllocationDetailsCard key={idx} event={event} onClick={handleOnClickAllocation}/>
-              )) :
-              visibleEvents.length > 0 ? visibleEvents.map((event, idx) => (
-                <AllocationDetailsCard key={idx} event={event} onClick={handleOnClickAllocation}/>
-              )) : "No events"
-            }
-          </div>
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6 text-gray-900">Company Events</h1>
+          <p className="mt-1 mb-5 text-sm text-gray-700">
+            Select a date to view event of that particular date.
+          </p>
         </div>
-        <div className="lg:w-3/5 w-full lg:pl-8 lg:pb-0 pb-8">
-          <div className="w-full flex-none block mb-2">
-            <div className="w-full flex items-center text-center text-gray-900">
-              <button
-                type="button"
-                className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-                onClick={handleOnClickPrevious}
-              >
-                <span className="sr-only">Previous month</span>
-                <ChevronLeftIcon className="h-5 w-5" aria-hidden="true"/>
-              </button>
-              <div className="flex-auto text-sm font-semibold">
-                {getMonthString(currentMonth.month).fullName} {currentMonth.year}
-              </div>
-              <button
-                type="button"
-                className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
-                onClick={handleOnClickNext}
-              >
-                <span className="sr-only">Next month</span>
-                <ChevronRightIcon className="h-5 w-5" aria-hidden="true"/>
-              </button>
+        <div className="w-full flex lg:flex-row flex-col-reverse pt-4">
+          <div className="lg:w-2/5 w-full">
+            <div role="list" className="grid grid-cols-1 gap-x-6 gap-y-8 xl:gap-x-8">
+              {selectedDay === null ?
+                  events.map((event, idx) => (
+                      <AllocationDetailsCard key={idx} event={event} onClick={handleOnClickAllocation}/>
+                  )) :
+                  visibleEvents.length > 0 ? visibleEvents.map((event, idx) => (
+                      <AllocationDetailsCard key={idx} event={event} onClick={handleOnClickAllocation}/>
+                  )) : "No events"
+              }
             </div>
-            <div className="w-full mt-6 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
-              {["M", "T", "W", "T", "F", "S", "S"].map((letter, idx) => {
-                return <div key={idx}>{letter}</div>;
-              })}
-            </div>
-            <div className="w-full isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1
-            ring-gray-200">
-              {days.map((day, dayIdx) => (
+          </div>
+          <div className="lg:w-3/5 w-full lg:pl-8 lg:pb-0 pb-8">
+            <div className="w-full flex-none block mb-2">
+              <div className="w-full flex items-center text-center text-gray-900">
                 <button
-                  key={day.date}
-                  type="button"
-                  className={classNames(
-                    'py-2.5 hover:bg-gray-100 focus:z-10',
-                    day.isCurrentMonth ? 'bg-white' : 'bg-gray-50',
-                    (day.isSelected || day.isToday) && 'font-semibold',
-                    day.isSelected && 'text-white',
-                    !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900',
-                    !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400',
-                    day.isToday && !day.isSelected && 'text-indigo-600',
-                    dayIdx === 0 && 'rounded-tl-lg',
-                    dayIdx === 6 && 'rounded-tr-lg',
-                    dayIdx === days.length - 7 && 'rounded-bl-lg',
-                    dayIdx === days.length - 1 && 'rounded-br-lg'
-                  )}
-                  onClick={() => handleOnClickDay(day)}
+                    type="button"
+                    className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+                    onClick={handleOnClickPrevious}
                 >
-                  <time
-                    dateTime={day.date}
-                    className={classNames(
-                      'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
-                      day.isSelected && day.isToday && 'bg-indigo-600',
-                      day.isSelected && !day.isToday && 'bg-gray-900'
-                    )}
-                  >
-                    {day.date.split('-').pop()?.replace(/^0/, '')}
-                  </time>
+                  <span className="sr-only">Previous month</span>
+                  <ChevronLeftIcon className="h-5 w-5" aria-hidden="true"/>
                 </button>
-              ))}
+                <div className="flex-auto text-sm font-semibold">
+                  {getMonthString(currentMonth.month).fullName} {currentMonth.year}
+                </div>
+                <button
+                    type="button"
+                    className="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
+                    onClick={handleOnClickNext}
+                >
+                  <span className="sr-only">Next month</span>
+                  <ChevronRightIcon className="h-5 w-5" aria-hidden="true"/>
+                </button>
+              </div>
+              <div className="w-full mt-6 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
+                {["M", "T", "W", "T", "F", "S", "S"].map((letter, idx) => {
+                  return <div key={idx}>{letter}</div>;
+                })}
+              </div>
+              <div className="w-full isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-gray-200 text-sm shadow ring-1
+            ring-gray-200">
+                {days.map((day, dayIdx) => (
+                    <button
+                        key={day.date}
+                        type="button"
+                        className={classNames(
+                            'py-2.5 hover:bg-gray-100 focus:z-10',
+                            day.isCurrentMonth ? 'bg-white' : 'bg-gray-50',
+                            (day.isSelected || day.isToday) && 'font-semibold',
+                            day.isSelected && 'text-white',
+                            !day.isSelected && day.isCurrentMonth && !day.isToday && 'text-gray-900',
+                            !day.isSelected && !day.isCurrentMonth && !day.isToday && 'text-gray-400',
+                            day.isToday && !day.isSelected && 'text-indigo-600',
+                            dayIdx === 0 && 'rounded-tl-lg',
+                            dayIdx === 6 && 'rounded-tr-lg',
+                            dayIdx === days.length - 7 && 'rounded-bl-lg',
+                            dayIdx === days.length - 1 && 'rounded-br-lg'
+                        )}
+                        onClick={() => handleOnClickDay(day)}
+                    >
+                      <time
+                          dateTime={day.date}
+                          className={classNames(
+                              'mx-auto flex h-7 w-7 items-center justify-center rounded-full',
+                              day.isSelected && day.isToday && 'bg-indigo-600',
+                              day.isSelected && !day.isToday && 'bg-gray-900'
+                          )}
+                      >
+                        {day.date.split('-').pop()?.replace(/^0/, '')}
+                      </time>
+                    </button>
+                ))}
+              </div>
             </div>
+            <PrimaryButton
+                label={"Create Event"}
+                width={"full"}
+                onClick={() => setCreateEventModalOpen(true)}
+            />
           </div>
-          <PrimaryButton
-            label={"Create Event"}
-            width={"full"}
-            onClick={() => setCreateEventModalOpen(true)}
-          />
         </div>
       </div>
-    </div>
   )
 }
 
