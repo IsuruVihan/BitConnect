@@ -103,56 +103,7 @@ const EmpView = () => {
   const [viewTeamModalOpen, setViewTeamModalOpen] = useState(false);
   const [initSelectedTeam, setInitSelectedTeam] = useState(null);
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [eligibleEmployees, setEligibleEmployees] = useState([
-    // {
-    //   firstName: "John",
-    //   lastName: "Doe",
-    //   email: "john.doe@example.com",
-    //   isAdmin: false,
-    //   birthDay: "1990-01-15",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Jane",
-    //   lastName: "Smith",
-    //   email: "jane.smith@example.com",
-    //   isAdmin: false,
-    //   birthDay: "1985-05-30",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Emily",
-    //   lastName: "Johnson",
-    //   email: "emily.johnson@example.com",
-    //   isAdmin: false,
-    //   birthDay: "1992-07-21",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "John",
-    //   lastName: "Doe",
-    //   email: "1john.doe@example.com",
-    //   isAdmin: false,
-    //   birthDay: "1990-01-15",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Jane",
-    //   lastName: "Smith",
-    //   email: "1jane.smith@example.com",
-    //   isAdmin: false,
-    //   birthDay: "1985-05-30",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Emily",
-    //   lastName: "Johnson",
-    //   email: "1emily.johnson@example.com",
-    //   isAdmin: false,
-    //   birthDay: "1992-07-21",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // }
-  ]);
+  const [eligibleEmployees, setEligibleEmployees] = useState([]);
   const [addedEmployees, setAddedEmployees] = useState([]);
   const [addTeamMemberModalOpen, setAddTeamMemberModalOpen] = useState(false);
   const [confirmUpdateTeamModalOpen, setConfirmUpdateTeamModalOpen] = useState(false);
@@ -162,63 +113,7 @@ const EmpView = () => {
   const [deleteTeamSuccessModalOpen, setDeleteTeamSuccessModalOpen] = useState(false);
   const [deleteTeamErrorModalOpen, setDeleteTeamErrorModalOpen] = useState(false);
 
-  const [employees, setEmployees] = useState([
-    // {
-    //   firstName: "John",
-    //   lastName: "Doe",
-    //   email: "john.doe@example.com",
-    //   role: "Developer",
-    //   team: "Team A",
-    //   isTL: true,
-    //   isAdmin: false,
-    //   birthDay: "1990-01-15",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Jane",
-    //   lastName: "Smith",
-    //   email: "jane.smith@example.com",
-    //   role: null,
-    //   team: null,
-    //   isTL: false,
-    //   isAdmin: false,
-    //   birthDay: "1985-05-30",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Emily",
-    //   lastName: "Johnson",
-    //   email: "emily.johnson@example.com",
-    //   role: "UX Designer",
-    //   team: "Team B",
-    //   isTL: false,
-    //   isAdmin: false,
-    //   birthDay: "1992-07-21",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Michael",
-    //   lastName: "Brown",
-    //   email: "michael.brown@example.com",
-    //   role: "CEO",
-    //   team: "",
-    //   isTL: false,
-    //   isAdmin: true,
-    //   birthDay: "1988-03-10",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // },
-    // {
-    //   firstName: "Lisa",
-    //   lastName: "Davis",
-    //   email: "lisa.davis@example.com",
-    //   role: "Data Analyst",
-    //   team: "Team B",
-    //   isTL: true,
-    //   isAdmin: false,
-    //   birthDay: "1993-11-25",
-    //   imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-    // }
-  ]);
+  const [employees, setEmployees] = useState([]);
   const [searchEmployee, setSearchEmployee] = useState("");
   const [visibleEmployees, setVisibleEmployees] = useState([]);
   const [createEmployeeAccountModalOpen, setCreateEmployeeAccountModalOpen] = useState(false);
@@ -237,19 +132,7 @@ const EmpView = () => {
       = useState(false);
   const [viewEmployeeModalOpen, setViewEmployeeModalOpen] = useState(false);
   const [initSelectedEmployee, setInitSelectedEmployee] = useState(null);
-  const [selectedEmployee, setSelectedEmployee] = useState(null
-      // {
-      // 	firstName: "John",
-      // 	lastName: "Doe",
-      // 	email: "john.doe@example.com",
-      // 	role: "Developer",
-      // 	team: "Backend",
-      // 	isTL: false,
-      // 	isAdmin: false,
-      // 	birthDay: "1990-01-15",
-      // 	imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60",
-      // }
-  );
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [confirmUpdateEmployeeAccountModalOpen, setConfirmUpdateEmployeeAccountModalOpen]
       = useState(false);
   const [updateEmployeeAccountSuccessModalOpen, setUpdateEmployeeAccountSuccessModalOpen]
