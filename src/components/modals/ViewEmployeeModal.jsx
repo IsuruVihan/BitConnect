@@ -2,6 +2,7 @@ import React, {Fragment, useState} from 'react';
 import {Dialog, Transition} from "@headlessui/react";
 import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton} from "../Button";
 import CreateAttendanceReportModal from "./CreateAttendanceReportModal";
+import AttendanceReportGenerator from "../reports/AttendanceReportGenerator";
 
 
 const ViewEmployeeModal = (props) => {
@@ -13,22 +14,86 @@ const ViewEmployeeModal = (props) => {
 	const emptyFirstName = selectedEmployee.firstName.trim() === "";
 	const emptyLastName = selectedEmployee.lastName.trim() === "";
 
+	// attendance report
+	const [fromDateAttendance, setFromDateAttendance] = useState('');
+	const [toDateAttendance, setToDateAttendance] = useState('');
 
+	const [reportDataAttendance, setReportDataAttendance] = useState(null);
 
-	// under construction
 	const [openCreateAttendanceReportModal, setOpenCreateAttendanceReportModal] = useState(false);
+	const [generateAttendanceReportErrorModalOpen, setGenerateAttendanceReportErrorModalOpen]
+		= useState(false);
+	const [pdfModalOpenAttendance, setPDFModalOpenAttendance] = useState(false);
+
+	// //leave
+	// const [fromDateLeave, setFromDateLeave] = useState('');
+	// const [toDateLeave, setToDateLeave] = useState('');
+	//
+	// const [reportDataLeave, setReportDataLeave] = useState(null);
+	//
+	// const [openCreateLeaveReportModal, setOpenCreateLeaveReportModal] = useState(false);
+	// const [generateLeaveReportErrorModalOpen, setGenerateLeaveReportErrorModalOpen]
+	// 	= useState(false);
+	// const [pdfModalOpenLeave, setPDFModalOpenLeave] = useState(false);
+
+
+
+	const handleAttendanceGenerateReport = async () => {
+		if (fromDateAttendance !== '' && toDateAttendance !== '') {
+			const fromD = new Date(fromDateAttendance);
+			const toD = new Date(toDateAttendance);
+			if (fromD <= toD) {
+				try {
+					await fetch(`${process.env.REACT_APP_API_URL}/attendance?from=${fromDateAttendance}&to=${toDateAttendance}`, {
+						method: 'POST',
+						headers: {
+							'Authorization': 'Bearer ' + localStorage.getItem("token"),
+						}
+						// body: JSON.stringify({date: currentDate, time: currentTime}),
+						//
+						// }
+					})
+						.then(r => r.json())
+						.then((data) => {
+							const reportD = {
+								currentDate: '',
+								currentTime: '',
+								from: fromDateAttendance,
+								to: toDateAttendance,
+								employeeName: 'Isuru Harischandra',
+								employeeEmail: data.userEmail,
+								employeeRole: 'Software Engineer',
+								data: data.data.map(item => ({
+									date: item.CheckInDate ? new Date(item.CheckInDate).toISOString().substr(0, 10) : null,
+									CheckInTime: item.CheckInTime ? new Date(item.CheckInTime).toISOString().substr(11, 5) :
+										'',
+									CheckOutTime: item.CheckOutTime ? new Date(item.CheckOutTime).toISOString().substr(11, 5) :
+										''
+								})),
+							};
+							setReportDataAttendance(reportD);
+							setPDFModalOpenAttendance(true);
+						});
+				} catch (error) {
+					setGenerateAttendanceReportErrorModalOpen(true);
+				}
+			}
+		}
+	}
 
 	return (
 		<Transition.Root show={open} as={Fragment}>
+			<>
 			{/*under construction - start*/}
+			{reportDataAttendance && <AttendanceReportGenerator open={pdfModalOpenAttendance} setOpen={setPDFModalOpenAttendance} data={reportDataAttendance}/>}
 			<CreateAttendanceReportModal
 				open={openCreateAttendanceReportModal}
 				setOpen={setOpenCreateAttendanceReportModal}
-				fromDate={fromDate}
-				toDate={toDate}
-				setFromDate={setFromDate}
-				setToDate={setToDate}
-				generateReport={handleGenerateReport}
+				fromDate={fromDateAttendance}
+				toDate={toDateAttendance}
+				setFromDate={setFromDateAttendance}
+				setToDate={setToDateAttendance}
+				generateReport={handleAttendanceGenerateReport}
 			/>
 			{/*under construction - end*/}
 
@@ -315,6 +380,7 @@ const ViewEmployeeModal = (props) => {
 					</div>
 				</div>
 			</Dialog>
+		</>
 		</Transition.Root>
 	);
 
