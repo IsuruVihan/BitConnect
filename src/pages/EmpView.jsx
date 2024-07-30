@@ -18,7 +18,8 @@ import areObjectsIdentical from "../lib/areObjectsIdentical";
 import UserImage from "../components/UserImage";
 
 const EmpView = () => {
-  const {isAdmin} = useAuth();
+  const {isAdmin,isTL} = useAuth();
+
 
   const roles = useMemo(() => [
     {id: 1, title: "Business Analyst"},
@@ -507,6 +508,7 @@ const EmpView = () => {
               selectedEmployee={selectedEmployee}
               setSelectedEmployee={setSelectedEmployee}
               isAdmin={isAdmin}
+              isTL={isTL}
               teams={teams}
               roles={roles}
               onClickSave={() => {

@@ -128,8 +128,8 @@ function AttendanceReportGenerator({open, setOpen, data}) {
 													alignItems: "center",
 													justifyContent: "space-between",}}>
 													<View>
-														<Text>Employee Name</Text>
-														<Text>Role</Text>
+														<Text>Employee Name: {data.employeeName}</Text>
+														<Text>Role: {data.employeeRole}</Text>
 													</View>
 													<View>
 														<Text style={{ textAlign: 'right'} }>From: {data.from}</Text>
