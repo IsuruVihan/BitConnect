@@ -1,12 +1,15 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useMemo, useState} from 'react';
 import {Dialog, Transition} from "@headlessui/react";
 import {DangerButton, OutlineButton, PrimaryButton, SuccessButton, WarningButton} from "../Button";
 import CreateAttendanceReportModal from "./CreateAttendanceReportModal";
 import AttendanceReportGenerator from "../reports/AttendanceReportGenerator";
+import LeaveReportGenerator from "../reports/LeaveReportGenerator";
+import CreateLeaveReportModal from "./CreateLeaveReportModal";
+import ErrorModal from "./ErrorModal";
 
 
 const ViewEmployeeModal = (props) => {
-	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, onClickSave, onClickDelete, teams,
+	const {open, setOpen, selectedEmployee, setSelectedEmployee, isAdmin, isTL, onClickSave, onClickDelete, teams,
 		roles} = props;
 
 	const [updateMode, setUpdateMode] = useState(false);
@@ -25,17 +28,18 @@ const ViewEmployeeModal = (props) => {
 		= useState(false);
 	const [pdfModalOpenAttendance, setPDFModalOpenAttendance] = useState(false);
 
-	// //leave
-	// const [fromDateLeave, setFromDateLeave] = useState('');
-	// const [toDateLeave, setToDateLeave] = useState('');
-	//
-	// const [reportDataLeave, setReportDataLeave] = useState(null);
-	//
-	// const [openCreateLeaveReportModal, setOpenCreateLeaveReportModal] = useState(false);
-	// const [generateLeaveReportErrorModalOpen, setGenerateLeaveReportErrorModalOpen]
-	// 	= useState(false);
-	// const [pdfModalOpenLeave, setPDFModalOpenLeave] = useState(false);
-
+	// // leave report
+	const leaveTypesReport = useMemo(() => [
+		{id: 1, label: 'All', value: 'All'},
+		{id: 2, label: 'Casual Leave', value: 'Casual'},
+		{id: 3, label: 'Medical Leave', value: 'Medical'},
+	], []);
+	const [leaveType, setLeaveType] = useState(leaveTypesReport[0]);
+	const [openCreateLeaveReportModal, setOpenCreateLeaveReportModal] = useState(false);
+	const [fromDateLeave, setFromDateLeave] = useState('');
+	const [toDateLeave, setToDateLeave] = useState('');
+	const [pdfModalOpenLeave, setPDFModalOpenLeave] = useState(false);
+	const [reportDataLeave, setReportDataLeave] = useState(null);
 
 
 	const handleAttendanceGenerateReport = async () => {
@@ -44,25 +48,25 @@ const ViewEmployeeModal = (props) => {
 			const toD = new Date(toDateAttendance);
 			if (fromD <= toD) {
 				try {
-					await fetch(`${process.env.REACT_APP_API_URL}/attendance?from=${fromDateAttendance}&to=${toDateAttendance}`, {
+					await fetch(`${process.env.REACT_APP_API_URL}/attendance-report?from=${fromDateAttendance}&to=${toDateAttendance}`, {
 						method: 'POST',
 						headers: {
 							'Authorization': 'Bearer ' + localStorage.getItem("token"),
-						}
-						// body: JSON.stringify({date: currentDate, time: currentTime}),
-						//
-						// }
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({email: selectedEmployee.email}),
 					})
 						.then(r => r.json())
 						.then((data) => {
+							console.log(selectedEmployee)
 							const reportD = {
 								currentDate: '',
 								currentTime: '',
 								from: fromDateAttendance,
 								to: toDateAttendance,
-								employeeName: 'Isuru Harischandra',
-								employeeEmail: data.userEmail,
-								employeeRole: 'Software Engineer',
+								employeeName: selectedEmployee.firstName + ' ' + selectedEmployee.lastName,
+								employeeEmail: selectedEmployee.email,
+								employeeRole: selectedEmployee.role,
 								data: data.data.map(item => ({
 									date: item.CheckInDate ? new Date(item.CheckInDate).toISOString().substr(0, 10) : null,
 									CheckInTime: item.CheckInTime ? new Date(item.CheckInTime).toISOString().substr(11, 5) :
@@ -81,22 +85,62 @@ const ViewEmployeeModal = (props) => {
 		}
 	}
 
-	return (
-		<Transition.Root show={open} as={Fragment}>
-			<>
-			{/*under construction - start*/}
-			{reportDataAttendance && <AttendanceReportGenerator open={pdfModalOpenAttendance} setOpen={setPDFModalOpenAttendance} data={reportDataAttendance}/>}
-			<CreateAttendanceReportModal
-				open={openCreateAttendanceReportModal}
-				setOpen={setOpenCreateAttendanceReportModal}
-				fromDate={fromDateAttendance}
-				toDate={toDateAttendance}
-				setFromDate={setFromDateAttendance}
-				setToDate={setToDateAttendance}
-				generateReport={handleAttendanceGenerateReport}
-			/>
-			{/*under construction - end*/}
+	// const handleLeaveGenerateReport = () => {
+	// 	const filteredData = leaveRecords.filter((record) => {
+	// 		const fd = new Date(record.FromDate);
+	// 		const td = new Date(record.ToDate);
+	// 		const fdr = new Date(fromDateLeave);
+	// 		const tdr = new Date(toDateLeave);
+	//
+	// 		return fdr <= fd && tdr >= td && (leaveType.value === "All" ? true : leaveType.value === record.Type);
+	// 	});
+	//
+	// 	setReportDataLeave({
+	// 		from: fromDateLeave ,
+	// 		to: toDateLeave,
+	// 		type: leaveType,
+	// 		rows: filteredData,
+	// 	});
+	//
+	// 	setPDFModalOpenLeave(true);
+	// };
 
+	return (
+		<>
+		{/*under construction - start*/}
+		{/*	attendance report*/}
+		{reportDataAttendance && <AttendanceReportGenerator open={pdfModalOpenAttendance} setOpen={setPDFModalOpenAttendance} data={reportDataAttendance}/>}
+		<CreateAttendanceReportModal
+			open={openCreateAttendanceReportModal}
+			setOpen={setOpenCreateAttendanceReportModal}
+			fromDate={fromDateAttendance}
+			toDate={toDateAttendance}
+			setFromDate={setFromDateAttendance}
+			setToDate={setToDateAttendance}
+			generateReport={handleAttendanceGenerateReport}
+		/>
+		<ErrorModal
+			title={"Generate Attendance Report"}
+			message={"An error occurred while generating the attendance report. Please try again."}
+			open={generateAttendanceReportErrorModalOpen}
+			setOpen={setGenerateAttendanceReportErrorModalOpen}
+		/>
+		{/*/!*leave report*!/*/}
+		{/*{reportDataLeave && <LeaveReportGenerator open={pdfModalOpenLeave} setOpen={setPDFModalOpenLeave} reportData={reportDataLeave}/>}*/}
+		{/*<CreateLeaveReportModal*/}
+		{/*	open={openCreateLeaveReportModal}*/}
+		{/*	setOpen={setOpenCreateLeaveReportModal}*/}
+		{/*	fromDate={fromDateLeave}*/}
+		{/*	toDate={toDateLeave}*/}
+		{/*	leaveType={leaveType}*/}
+		{/*	setFromDate={setFromDateLeave}*/}
+		{/*	setToDate={setToDateLeave}*/}
+		{/*	setLeaveType={setLeaveType}*/}
+		{/*	generateReport={handleLeaveGenerateReport}*/}
+		{/*/>*/}
+
+		{/*under construction - end*/}
+		<Transition.Root show={open} as={Fragment}>
 			<Dialog as="div" className="relative z-10" onClose={setOpen}>
 				<Transition.Child
 					as={Fragment}
@@ -351,16 +395,18 @@ const ViewEmployeeModal = (props) => {
 											setOpen(false);
 										}}/>
 
-										{/*// under construction - start*/}
-										<PrimaryButton label="Attendance" onClick={()=> setOpenCreateAttendanceReportModal(true)}
-										/>
-										<PrimaryButton label="Leave" onClick={()=> {}}
-										/>
 
-										 {/*under construction - end*/}
+										{(isAdmin || isTL) && !selectedEmployee.isAdmin && <>
 
+											{/*// under construction - start*/}
+											<PrimaryButton label="Attendance" onClick={()=> setOpenCreateAttendanceReportModal(true)}
+											/>
+											<PrimaryButton label="Leave" onClick={()=> {}}
+											/>
+											{/*<PrimaryButton label="Leave" onClick={()=> setOpenCreateLeaveReportModal(true)}*/}
+											{/*/>*/}
+											{/*under construction - end*/}
 
-										{isAdmin && !selectedEmployee.isAdmin && <>
 											{!updateMode && <WarningButton label="Update" onClick={() => setUpdateMode(true)}/>}
 											{updateMode && <SuccessButton label="Save" onClick={() => {
 												onClickSave();
@@ -380,8 +426,8 @@ const ViewEmployeeModal = (props) => {
 					</div>
 				</div>
 			</Dialog>
-		</>
 		</Transition.Root>
+	</>
 	);
 
 };
